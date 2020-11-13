@@ -26,7 +26,7 @@
                                 var data=[];
                                 $.ajax({
                                     type: "post",
-                                    url: "{{url('category/tree_category/select/0')}}",
+                                    url: "{{url('category/tree_category/select/')}}/{{$cate->category_id}}",
                                     data: {_token:$('input[name="_token"]').val()},
                                     dataType: "json",
                                     async:false,
@@ -124,7 +124,13 @@
                                     })
                                    
                                 }else{
-                                    window.location.href='{{url("admin/category")}}'
+                                    Swal.fire({
+                                        icon:'success',
+                                        title:'Sửa thành công!',
+                                        text:'Bạn vừa chỉnh sửa danh mục'
+                                    }).then(()=>{
+                                        window.location.href='{{url("admin/category")}}'
+                                    })
                                 }
                         }
                     });

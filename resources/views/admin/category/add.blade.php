@@ -152,7 +152,13 @@
                                     })
                                    
                                 }else{
-                                    window.location.href='{{url("admin/category")}}'
+                                    Swal.fire({
+                                        icon:'success',
+                                        title:'Thêm thành công!',
+                                        text:'Bạn vừa tạo mới 1 danh mục'
+                                    }).then(()=>{
+                                        window.location.href='{{url("admin/category")}}'
+                                    })
                                 }
                         }
                     });
