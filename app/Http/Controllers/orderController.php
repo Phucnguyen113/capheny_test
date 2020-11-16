@@ -14,6 +14,9 @@ class orderController extends Controller
         $this->middleware('checkInput');
     }
     public function index(Request $request){
+        if(!p_author('view','tbl_order')){
+            die('Bạn đéo đủ quyền truy cập');
+        }
         $paramWhere=[]; // param to search
         $list_order=DB::table('tbl_order')->orderByDesc('order_id')
         ->join('tbl_province','tbl_province.id','=','tbl_order.province')
@@ -67,6 +70,9 @@ class orderController extends Controller
 
     }
     public function add_form(){
+        if(!p_author('add','tbl_order')){
+            die('Bạn đéo đủ quyền truy cập');
+        }
         $list_province=DB::table('tbl_province')->get(['id','_name']);
         $list_product=DB::table('tbl_product')->orderByDesc('product_id')->get(['product_id','product_name']);
         $list_user=DB::table('tbl_user')->get();
@@ -255,6 +261,9 @@ class orderController extends Controller
        return response()->json(['success'=>'insert success']);
     }
     public function edit_form($id){
+        if(!p_author('edit','tbl_order')){
+            die('Bạn đéo đủ quyền truy cập');
+        }
         $order=DB::table('tbl_order')->where('order_id',$id)->first();
         //get order detail 
         $order_detail=DB::table('tbl_order_detail')->join('tbl_product','tbl_product.product_id','=','tbl_order_detail.product_id')
@@ -522,6 +531,9 @@ class orderController extends Controller
        return response()->json(['success'=>'insert success']);
     }
     public function delete($id){
+        if(!p_author('delete','tbl_order')){
+            die('Bạn đéo đủ quyền truy cập');
+        }
         $check_already=DB::table('tbl_order')->where('order_id',$id)->first();
         if(empty($check_already)){
             return redirect()->back();
@@ -568,6 +580,9 @@ class orderController extends Controller
     }
 
     public function detail($id){
+        if(!p_author('view','tbl_order')){
+            die('Bạn đéo đủ quyền truy cập');
+        }
         $checkNull=DB::table('tbl_order')->where('order_id',$id)->first();
         if(empty($checkNull)) return redirect()->back();
         //list province 

@@ -21,6 +21,9 @@ class colorController extends Controller
      */
     public function index(Request $request)
     {
+        if(!p_author('view','tbl_color')){
+            die('Bạn đéo đủ quyền truy cập');
+        }
         if($request->has('search')){ 
             
             if($request->create_at_from == null) $request->create_at_from='';
@@ -49,6 +52,9 @@ class colorController extends Controller
      */
     public function create()
     {
+        if(!p_author('add','tbl_color')){
+            die('Bạn đéo đủ quyền truy cập');
+        }
         return view('admin/color/add');
     }
 
@@ -60,6 +66,7 @@ class colorController extends Controller
      */
     public function store(Request $request)
     {
+      
         $validated= Validator::make($request->all(),
             [
                 'color'=>'required|bail|unique:tbl_color,color|regex:/^[A-z0-9]*$/'
@@ -98,6 +105,9 @@ class colorController extends Controller
      */
     public function edit($id)
     {
+        if(!p_author('edit','tbl_color')){
+            die('Bạn đéo đủ quyền truy cập');
+        }
         $color=DB::table('tbl_color')->where('color_id',$id)->first();
 
         return view('admin/color/edit',['color'=>$color]);
@@ -112,6 +122,7 @@ class colorController extends Controller
      */
     public function update(Request $request, $id)
     {
+        
         $validated= Validator::make($request->all(),
             [
                 'color'=>[
@@ -147,6 +158,9 @@ class colorController extends Controller
      */
     public function destroy($id)
     {
+        if(!p_author('delete','tbl_color')){
+            die('Bạn đéo đủ quyền truy cập');
+        }
         $check_isset=DB::table('tbl_product_color')->where('color_id',$id)->first();
         if(!empty($check_isset)) return redirect()->back()->withErrors(['error'=>'Màu này đã có sản phẩm']);
         DB::table('tbl_color')->where('color_id',$id)->delete();

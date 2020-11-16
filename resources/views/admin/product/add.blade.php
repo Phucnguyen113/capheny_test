@@ -1,4 +1,7 @@
 @extends('layouts.admin')
+@section('js')
+<script src="//cdn.ckeditor.com/4.15.0/standard/ckeditor.js"></script>
+@endsection
 @section('body')
 <a href="{{url()->previous()}}" class="btn btn-warning mb-2" style="color:white">Quay lại</a>
 <div class="main-card mb-3 card">
@@ -58,7 +61,7 @@
         <div class="form-row">
             <div class="col-md-12">
             <label for="product_slug" class="">Mô tả sản phẩm <span style="color:Red"> *</span></label>
-                <script src="//cdn.ckeditor.com/4.15.0/standard/ckeditor.js"></script>
+              
                 <textarea name="description" id="description" cols="30" rows="10">
 
                 </textarea>

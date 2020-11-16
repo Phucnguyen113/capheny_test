@@ -16,6 +16,9 @@ class userController extends Controller
         $this->middleware('checkInput');
     }
     public function index(Request $request){
+        if(!is_admin()){
+            die('Bạn đéo đủ quyền truy cập');
+        }
         $list_province=DB::table('tbl_province')->get();
         $param_search=[];
         $list_user=DB::table('tbl_user')->join('tbl_province','tbl_province.id','=','tbl_user.province')
@@ -61,6 +64,9 @@ class userController extends Controller
         return view('admin.user.index',compact('list_user','list_province','list_ward','list_district'));
     }
     public function add_form(){
+        if(!is_admin()){
+            die('Bạn đéo đủ quyền truy cập');
+        }
         $list_province=DB::table('tbl_province')->get();
         return view('admin.user.add',compact('list_province'));
     }
@@ -82,7 +88,8 @@ class userController extends Controller
                 'province'=> 'bail|required|not_in:0',
                 'district'=> 'bail|required|not_in:0',
                 'ward'=> 'bail|required|not_in:0',
-                'user_address'=> 'bail|required'
+                'user_address'=> 'bail|required',
+                'avatar' =>'sometimes|nullable|image'
             ],
             [
                 'required' => ':attribute không được trống',
@@ -115,10 +122,21 @@ class userController extends Controller
         if($request->has('user_type')) $user_type=1;
         else $user_type=0;
         $user_password=bcrypt($request->user_password);
-        DB::table('tbl_user')->insert(array_merge($request->except(['_token','user_password_confirm','user_password']),['create_at'=>$create_at],['active'=>$active],['user_type'=>$user_type],['user_password'=>$user_password] ) );
+        if($request->hasFile('avatar')){
+            $newNameImg=$request->avatar->getClientOriginalName().date('Y_m_d').'.'.$request->avatar->getClientOriginalExtension();
+            $request->avatar->move('images/user',$newNameImg);
+            DB::table('tbl_user')->insert(array_merge($request->except(['_token','user_password_confirm','user_password','avatar']),['avatar'=>$newNameImg],['create_at'=>$create_at],['active'=>$active],['user_type'=>$user_type],['user_password'=>$user_password] ) );
+        }else{
+            DB::table('tbl_user')->insert(array_merge($request->except(['_token','user_password_confirm','user_password','avatar']),['create_at'=>$create_at],['active'=>$active],['user_type'=>$user_type],['user_password'=>$user_password] ) );
+        }
+       
+       
         return response()->json(['success'=>'success']);
     }
     public function edit_form($id){
+        if(!is_admin()){
+            die('Bạn đéo đủ quyền truy cập');
+        }
         $user=DB::table('tbl_user')->where('user_id',$id)->first();
         $list_province=DB::table('tbl_province')->get();
         $list_district=DB::table('tbl_district')->where('_province_id',$user->province)->get();
@@ -145,7 +163,8 @@ class userController extends Controller
                 'province'=> 'bail|required|not_in:0',
                 'district'=> 'bail|required|not_in:0',
                 'ward'=> 'bail|required|not_in:0',
-                'user_address'=> 'bail|required'
+                'user_address'=> 'bail|required',
+                'avatar'=>'sometimes|nullable|image'
             ],
             [
                 'required' => ':attribute không được trống',
@@ -180,14 +199,27 @@ class userController extends Controller
        
         if($request->user_password!==null){
             $user_password=bcrypt($request->user_password);
-            $data_update=array_merge($request->except(['_token','user_password_confirm','user_password']),['update_at'=>$update_at],['active'=>$active],['user_type'=>$user_type],['user_password'=>$user_password] );
+            $data_update=array_merge($request->except(['_token','user_password_confirm','user_password','avatar']),['update_at'=>$update_at],['active'=>$active],['user_type'=>$user_type],['user_password'=>$user_password] );
         }else{
-            $data_update=array_merge($request->except(['_token','user_password_confirm','user_password']),['update_at'=>$update_at],['active'=>$active],['user_type'=>$user_type]);
+            $data_update=array_merge($request->except(['_token','user_password_confirm','user_password','avatar']),['update_at'=>$update_at],['active'=>$active],['user_type'=>$user_type]);
         }
+        if($request->hasFile('avatar')){
+            $newNameImg=$request->avatar->getClientOriginalName().date('Y_m_d').'.'.$request->avatar->getClientOriginalExtension();
+            $request->avatar->move('images/user',$newNameImg);
+            $data_update=array_merge($data_update,['avatar'=>$newNameImg]);
+            $img_old=DB::table('tbl_user')->where('user_id',$id)->first(['avatar']);
+            if(file_exists(public_path('images/user/'.$img_old->avatar))){
+                unlink(public_path('images/user/'.$img_old->avatar));
+            }
+        }
+        
         DB::table('tbl_user')->where('user_id',$id)->update($data_update);
         return response()->json(['success'=>'success']);
     }
     public function delete($id){
+        if(!is_admin()){
+            die('Bạn đéo đủ quyền truy cập');
+        }
         try{
             $user=DB::table('tbl_order')->where('user_id',$id)->first();
             if(!empty($user)) return redirect()->back()->withErrors(['error'=>'User đã mua hàng']);
@@ -199,6 +231,9 @@ class userController extends Controller
         
     }
     public function user($id){
+        if(!is_admin()){
+            die('Bạn đéo đủ quyền truy cập');
+        }
         try {
             $data=DB::table('tbl_user')
             ->where('user_id',$id)->first(['user_first_name','user_last_name','user_email','user_phone','province','district','ward','user_address']);

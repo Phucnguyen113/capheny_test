@@ -17,6 +17,9 @@ class sizeController extends Controller
      */
     public function index(Request $request)
     {
+        if(!p_author('view','tbl_size')){
+            die('Bạn đéo đủ quyền truy cập');
+        }
         if($request->has('search')){
             if($request->create_at_from!== null) $request->create_at_from.=' 00:00:00';
             else $request->create_at_from='';
@@ -47,6 +50,9 @@ class sizeController extends Controller
      */
     public function create()
     {
+        if(!p_author('add','tbl_size')){
+            die('Bạn đéo đủ quyền truy cập');
+        }
         return view('admin.size.add');
     }
 
@@ -101,6 +107,9 @@ class sizeController extends Controller
      */
     public function edit($id)
     {   
+        if(!p_author('edit','tbl_size')){
+            die('Bạn đéo đủ quyền truy cập');
+        }
         $size=DB::table('tbl_size')->where('size_id',$id)->first();
         return view('admin/size/edit',['size'=>$size]);
     }
@@ -149,6 +158,9 @@ class sizeController extends Controller
      */
     public function destroy($id)
     {
+        if(!p_author('delete','tbl_size')){
+            die('Bạn đéo đủ quyền truy cập');
+        }
         $check_isset=DB::table('tbl_product_size')->where('size_id',$id)->first();
         if(!empty($check_isset)) return redirect()->back()->withErrors(['error'=>'Kích cỡ này đã gán cho sản phẩm']);
         DB::table('tbl_size')->where('size_id',$id)->delete();

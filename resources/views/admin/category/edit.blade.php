@@ -122,7 +122,6 @@
                                     $.each(response.error,function(index,item){
                                         $('#'+index+'_error').html(item)
                                     })
-                                   
                                 }else{
                                     Swal.fire({
                                         icon:'success',

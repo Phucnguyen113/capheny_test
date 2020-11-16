@@ -128,7 +128,7 @@
                    </div>
                    <div class="col-md-3">
                        <label for="address">Địa chỉ <span style="color:red"> *</span></label>
-                       <input type="text" name="user_address" id="address" class="form-control">
+                       <input type="text" name="user_address" id="user_address" class="form-control">
                        <div id="user_address_error" class="p_error" style="color:red"></div>
                    </div>
                 </div>
@@ -143,8 +143,17 @@
                     </div>
                 </div>
                 <div class="form-row form-group">
+                    <div class="col-md-12">
+                        <label for="avatar">Ảnh đại diện</label>
+                        <div class="custom-file">
+                            <input type="file" name="avatar"  class="custom-file-input" id="avatar" >
+                            <label class="custom-file-label" for="avatar">Chọn ảnh...</label>
+                            <div class="invalid-feedback">Example invalid custom file feedback</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-row form-group">
                    <div class="col-md-12">
-                        
                         <button type="submit" class="btn btn-success">Thêm mới người dùng</button>
                    </div>
                 </div>
@@ -153,13 +162,50 @@
     </div>
     <script>
         function add_user(){
-            var data=$('#form').serialize()
-            console.log(data._token);
-            console.log(`data`, data);
+            var formdata= new FormData();
+            var _token=$('input[name="_token"]').val();
+            var user_name=$('#user_name').val();
+            var user_email=$('#user_email').val();
+            var user_password=$('#user_password').val();
+            var user_password_confirm=$('#user_password_confirm').val();
+            var user_first_name=$('#user_first_name').val();
+            var user_last_name=$('#user_last_name').val();
+            var user_phone=$('#user_phone').val();
+            var province=$('#province').val();
+            var district=$('#district').val();
+            var ward=$('#ward').val();
+            var user_address=$('#user_address').val();
+            var avatar=$('#avatar').prop('files')[0];
+            var user_type=$('input[name="user_type"]:checked').val();
+            var active=$('input[name="active"]:checked').val()
+            formdata.append('_token',_token);
+            formdata.append('user_name',user_name);
+            formdata.append('user_email',user_email);
+            formdata.append('user_password',user_password);
+            formdata.append('user_password_confirm',user_password_confirm);
+            formdata.append('user_first_name',user_first_name);
+            formdata.append('user_last_name',user_last_name)
+            formdata.append('user_phone',user_phone)
+            formdata.append('province',province);
+            formdata.append('district',district)
+            formdata.append('ward',ward);
+            formdata.append('user_address',user_address)
+            if(avatar!==undefined){
+                formdata.append('avatar',avatar)
+            }   
+            if(active!==undefined){
+                formdata.append('active',1)
+            }
+            if(user_type!==undefined){
+                formdata.append('user_type',1)
+            }
+            
             $.ajax({
                 type: "post",
                 url: "{{url('admin/user/create')}}",
-                data: data,
+                data: formdata,
+                contentType:false,
+                processData:false,
                 dataType: "json",
                 success: function (response) {
                     if(!$.isEmptyObject(response.error)){
@@ -169,7 +215,14 @@
                             $('#'+index+"_error").html(item)
                         })
                     }else{
-                        window.location.href="{{url('admin/user')}}"
+                        Swal.fire({
+                            icon:'success',
+                            title:'Thêm thành công!',
+                            text:'Bạn vừa thêm 1 người dùng'
+                        }).then(()=>{
+                            window.location.href="{{url('admin/user')}}"
+                        })
+                        
                     }
                 }
             });

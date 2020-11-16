@@ -18,11 +18,22 @@ class checkInput
     {
         foreach ($request->all() as $requests => $value) {
             if($value==null) continue;
-            $value=preg_replace("/\'/","",$value);
-            $value=preg_replace('/\"/',"",$value);
-            $value=preg_replace("/<script>/","",$value);
-            $value=preg_replace("/<\/script>/","",$value);
-            $request[$requests]=$value;
+            if(is_array($value)){
+                foreach ($value as $key1 => $value1) {
+                    $value1=preg_replace("/\'/","",$value1);
+                    $value1=preg_replace('/\"/',"",$value1);
+                    $value1=preg_replace("/<script>/","",$value1);
+                    $value1=preg_replace("/<\/script>/","",$value1);
+                    $value[$key1]=$value1;
+                }
+            }else{
+                $value=preg_replace("/\'/","",$value);
+                $value=preg_replace('/\"/',"",$value);
+                $value=preg_replace("/<script>/","",$value);
+                $value=preg_replace("/<\/script>/","",$value);
+                $request[$requests]=$value;
+            }
+            
         }
        
         return $next($request);

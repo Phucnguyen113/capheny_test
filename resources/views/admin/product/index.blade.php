@@ -289,11 +289,12 @@
                     <th>Id</th>
                     <th>Tên sản phẩm</th>
                     <th>Mô tả</th>
+                    <th>Chi tiết</th>
                     <th>Màu</th>
                     <th>Kích cỡ</th>
                     <th style="text-align:right">Giá sản phẩm</th>
                     <th>Đang giảm giá</th>
-                    <th>Chi tiết</th>
+                    <th>Kích hoạt</th>
                     <th>Thao tác</th>
                 </tr>
             </thead>
@@ -303,6 +304,7 @@
                         <td scope="row">{{$value->product_id}}</td>
                         <td>{{$value->product_name}}</td>
                         <td>{!!Str::limit($value->description,50)!!}</td>
+                        <td><a href="{{url('admin/product')}}/{{$value->product_id}}/detail" class="btn btn-info">Chi tiết</a></td>
                         <td>
                             @foreach ($value->colors as $colors => $color)
                                 <div style="width:15px;height:15px;display:inline-block;background-color:#{{$color}}"></div>
@@ -316,7 +318,7 @@
                         <td style="text-align:right">{{number_format($value->product_price)}} VND</td>
                         <td>{{$value->discount}}</td>
                         
-                        <td><a href="{{url('admin/product')}}/{{$value->product_id}}/detail" class="btn btn-info">Chi tiết</a></td>
+                        <td>@if($value->active==1) Kích hoạt @else Không kích hoạt @endif</td>
                         <td>
                             <a href="{{url('admin/product')}}/{{$value->product_id}}/edit" class="btn btn-primary"><i class="fa fa-edit"></i></a>
                             <form action="{{url('admin/product')}}/{{$value->product_id}}" style="display:inline-block;margin:0" method="post">
@@ -329,15 +331,16 @@
                 @endforeach
             </tbody>
             <tfoot>
-                <tr>
+            <tr>
                     <th>Id</th>
                     <th>Tên sản phẩm</th>
                     <th>Mô tả</th>
+                    <th>Chi tiết</th>
                     <th>Màu</th>
                     <th>Kích cỡ</th>
                     <th style="text-align:right">Giá sản phẩm</th>
                     <th>Đang giảm giá</th>
-                    <th>Chi tiết</th>
+                    <th>Kích hoạt</th>
                     <th>Thao tác</th>
                 </tr>
             </tfoot>

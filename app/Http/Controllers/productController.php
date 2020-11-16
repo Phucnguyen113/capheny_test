@@ -21,7 +21,10 @@ class productController extends Controller
      */
     public function index(Request $request)
     {
-         
+        if(!p_author('view','tbl_product')){
+            echo 'Bạn không có quyền truy cập';
+            die();
+        }
         //data filter
         $list_color_search=DB::table('tbl_color')->orderByDesc('color_id')->get();
         $list_size_search=DB::table('tbl_size')->orderByDesc('size_id')->get();
@@ -133,6 +136,9 @@ class productController extends Controller
      */
     public function create()
     {
+        if(!p_author('add','tbl_product')){
+            die('Bạn đéo đủ quyền truy cập');
+        }
         $list_cate=DB::table('tbl_category')->get();
         $list_cate=$this->get_category_tree($list_cate);
         $color=DB::table('tbl_color')->orderByDesc('color_id')->get();
@@ -148,6 +154,7 @@ class productController extends Controller
      */
     public function store(Request $request)
     {
+       
         $validated= Validator::make($request->all(),
             [
                 'product_name'       => 'required|bail',
@@ -268,6 +275,9 @@ class productController extends Controller
      */
     public function edit($id)
     {
+        if(!p_author('add','tbl_product')){
+            die('Bạn đéo đủ quyền truy cập');
+        }
         try{
             $list_cate=DB::table('tbl_category')->get();
             $list_cate=$this->get_category_tree($list_cate);
@@ -432,12 +442,20 @@ class productController extends Controller
      */
     public function destroy($id)
     {
+        if(!p_author('delete','tbl_product')){
+            die('Bạn đéo đủ quyền truy cập');
+        }
         // xóa sản phẩm thì cũng xóa size và color của sản phẩm trong các bản quan hệ
         $check_isset_store=DB::table('tbl_store_product')->where('product_id',$id)->first();
         if(!empty($check_isset_store)){
             return redirect()->back()->withErrors(['isset'=>'Sản phẩm đã nhập hàngs']);
         }
         try{
+            $img_name=DB::table('tbl_product')->where('product_id',$id)->first(['product_image']);
+            $img_name= json_decode($img_name->product_image,true);
+           for ($i=0; $i <count($img_name) ; $i++) { 
+                unlink(public_path('images/product/'.$img_name[$i]));
+           }
             DB::table('tbl_product')->where('product_id',$id)->delete();
             return redirect()->back()->with('success','success');
         }catch(\Exception $e){
@@ -497,6 +515,9 @@ class productController extends Controller
         return response()->json(['data'=>$data]);
     }
     public function detail($id,Request $request){
+        if(!p_author('view','tbl_product')){
+            die('Bạn đéo đủ quyền truy cập');
+        }
         $check_isset=DB::table('tbl_product')->where('product_id',$id)->first();
         if(empty($check_isset)) return redirect()->back();
         try {
@@ -637,6 +658,9 @@ class productController extends Controller
         return response()->json(['success'=>'success']);
     }
     public function add_new_color_product_form($product_id){
+        if(!p_author('edit','tbl_product')){
+            die('Bạn đéo đủ quyền truy cập');
+        }
         $product_isset=DB::table('tbl_product')->where('product_id',$product_id)->get(['product_id'])->toArray();
         if(count($product_isset)!==1) return redirect()->back();
         // get color old for product
@@ -677,6 +701,9 @@ class productController extends Controller
     }
 
     public function add_new_size_product_form($product_id){
+        if(!p_author('edit','tbl_product')){
+            die('Bạn đéo đủ quyền truy cập');
+        }
         $product_isset=DB::table('tbl_product')->where('product_id',$product_id)->get(['product_id'])->toArray();
         if(count($product_isset)!==1) return redirect()->back();
         // get size old for product

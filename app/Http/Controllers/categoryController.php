@@ -21,6 +21,9 @@ class categoryController extends Controller
      */
     public function index(Request $request)
     {
+        if(!p_author('view','tbl_category')){
+            die('Bạn đéo đủ quyền truy cập');
+        }
         if($request->has('search')){
             if($request->create_at_from!==null){
                 $request->create_at_from.=" 00:00:00";
@@ -67,6 +70,9 @@ class categoryController extends Controller
      */
     public function create()
     {
+        if(!p_author('add','tbl_category')){
+            die('Bạn đéo đủ quyền truy cập');
+        }
         $list_cate=DB::table('tbl_category')->get();
         $list_cate=$this->get_category_tree($list_cate);
         return view('admin.category.add',['list_cate'=>$list_cate]);
@@ -79,7 +85,7 @@ class categoryController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
-    {   
+    {  
         $validated=Validator::make($request->all(),
             [
                 'category_name'=>'required|bail',
@@ -129,6 +135,9 @@ class categoryController extends Controller
      */
     public function edit($id)
     {
+        if(!p_author('edit','tbl_category')){
+            die('Bạn đéo đủ quyền truy cập');
+        }
         $list_cate=DB::table('tbl_category')->get();
         $list_cate=$this->get_category_tree($list_cate);
         $cate=DB::table('tbl_category')->where('category_id',$id)->first();
@@ -179,6 +188,9 @@ class categoryController extends Controller
      */
     public function destroy($id)
     {
+        if(!p_author('delete','tbl_category')){
+            die('Bạn đéo đủ quyền truy cập');
+        }
         $check_child=DB::table('tbl_category')->where('category_parent_id',$id)->first();
         if(!empty($check_child)){
             return redirect()->back()->withErrors(['error'=>'Danh mục chứa danh mục con']);

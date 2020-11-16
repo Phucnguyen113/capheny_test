@@ -10,6 +10,9 @@ use Illuminate\Support\Facades\Validator;
 class storeController extends Controller
 {
     function index(Request $request){
+        if(!p_author('view','tbl_store')){
+            die('Bạn đéo đủ quyền truy cập');
+        }
         $param_search=[];
         $list_store=DB::table('tbl_store')->orderByDesc('store_id')
         ->join('tbl_province','tbl_province.id','=','tbl_store.province')
@@ -50,7 +53,11 @@ class storeController extends Controller
         $list_province=DB::table('tbl_province')->get();
         return view('admin.store.index',compact('list_store','list_province','list_district','list_ward'));
     }
+
     function create(){
+        if(!p_author('add','tbl_store')){
+            die('Bạn đéo đủ quyền truy cập');
+        }
         $list_province=DB::table('tbl_province')->get();
         return view('admin.store.add',compact('list_province'));
     }
@@ -80,6 +87,9 @@ class storeController extends Controller
         return response()->json(['success'=>'sucess']);
     }
     public function form_add_product(){
+        if(!p_author('add_product','tbl_store')){
+            die('Bạn đéo đủ quyền truy cập');
+        }
         $list_store=DB::table('tbl_store')->orderByDesc('store_id')->get();
         $list_product=DB::table('tbl_product')->orderByDesc('product_id')->get();
         return view('admin.store.addproduct',compact('list_store','list_product'));
@@ -138,6 +148,9 @@ class storeController extends Controller
     }
     //detail store
     public function detail($id){
+        if(!p_author('detail','tbl_store')){
+            die('Bạn đéo đủ quyền truy cập');
+        }
         $data=DB::table('tbl_store')->join('tbl_province','tbl_province.id','=','tbl_store.province')
         ->join('tbl_district','tbl_district.id','=','tbl_store.district')
         ->join('tbl_ward','tbl_ward.id','=','tbl_store.ward')
@@ -179,6 +192,7 @@ class storeController extends Controller
        return redirect()->back();
     }
     public function edit_product_from_store_form($id){
+
         $data=DB::table('tbl_store_product')
         ->join('tbl_size','tbl_size.size_id','=','tbl_store_product.product_size')
         ->join('tbl_color','tbl_color.color_id','=','tbl_store_product.product_color')
@@ -212,6 +226,9 @@ class storeController extends Controller
     }
 
     public function edit_store_form($id){
+        if(!p_author('edit','tbl_store')){
+            die('Bạn đéo đủ quyền truy cập');
+        }
         $data=DB::table('tbl_store')->where('store_id',$id)->first();
         $list_province=DB::table('tbl_province')->get();
         $list_district=DB::table('tbl_district')->where('_province_id',$data->province)->get();
@@ -245,6 +262,9 @@ class storeController extends Controller
         return response()->json(['success'=>'sucess']);
     }
     public function delete_store($id){
+        if(!p_author('delete','tbl_store')){
+            die('Bạn đéo đủ quyền truy cập');
+        }
         $list_product_of_store=DB::table('tbl_store_product')->where('store_id',$id)->get()->toArray();
         if(count($list_product_of_store)>0){
             return redirect()->back()->withErrors(['error'=>'Cửa hàng đã có sản phẩm, không thể xóa']);

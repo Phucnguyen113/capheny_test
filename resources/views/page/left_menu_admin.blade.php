@@ -54,6 +54,7 @@
     <div class="scrollbar-sidebar">
         <div class="app-sidebar__inner">
             <ul class="vertical-nav-menu">
+                @if(is_admin())
                 <li class="app-sidebar__heading">Dashboards</li>
                 <li>
                     <a href="{{url('admin/dashboard')}}" class="{{request()->is('admin/dashboard')?'mm-active':''}}">
@@ -61,7 +62,7 @@
                         Dashboard 
                     </a>
                 </li>
-                
+                @endif
                 <!-- <li>
                     <a href="#">
                         <i class="metismenu-icon pe-7s-diamond"></i>
@@ -119,104 +120,173 @@
                         </li>
                     </ul>
                 </li> -->
+                @if(p_author('view','tbl_order',false,true))
                 <li class="app-sidebar__heading">Đơn hàng</li>
-                <li>
-                    <a href="{{url('admin/order')}}" class="{{request()->is('admin/order')?'mm-active':''}}">
-                        <i class="metismenu-icon pe-7s-display2"></i>
-                        Danh sách đơn hàng
-                    </a>
-                </li>
-                <li>
-                    <a href="{{url('admin/order/create')}}" class="{{request()->is('admin/order/create')?'mm-active':''}}">
-                        <i class="metismenu-icon pe-7s-display2"></i>
-                        Thêm đơn hàng
-                    </a>
-                </li>
+                    @if(p_author('view','tbl_order'))
+                        <li>
+                            <a href="{{url('admin/order')}}" class="{{request()->is('admin/order')?'mm-active':''}}">
+                                <i class="metismenu-icon pe-7s-display2"></i>
+                                Danh sách đơn hàng
+                            </a>
+                        </li>
+                    @endif
+                    @if(p_author('add','tbl_order'))
+                        <li>
+                            <a href="{{url('admin/order/create')}}" class="{{request()->is('admin/order/create')?'mm-active':''}}">
+                                <i class="metismenu-icon pe-7s-display2"></i>
+                                Thêm đơn hàng
+                            </a>
+                        </li>
+                    @endif
+                @endif
+
+                @if(p_author('view','tbl_category',false,true))
                 <li class="app-sidebar__heading">Danh mục</li>
-                <li>
-                    <a href="{{url('admin/category')}}" class="{{request()->is('admin/category')?'mm-active':''}}">
-                        <i class="metismenu-icon pe-7s-car"></i>
-                        Danh sách danh mục 
-                    </a>
-                </li> 
-                <li>
-                    <a href="{{url('admin/category/create')}}" class="{{request()->is('admin/category/create')?'mm-active':''}}">
-                        <i class="metismenu-icon pe-7s-display2"></i>
-                        Thêm danh mục
-                    </a>
-                </li>
-                <li class="app-sidebar__heading">Người dùng</li>
-                <li>
-                    <a href="{{url('admin/user')}}" class="{{request()->is('admin/user')?'mm-active':''}}">
-                        <i class="metismenu-icon pe-7s-display2"></i>
-                        Danh sách người dùng
-                    </a>
-                </li>
-                <li>
-                    <a href="{{url('admin/user/create')}}" class="{{request()->is('admin/user/create')?'mm-active':''}}">
-                        <i class="metismenu-icon pe-7s-display2"></i>
-                        Thêm người dùng
-                    </a>
-                </li>
-                <li class="app-sidebar__heading">Sản phẩm</li>
-                <li>
-                    <a href="{{url('admin/product')}}" class="{{request()->is('admin/product')?'mm-active':''}}">
-                        <i class="metismenu-icon pe-7s-display2"></i>
-                        Danh sách sản phẩm
-                    </a>
-                </li>
-                <li>
-                    <a href="{{url('admin/product/create')}}" class="{{request()->is('admin/product/create')?'mm-active':''}}">
-                        <i class="metismenu-icon pe-7s-display2"></i>
-                        Thêm sản phẩm
-                    </a>
-                </li>
-                <li class="app-sidebar__heading">Cửa hàng</li>
-                <li>
-                    <a href="{{url('admin/store')}}" class="{{request()->is('admin/store')?'mm-active':''}}">
-                        <i class="metismenu-icon pe-7s-display2"></i>
-                        Danh sách cửa hàng
-                    </a>
-                </li>
-                <li>
-                    <a href="{{url('admin/store/addproduct')}}" class="{{request()->is('admin/store/addproduct')?'mm-active':''}}">
-                        <i class="metismenu-icon pe-7s-display2"></i>
-                        Nhập sản phẩm
-                    </a>
-                </li>
-                <li>
-                    <a href="{{url('admin/store/create')}}" class="{{request()->is('admin/store/create')?'mm-active':''}}">
-                        <i class="metismenu-icon pe-7s-display2"></i>
-                        Thêm cửa hàng
-                    </a>
-                </li>
-                <li class="app-sidebar__heading">Kích thước sản phẩm</li>
-                <li>
-                    <a href="{{url('admin/size')}}" class="{{request()->is('admin/size')?'mm-active':''}}">
-                        <i class="metismenu-icon pe-7s-display2"></i>
-                        Danh sách kích thước
-                    </a>
-                </li>
-                <li>
-                    <a href="{{url('admin/size/create')}}" class="{{request()->is('admin/size/create')?'mm-active':''}}">
-                        <i class="metismenu-icon pe-7s-display2"></i>
-                       Thêm kích thước
-                    </a>
-                </li>
-                <li class="app-sidebar__heading">Màu sản phẩm</li>
-                <li>
-                    <a href="{{url('admin/color')}}" class="{{request()->is('admin/color')?'mm-active':''}}">
-                        <i class="metismenu-icon pe-7s-display2"></i>
-                        Danh sách màu 
-                    </a>
-                </li>
-                <li>
-                    <a href="{{url('admin/color/create')}}" class="{{request()->is('admin/color/create')?'mm-active':''}}">
-                        <i class="metismenu-icon pe-7s-display2"></i>
-                        Thêm màu
-                    </a>
-                </li>
+                    @if(p_author('view','tbl_category'))
+                        <li>
+                            <a href="{{url('admin/category')}}" class="{{request()->is('admin/category')?'mm-active':''}}">
+                                <i class="metismenu-icon pe-7s-car"></i>
+                                Danh sách danh mục 
+                            </a>
+                        </li>
+                    @endif
+                    @if(p_author('add','tbl_category'))
+                        <li>
+                            <a href="{{url('admin/category/create')}}" class="{{request()->is('admin/category/create')?'mm-active':''}}">
+                                <i class="metismenu-icon pe-7s-display2"></i>
+                                Thêm danh mục
+                            </a>
+                        </li>
+                    @endif
+                @endif
                 
+                @if(p_author('view','tbl_user',false,true))
+                <li class="app-sidebar__heading">Người dùng</li>
+                    @if(p_author('view','tbl_user'))
+                    <li>
+                        <a href="{{url('admin/user')}}" class="{{request()->is('admin/user')?'mm-active':''}}">
+                            <i class="metismenu-icon pe-7s-display2"></i>
+                            Danh sách người dùng
+                        </a>
+                    </li>
+                    @endif
+                    @if(p_author('add','tbl_user'))
+                    <li>
+                        <a href="{{url('admin/user/create')}}" class="{{request()->is('admin/user/create')?'mm-active':''}}">
+                            <i class="metismenu-icon pe-7s-display2"></i>
+                            Thêm người dùng
+                        </a>
+                    </li>
+                    @endif
+                @endif
+
+                @if(p_author('view','tbl_product',false,true))
+                <li class="app-sidebar__heading">Sản phẩm</li>
+                    @if(p_author('view','tbl_product'))
+                    <li>
+                        <a href="{{url('admin/product')}}" class="{{request()->is('admin/product')?'mm-active':''}}">
+                            <i class="metismenu-icon pe-7s-display2"></i>
+                            Danh sách sản phẩm
+                        </a>
+                    </li>
+                    @endif
+                    @if(p_author('view','tbl_product'))
+                    <li>
+                        <a href="{{url('admin/product/create')}}" class="{{request()->is('admin/product/create')?'mm-active':''}}">
+                            <i class="metismenu-icon pe-7s-display2"></i>
+                            Thêm sản phẩm
+                        </a>
+                    </li>
+                    @endif
+                @endif
+
+                @if(p_author('view','tbl_comment',false,true))
+                    @if(p_author('view','tbl_comment'))
+                        <li class="app-sidebar__heading">Bình luận</li>
+                        <li>
+                            <a href="{{url('admin/comment')}}" class="{{request()->is('admin/comment')?'mm-active':''}}">
+                                <i class="metismenu-icon pe-7s-display2"></i>
+                                Danh sách bình luận
+                            </a>
+                        </li>
+                    @endif
+                    @if(p_author('add','tbl_comment'))
+                        <li>
+                            <a href="{{url('admin/comment/create')}}" class="{{request()->is('admin/comment/create')?'mm-active':''}}">
+                                <i class="metismenu-icon pe-7s-display2"></i>
+                                Thêm bình luận
+                            </a>
+                        </li>
+                    @endif
+                @endif
+
+                @if(p_author('view','tbl_store',false,true))
+                <li class="app-sidebar__heading">Cửa hàng</li>
+                    @if(p_author('view','tbl_store'))
+                        <li>
+                            <a href="{{url('admin/store')}}" class="{{request()->is('admin/store')?'mm-active':''}}">
+                                <i class="metismenu-icon pe-7s-display2"></i>
+                                Danh sách cửa hàng
+                            </a>
+                        </li>
+                    @endif
+                    @if(p_author('add_product','tbl_store'))
+                        <li>
+                            <a href="{{url('admin/store/addproduct')}}" class="{{request()->is('admin/store/addproduct')?'mm-active':''}}">
+                                <i class="metismenu-icon pe-7s-display2"></i>
+                                Nhập sản phẩm
+                            </a>
+                        </li>
+                    @endif
+                    @if(p_author('add','tbl_store'))
+                        <li>
+                            <a href="{{url('admin/store/create')}}" class="{{request()->is('admin/store/create')?'mm-active':''}}">
+                                <i class="metismenu-icon pe-7s-display2"></i>
+                                Thêm cửa hàng
+                            </a>
+                        </li>
+                    @endif
+                @endif
+
+                @if(p_author('view','tbl_size',false,true))
+                <li class="app-sidebar__heading">Kích thước sản phẩm</li>
+                    @if(p_author('view','tbl_size'))
+                        <li>
+                            <a href="{{url('admin/size')}}" class="{{request()->is('admin/size')?'mm-active':''}}">
+                                <i class="metismenu-icon pe-7s-display2"></i>
+                                Danh sách kích thước
+                            </a>
+                        </li>
+                    @endif
+                    @if(p_author('add','tbl_size'))
+                        <li>
+                            <a href="{{url('admin/size/create')}}" class="{{request()->is('admin/size/create')?'mm-active':''}}">
+                                <i class="metismenu-icon pe-7s-display2"></i>
+                            Thêm kích thước
+                            </a>
+                        </li>
+                    @endif
+                @endif
+
+                @if(p_author('view','tbl_color',false,true))
+                <li class="app-sidebar__heading">Màu sản phẩm</li>
+                    @if(p_author('view','tbl_color'))
+                        <li>
+                            <a href="{{url('admin/color')}}" class="{{request()->is('admin/color')?'mm-active':''}}">
+                                <i class="metismenu-icon pe-7s-display2"></i>
+                                Danh sách màu 
+                            </a>
+                        </li>
+                    @endif
+                    @if(p_author('add','tbl_color'))
+                        <li>
+                            <a href="{{url('admin/color/create')}}" class="{{request()->is('admin/color/create')?'mm-active':''}}">
+                                <i class="metismenu-icon pe-7s-display2"></i>
+                                Thêm màu
+                            </a>
+                        </li>
+                    @endif
+                @endif
             </ul>
         </div>
     </div>
