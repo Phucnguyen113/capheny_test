@@ -231,9 +231,6 @@ class userController extends Controller
         
     }
     public function user($id){
-        if(!is_admin()){
-            die('Bạn đéo đủ quyền truy cập');
-        }
         try {
             $data=DB::table('tbl_user')
             ->where('user_id',$id)->first(['user_first_name','user_last_name','user_email','user_phone','province','district','ward','user_address']);

@@ -148,7 +148,7 @@ class storeController extends Controller
     }
     //detail store
     public function detail($id){
-        if(!p_author('detail','tbl_store')){
+        if(!p_author('view','tbl_store')){
             die('Bạn đéo đủ quyền truy cập');
         }
         $data=DB::table('tbl_store')->join('tbl_province','tbl_province.id','=','tbl_store.province')

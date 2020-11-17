@@ -3,6 +3,9 @@
     <div class="card card-main">
         <div class="card-body">
             <div class="card-title" style="text-align: center;font-size:36px">Danh sách comment</div>
+            @if(p_author('add','tbl_comment'))
+                <a href="{{url('admin/comment/create')}}" class="btn btn-success">Thêm mới bình luận</a>
+            @endif
             <div class="table-responsive">
                 <table class="table">
                     <thead>
@@ -32,11 +35,15 @@
                                 <td>{{$comment->create_at}}</td>
                                 <td>{{$comment->update_at}}</td>
                                 <td>
-                                    <a href="{{url('admin/comment')}}/{{$comment->comment_id}}/edit" class="btn btn-info"><div class="fa fa-edit"></div></a>
+                                    @if(p_author('edit','tbl_comment'))
+                                        <a href="{{url('admin/comment')}}/{{$comment->comment_id}}/edit" class="btn btn-info"><div class="fa fa-edit"></div></a>
+                                    @endif
+                                    @if(p_author('delete','tbl_comment'))
                                     <form style="display:inline-block;" action="{{url('admin/comment')}}/{{$comment->comment_id}}/delete" method="post">
                                         @csrf 
                                         <button type="submit" class="btn btn-danger"><div class="fa fa-trash-alt"></div></button>
                                     </form>
+                                    @endif
                                 </td>
                             </tr>
                         @endforeach

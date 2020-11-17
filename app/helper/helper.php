@@ -68,13 +68,13 @@ if(!function_exists('p_check')){
 
 if(!function_exists('p_author')){
     function p_author($action,$table,$excetion=false,$view=false){
-        if(!in_array($action,['add','edit','delete','view','add_product','active'])){
+        if(!in_array($action,['add','edit','delete','view','add_product','active','add_role','edit_role','delete_role'])){
             echo 'Action is invalid<br>';
             echo 'Action must be in Array Rule';
             die();
         }
 
-        if(!in_array($table,['tbl_user','tbl_category','tbl_product','tbl_comment','tbl_order','tbl_store','tbl_size','tbl_color'])){
+        if(!in_array($table,['tbl_user','tbl_category','tbl_product','tbl_comment','tbl_order','tbl_store','tbl_size','tbl_color','tbl_user_role','tbl_user_permission'])){
             echo 'Table is invalid<br>';
             echo 'undefined table '.$table;
             die();
@@ -101,6 +101,12 @@ if(!function_exists('p_author')){
                     'edit'   => 2,
                     'delete' => 3,
                     'view'   => 4,
+                    'add_role'=> 37,
+                    'edit_role' => 38,
+                    'delete_role'=> 39,
+                    'add_permission'=>40,
+                    'edit_permission'=>41,
+                    'delete_permission'=>42
                 ];
                 $role=6;
                 break;

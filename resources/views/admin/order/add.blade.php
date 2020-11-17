@@ -32,7 +32,7 @@
                             <option value="0">Chọn người dùng</option>
                             @foreach($list_user as $users => $user)
                                 <option value="{{$user->user_id}}">{{$user->user_first_name}} {{$user->user_last_name}}</option>
-                            @endforeach
+                            @endforeach 
                         </select>
                         <script>
                                 $('#user_id').select2()

@@ -198,47 +198,49 @@
                                         <td>
                                             <div style="width:15px;height:15px;background-color:#{{$color->color}}"></div>
                                         </td>
-                                        <td>
-                                            <form action="" method="post" onsubmit="return delete_color('{{$product->product_id}}','{{$color->color_id}}')">
-                                                @csrf
-                                                <button type="submit" class="btn btn-danger"><div class="fa fa-trash-alt"></div></button>
-                                                <!-- delete color script -->
-                                                <script>
-                                                    function delete_color(id_product,id_color){
-                                                        $.ajax({
-                                                            type: "post",
-                                                            url: "{{url('api/product/color/delete')}}/"+id_product+'/'+id_color,
-                                                            data: {},
-                                                            dataType: "json",
-                                                            success: function (response) {
-                                                                console.log(response);
-                                                                if($.isEmptyObject(response.error)){
-                                                                    Swal.fire(
-                                                                        'Xóa thành công',
-                                                                        '',
-                                                                        'success'
-                                                                    ).then(()=>{
-                                                                        window.location.reload();
-                                                                    })
-                                                                }else{
-                                                                   
-                                                                    Swal.fire({
-                                                                    icon: 'error',
-                                                                    title: 'Xóa thất bại',
-                                                                    text: 'Không thể xóa',
-                                                                    footer: '<a href>Tại sao lại không thể xóa?</a>'
-                                                                    })
+                                        @if(p_author('edit','tbl_product',false,true))
+                                            <td>
+                                                <form action="" method="post" onsubmit="return delete_color('{{$product->product_id}}','{{$color->color_id}}')">
+                                                    @csrf
+                                                    <button type="submit" class="btn btn-danger"><div class="fa fa-trash-alt"></div></button>
+                                                    <!-- delete color script -->
+                                                    <script>
+                                                        function delete_color(id_product,id_color){
+                                                            $.ajax({
+                                                                type: "post",
+                                                                url: "{{url('api/product/color/delete')}}/"+id_product+'/'+id_color,
+                                                                data: {},
+                                                                dataType: "json",
+                                                                success: function (response) {
+                                                                    console.log(response);
+                                                                    if($.isEmptyObject(response.error)){
+                                                                        Swal.fire(
+                                                                            'Xóa thành công',
+                                                                            '',
+                                                                            'success'
+                                                                        ).then(()=>{
+                                                                            window.location.reload();
+                                                                        })
+                                                                    }else{
+                                                                    
+                                                                        Swal.fire({
+                                                                        icon: 'error',
+                                                                        title: 'Xóa thất bại',
+                                                                        text: 'Không thể xóa',
+                                                                        footer: '<a href>Tại sao lại không thể xóa?</a>'
+                                                                        })
+                                                                    }
+                                                                },
+                                                                error: function(){
+                                                                    console.log('error');
                                                                 }
-                                                            },
-                                                            error: function(){
-                                                                console.log('error');
-                                                            }
-                                                        });
-                                                        return false;
-                                                    }
-                                                </script>
-                                            </form>
-                                        </td>
+                                                            });
+                                                            return false;
+                                                        }
+                                                    </script>
+                                                </form>
+                                            </td>
+                                        @endif
                                     </tr>
                                 @endforeach
                             </tbody>
@@ -254,7 +256,9 @@
                     <div class="card-title" style="font-size:25px;text-align:center">
                             Kích cỡ của sản phẩm
                     </div>
-                    <a href="{{url('admin/product')}}/{{$product->product_id}}/addsize" class="btn btn-success mb-2">Thêm kích cỡ mới</a>
+                    @if(p_author('edit','tbl_product',false,true))
+                        <a href="{{url('admin/product')}}/{{$product->product_id}}/addsize" class="btn btn-success mb-2">Thêm kích cỡ mới</a>
+                    @endif
                     <div class="table-responsive">
                         <table class="table">
                             <thead>
@@ -271,48 +275,50 @@
                                         <td>
                                             {{$size->size}}
                                         </td>
-                                        <td>
-                                            <form action="" method="post" onsubmit="return delete_size('{{$product->product_id}}','{{$size->size_id}}')">
-                                                <button type="submit" class="btn btn-danger">
-                                                    <div class="fa fa-trash-alt"></div>
-                                                </button>
-                                                <!-- script delete size -->
-                                                <script>
-                                                    function delete_size(id_product,id_size){
-                                                        $.ajax({
-                                                            type: "post",
-                                                            url: "{{url('api/product/size/delete')}}/"+id_product+'/'+id_size,
-                                                            data: {},
-                                                            dataType: "json",
-                                                            success: function (response) {
-                                                                console.log(response);
-                                                                if($.isEmptyObject(response.error)){
-                                                                    Swal.fire(
-                                                                        'Xóa thành công',
-                                                                        '',
-                                                                        'success'
-                                                                    ).then(()=>{
-                                                                        window.location.reload();
-                                                                    })
-                                                                }else{
-                                                                   
-                                                                    Swal.fire({
-                                                                    icon: 'error',
-                                                                    title: 'Xóa thất bại',
-                                                                    text: 'Không thể xóa',
-                                                                    footer: '<a href>Tại sao lại không thể xóa?</a>'
-                                                                    })
+                                        @if(p_author('edit','tbl_product',false,true))
+                                            <td>
+                                                <form action="" method="post" onsubmit="return delete_size('{{$product->product_id}}','{{$size->size_id}}')">
+                                                    <button type="submit" class="btn btn-danger">
+                                                        <div class="fa fa-trash-alt"></div>
+                                                    </button>
+                                                    <!-- script delete size -->
+                                                    <script>
+                                                        function delete_size(id_product,id_size){
+                                                            $.ajax({
+                                                                type: "post",
+                                                                url: "{{url('api/product/size/delete')}}/"+id_product+'/'+id_size,
+                                                                data: {},
+                                                                dataType: "json",
+                                                                success: function (response) {
+                                                                    console.log(response);
+                                                                    if($.isEmptyObject(response.error)){
+                                                                        Swal.fire(
+                                                                            'Xóa thành công',
+                                                                            '',
+                                                                            'success'
+                                                                        ).then(()=>{
+                                                                            window.location.reload();
+                                                                        })
+                                                                    }else{
+                                                                    
+                                                                        Swal.fire({
+                                                                        icon: 'error',
+                                                                        title: 'Xóa thất bại',
+                                                                        text: 'Không thể xóa',
+                                                                        footer: '<a href>Tại sao lại không thể xóa?</a>'
+                                                                        })
+                                                                    }
+                                                                },
+                                                                error: function(){
+                                                                    console.log('error');
                                                                 }
-                                                            },
-                                                            error: function(){
-                                                                console.log('error');
-                                                            }
-                                                        });
-                                                        return false;
-                                                    }
-                                                </script>
-                                            </form>
-                                        </td>
+                                                            });
+                                                            return false;
+                                                        }
+                                                    </script>
+                                                </form>
+                                            </td>
+                                        @endif
                                     </tr>
                                 @endforeach
                             </tbody>
@@ -327,7 +333,9 @@
                     <div class="card-title" style="font-size:25px;text-align:center">
                             Danh mục của sản phẩm
                     </div>
+                    @if(p_author('edit','tbl_product',false,true))
                     <a href="{{url('admin/product')}}/{{$product->product_id}}/edit" class="btn btn-success mb-2">Thêm danh mục mới</a>
+                    @endif
                     <div class="table-responsive">
                         <table class="table">
                             <thead>
@@ -340,49 +348,51 @@
                                 @foreach($list_category as $categories => $category)
                                     <tr>
                                         <td>{{$category->category_name}}</td>
-                                        <td>
-                                            <form action="" method="post" onsubmit="return delete_category('{{$product->product_id}}','{{$category->category_id}}')"">
-                                                    <button  type="submit" class="btn btn-danger">
-                                                        <div class="fa fa-trash-alt"></div>
-                                                    </button>
-                                            </form>
-                                             
-                                             <!-- script delete size -->
-                                             <script>
-                                                    function delete_category(id_product,id_cate){
-                                                        $.ajax({
-                                                            type: "post",
-                                                            url: "{{url('api/product/category/delete')}}/"+id_product+'/'+id_cate,
-                                                            data: {},
-                                                            dataType: "json",
-                                                            success: function (response) {
-                                                                console.log(response);
-                                                                if($.isEmptyObject(response.error)){
-                                                                    Swal.fire(
-                                                                        'Xóa thành công',
-                                                                        '',
-                                                                        'success'
-                                                                    ).then(()=>{
-                                                                        window.location.reload();
-                                                                    })
-                                                                }else{
-                                                                   
-                                                                    Swal.fire({
-                                                                    icon: 'error',
-                                                                    title: 'Xóa thất bại',
-                                                                    text: 'Không thể xóa',
-                                                                    footer: '<a href>Tại sao lại không thể xóa?</a>'
-                                                                    })
+                                        @if(p_author('delete','tbl_product',false,true))
+                                            <td>
+                                                <form action="" method="post" onsubmit="return delete_category('{{$product->product_id}}','{{$category->category_id}}')"">
+                                                        <button  type="submit" class="btn btn-danger">
+                                                            <div class="fa fa-trash-alt"></div>
+                                                        </button>
+                                                </form>
+                                                
+                                                <!-- script delete size -->
+                                                <script>
+                                                        function delete_category(id_product,id_cate){
+                                                            $.ajax({
+                                                                type: "post",
+                                                                url: "{{url('api/product/category/delete')}}/"+id_product+'/'+id_cate,
+                                                                data: {},
+                                                                dataType: "json",
+                                                                success: function (response) {
+                                                                    console.log(response);
+                                                                    if($.isEmptyObject(response.error)){
+                                                                        Swal.fire(
+                                                                            'Xóa thành công',
+                                                                            '',
+                                                                            'success'
+                                                                        ).then(()=>{
+                                                                            window.location.reload();
+                                                                        })
+                                                                    }else{
+                                                                    
+                                                                        Swal.fire({
+                                                                        icon: 'error',
+                                                                        title: 'Xóa thất bại',
+                                                                        text: 'Không thể xóa',
+                                                                        footer: '<a href>Tại sao lại không thể xóa?</a>'
+                                                                        })
+                                                                    }
+                                                                },
+                                                                error: function(){
+                                                                    console.log('error');
                                                                 }
-                                                            },
-                                                            error: function(){
-                                                                console.log('error');
-                                                            }
-                                                        });
-                                                        return false;
-                                                    }
-                                                </script>
-                                        </td>
+                                                            });
+                                                            return false;
+                                                        }
+                                                    </script>
+                                            </td>
+                                        @endif
                                     </tr>
                                 @endforeach
                             </tbody>

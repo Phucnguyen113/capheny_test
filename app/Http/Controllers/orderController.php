@@ -55,6 +55,22 @@ class orderController extends Controller
         if( $request->order_phone!==null){
             $paramWhere[]=['tbl_order.order_phone','LIKE','%'.$request->order_phone.'%'];
         }
+        // create_at order process
+        if($request->create_at_from!==null && $request->create_at_to!==null){
+            $list_order=$list_order->whereBetween('create_at',[$request->create_at_from,$request->create_at_to]);
+        }else if($request->create_at_from==null && $request->create_at_to!==null ){
+            $list_order=$list_order->whereBetween('create_at',['',$request->create_at_to]);
+        }else if($request->create_at_from!==null && $request->create_at_to==null){
+            $list_order=$list_order->whereBetween('create_at',[$request->create_at_from,Carbon::now('Asia/Ho_Chi_Minh')->toDateTimeString()]);
+        }
+        // update_at order process
+        if($request->update_at_from!==null && $request->update_at_to!==null){
+            $list_order=$list_order->whereBetween('update_at',[$request->update_at_from,$request->update_at_to]);
+        }else if($request->update_at_from==null && $request->update_at_to!==null){
+            $list_order=$list_order->whereBetween('update_at',['',$request->update_at_to]);
+        }else if($request->update_at_from!==null && $request->update_at_to==null){
+            $list_order=$list_order->whereBetween('update_at',[$request->update_at_from,Carbon::now('Asia/Ho_Chi_Minh')->toDateTimeString()]);
+        }
         $list_order=$list_order->where($paramWhere)
         ->select(
             [

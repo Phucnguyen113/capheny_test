@@ -52,7 +52,7 @@ class productController extends Controller
             $list_product->join('tbl_product_color','tbl_product_color.product_id','=','tbl_product.product_id');
             $list_product=$list_product->whereIn('tbl_product_color.color_id',$request->color);
         }
-         // color process
+         // size process
         if($request->has('size') && !empty($request->size)){
             $list_product->join('tbl_product_size','tbl_product_size.product_id','=','tbl_product.product_id');
             $list_product=$list_product->whereIn('tbl_product_size.size_id',$request->size);

@@ -165,13 +165,16 @@
                     <td>{{$value->create_at}}</td>
                     <td>{{$value->update_at}}</td>
                     <td>
+                        @if(p_author('edit','tbl_color'))
                         <a href="{{url('admin/color')}}/{{$value->color_id}}/edit" class="btn btn-primary"><i class="fa fa-edit"></i></a>
+                        @endif
+                        @if(p_author('delete','tbl_color'))
                         <form  style=" display:inline-block" action="{{url('admin/color')}}/{{$value->color_id}}" method="post">
                             @method('DELETE')
                             @csrf
                             <button type="submit" class="btn btn-danger"><i class="fa fa-trash-alt"></i></button>
                         </form>
-                      
+                        @endif
                     </td>
                     </tr>
                 @endforeach

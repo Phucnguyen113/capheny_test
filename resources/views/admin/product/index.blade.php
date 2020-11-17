@@ -106,7 +106,7 @@
                         <div class="col-md-4">
                             <div class="position-relative form-group">
                                 <label for="discount_from_date" class="">Ngày bắt đầu giảm giá</label>
-                                <input name="discount_from_date" value="@isset($_GET['create_at_from']) {{$_GET['create_at_from']}} @endisset" id="discount_from_date" placeholder="Ngày bắt đầu giảm giá"  readonly='true' type="text" class="form-control">
+                                <input name="discount_from_date" value="@isset($_GET['discount_from_date']) {{$_GET['discount_from_date']}} @endisset" id="discount_from_date" placeholder="Ngày bắt đầu giảm giá"  readonly='true' type="text" class="form-control">
                                 <div id="picker_time_discount_from_date" style="display:flex;justify-content:center;position:absolute;z-index:99"></div>
                                 <div id="discount_from_date_error" style="color:red"></div>
                             </div>
@@ -115,7 +115,7 @@
                         <div class="col-md-4">
                             <div class="position-relative form-group">
                                 <label for="discount_end_date" class="">Ngày kết thúc giảm giá </label>
-                                <input name="discount_end_date" value="@isset($_GET['create_at_to']) {{$_GET['create_at_to']}} @endisset" id="discount_end_date" placeholder="Ngày kết thúc giảm giá" readonly='true'  type="text" class="form-control">
+                                <input name="discount_end_date" value="@isset($_GET['discount_end_date']) {{$_GET['discount_end_date']}} @endisset" id="discount_end_date" placeholder="Ngày kết thúc giảm giá" readonly='true'  type="text" class="form-control">
                                 <div id="picker_time_discount_end_date" style="display:flex;justify-content:center;position:absolute;z-index:99"></div>
                                 <div id="discount_end_date_error" style="color:red"></div>
                             </div>
@@ -282,7 +282,9 @@
         </div>
         <!-- end search -->
         <div class="card-title" style="font-size:36px;text-align:center">Danh sách sản phẩm</div>
-        <a href="{{url('admin/product/create')}}" class="btn btn-success mb-2">Thêm mới sản phẩm</a>
+        @if(p_author('add','tbl_product'))
+            <a href="{{url('admin/product/create')}}" class="btn btn-success mb-2">Thêm mới sản phẩm</a>
+        @endif
         <table class="table">
             <thead>
                 <tr>
@@ -320,12 +322,16 @@
                         
                         <td>@if($value->active==1) Kích hoạt @else Không kích hoạt @endif</td>
                         <td>
-                            <a href="{{url('admin/product')}}/{{$value->product_id}}/edit" class="btn btn-primary"><i class="fa fa-edit"></i></a>
-                            <form action="{{url('admin/product')}}/{{$value->product_id}}" style="display:inline-block;margin:0" method="post">
-                                @csrf
-                                @method('DELETE')
-                               <button type="submit" class="btn btn-danger"><i class="fa fa-trash-alt"></i></button>
-                            </form>
+                            @if(p_author('edit','tbl_product'))
+                                <a href="{{url('admin/product')}}/{{$value->product_id}}/edit" class="btn btn-primary"><i class="fa fa-edit"></i></a>
+                            @endif
+                            @if(p_author('delete','tbl_product'))
+                                <form action="{{url('admin/product')}}/{{$value->product_id}}" style="display:inline-block;margin:0" method="post">
+                                    @csrf
+                                    @method('DELETE')
+                                <button type="submit" class="btn btn-danger"><i class="fa fa-trash-alt"></i></button>
+                                </form>
+                            @endif
                         </td>
                     </tr>
                 @endforeach

@@ -6,6 +6,7 @@ use App\Http\Controllers\colorController;
 use App\Http\Controllers\commentController;
 use App\Http\Controllers\orderController;
 use App\Http\Controllers\productController;
+use App\Http\Controllers\roleController;
 use App\Http\Controllers\sizeController;
 use App\Http\Controllers\storeController;
 use App\Http\Controllers\userController;
@@ -55,6 +56,8 @@ Route::group(['prefix'=>'admin'],function(){
         Route::get('user/{id}/edit',[userController::class,'edit_form']);
         Route::post('user/{id}/edit',[userController::class,'edit']);
         Route::post('user/{id}/delete',[userController::class,'delete']);
+        Route::get('user/addrole',[roleController::class,'add_role_for_user_form']);
+        Route::post('user/addrole',[roleController::class,'add_role']);
         // order 
         Route::get('order/create',[orderController::class,'add_form']);
         Route::post('order/create',[orderController::class,'add']);

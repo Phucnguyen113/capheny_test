@@ -196,7 +196,9 @@
             </div>
              <!-- list order -->
             <div class="card-title" style="text-align: center;font-size:36px">Danh sách đơn hàng</div>
+            @if(p_author('add','tbl_order'))
             <a href="{{url('admin/order/create')}}" class="btn btn-success mb-2">Thêm đơn hàng </a>
+            @endif
             <div class="table-responsive">
                 <table class="table">
                     <thead>
@@ -242,7 +244,10 @@
                                 <td>{{$order->update_at}}</td>
                                 <td><a href="{{url('admin/order/')}}/{{$order->order_id}}/detail" class="btn btn-info">Chi tiết</a></td>
                                 <td>
-                                    <a href="{{url('admin/order')}}/{{$order->order_id}}/edit" class="btn btn-primary"><div class="fa fa-edit"></div></a>
+                                    @if(p_author('edit','tbl_order'))
+                                        <a href="{{url('admin/order')}}/{{$order->order_id}}/edit" class="btn btn-primary"><div class="fa fa-edit"></div></a>
+                                    @endif
+                                    @if(p_author('delete','tbl_order'))
                                     <form action="{{url('admin/order')}}/{{$order->order_id}}/delete" method="POST" id="form_{{$order->order_id}}" >
                                         @csrf
                                         @method('PUT')
@@ -270,6 +275,7 @@
                                             
                                         }
                                     </script>
+                                    @endif
                                 </td>
                             </tr>
                         @endforeach

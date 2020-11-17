@@ -273,11 +273,15 @@
                                 <td>{{$user->create_at}}</td>
                                 <td>{{$user->update_at}}</td>
                                 <td>
+                                    @if(p_author('edit','tbl_user'))
                                     <a class="btn btn-primary" style="display:inline-block" href="{{url('admin/user/')}}/{{$user->user_id}}/edit"><div class="fa fa-edit"></div></a>
-                                    <form action="{{url('admin/user')}}/{{$user->user_id}}/delete" method="post" style="display:inline-block;margin:0">
-                                        @csrf
-                                        <button type="submit" class="btn btn-danger"><div class="fa fa-trash-alt"></div></button>
-                                    </form>
+                                    @endif
+                                    @if(p_author('delete','tbl_user'))
+                                        <form action="{{url('admin/user')}}/{{$user->user_id}}/delete" method="post" style="display:inline-block;margin:0">
+                                            @csrf
+                                            <button type="submit" class="btn btn-danger"><div class="fa fa-trash-alt"></div></button>
+                                        </form>
+                                    @endif
                                 </td>   
                             </tr>
                        @endforeach

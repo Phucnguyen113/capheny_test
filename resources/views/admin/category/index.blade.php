@@ -142,7 +142,9 @@
         </div>
         <!-- end search -->
         <h5 class="card-title" style="font-size:36px;text-align:center">Danh sách danh mục</h5>
+        @if(p_author('add','tbl_category'))
         <a href="{{url('admin/category/create')}}" class="btn btn-success mb-2">Thêm mới danh mục</a>
+        @endif
         <table class="table">
             <thead>
                 <tr>
@@ -164,12 +166,16 @@
                     <td>{{$value->create_at}}</td>
                     <td>{{$value->update_at}}</td>
                     <td>
+                        @if(p_author('edit','tbl_category'))
                         <a href="{{url('admin/category')}}/{{$value->category_id}}/edit" class="btn btn-primary"><i class="fa fa-edit"></i></a>
+                        @endif
+                        @if(p_author('delete','tbl_category'))
                         <form onsubmit="" style=" display:inline-block" action="{{url('admin/category')}}/{{$value->category_id}}" method="post">
                             @method('DELETE')
                             @csrf
                            <button type="submit" class="btn btn-danger"><i class="fa fa-trash-alt"></i></button>
                         </form>
+                        @endif
                     </td>
                     </tr>
                 @endforeach

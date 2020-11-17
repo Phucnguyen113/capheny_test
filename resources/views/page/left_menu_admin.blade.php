@@ -62,6 +62,13 @@
                         Dashboard 
                     </a>
                 </li>
+                <li class="app-sidebar__heading">Vai trò người dùng</li>
+                <li>
+                    <a href="{{url('admin/role')}}" class="{{request()->is('admin/role')?'mm-active':''}}">
+                        <i class="metismenu-icon pe-7s-rocket"></i>
+                        Danh sách vai trò
+                    </a>
+                </li>
                 @endif
                 <!-- <li>
                     <a href="#">
@@ -159,7 +166,7 @@
                         </li>
                     @endif
                 @endif
-                
+
                 @if(p_author('view','tbl_user',false,true))
                 <li class="app-sidebar__heading">Người dùng</li>
                     @if(p_author('view','tbl_user'))
@@ -170,13 +177,21 @@
                         </a>
                     </li>
                     @endif
-                    @if(p_author('add','tbl_user'))
-                    <li>
-                        <a href="{{url('admin/user/create')}}" class="{{request()->is('admin/user/create')?'mm-active':''}}">
-                            <i class="metismenu-icon pe-7s-display2"></i>
-                            Thêm người dùng
-                        </a>
-                    </li>
+                    @if(p_author('add_role','tbl_user'))
+                        <li>
+                            <a href="{{url('admin/user/addrole')}}" class="{{request()->is('admin/user/addrole')?'mm-active':''}}">
+                                <i class="metismenu-icon pe-7s-display2"></i>
+                                Thêm vai trò cho người dùng
+                            </a>
+                        </li>
+                    @endif
+                    @if(p_author('edit_role','tbl_user'))
+                        <li>
+                            <a href="{{url('admin/user/editrole')}}" class="{{request()->is('admin/user/editrole')?'mm-active':''}}">
+                                <i class="metismenu-icon pe-7s-display2"></i>
+                                Thêm vai trò cho người dùng
+                            </a>
+                        </li>
                     @endif
                 @endif
 

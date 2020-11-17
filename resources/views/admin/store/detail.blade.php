@@ -22,10 +22,10 @@
                         ward : {{$data->ward}}<br>
                         address : {{$data->store_address}}<br>
                     </div>
-                    <div class="row mt-5">
-                        <div class="card-title" >
+                    <div class=" mt-5">
+                        <div class="card-title">
                             Danh sách sản phẩm 
-                        </div>
+                        </div> 
                         <nav class="my-menu">
                             <ul class="my-nav2">
                                 @foreach($list_product_distinct as $products => $product)
@@ -80,13 +80,15 @@
                                             <td>{{$product->amount_}}</td>
                                             <td>{{$product->product_amount}}</td>
                                             <td>{{$product->create_at}}</td>
-                                            <td>
-                                                <a href="{{url('admin/store/editproduct')}}/{{$product->id}}" class="btn btn-primary"><div class="fa fa-edit"></div></a>
-                                                <form style="display:inline-block" action="{{url('admin/store/delete/addproduct')}}/{{$product->id}}" method="post">
-                                                    @csrf
-                                                    <button type="submit" class="btn btn-danger"><div class="fa fa-trash-alt"></div></button>
-                                                </form>
-                                            </td>
+                                            @if(p_author('edit','tbl_store',false,true))
+                                                <td>
+                                                    <a href="{{url('admin/store/editproduct')}}/{{$product->id}}" class="btn btn-primary"><div class="fa fa-edit"></div></a>
+                                                    <form style="display:inline-block" action="{{url('admin/store/delete/addproduct')}}/{{$product->id}}" method="post">
+                                                        @csrf
+                                                        <button type="submit" class="btn btn-danger"><div class="fa fa-trash-alt"></div></button>
+                                                    </form>
+                                                </td>
+                                            @endif
                                         </tr>
                                 @endforeach
                                 

@@ -217,7 +217,9 @@
         </div>
         <!-- end search -->
         <h5 class="card-title" style="text-align:center;font-size:36px">Danh sách cửa hàng</h5>
-        <a href="{{url('admin/store/create')}}" style="color:white" class="btn btn-success mb-2">Thêm mới cửa hàng</a>
+        @if(p_author('add','tbl_store'))
+            <a href="{{url('admin/store/create')}}" style="color:white" class="btn btn-success mb-2">Thêm mới cửa hàng</a>
+        @endif
         <table class="table">
             <thead>
                 <tr>
@@ -246,27 +248,29 @@
                     <td>{{$value->update_at}}</td>
                     <th><a href="{{url('admin/store')}}/{{$value->store_id}}/detail" class="btn btn-info">Chi tiết</a></th>
                     <td>
-                        <a href="{{url('admin/store')}}/{{$value->store_id}}/edit" class="btn btn-primary"><i class="fa fa-edit"></i> </a>
-                        <form onsubmit="" style=" display:inline-block" action="{{url('admin/store/delete')}}/{{$value->store_id}}" method="post">
-                            @csrf
-                            <button type="submit" class="btn btn-danger"> <i class="fa fa-trash-alt"></i></button>
-                        </form>
-                        
+                        @if(p_author('edit','tbl_store'))
+                            <a href="{{url('admin/store')}}/{{$value->store_id}}/edit" class="btn btn-primary"><i class="fa fa-edit"></i> </a>
+                        @endif
+                        @if(p_author('delete','tbl_store'))
+                            <form onsubmit="" style=" display:inline-block" action="{{url('admin/store/delete')}}/{{$value->store_id}}" method="post">
+                                @csrf
+                                <button type="submit" class="btn btn-danger"> <i class="fa fa-trash-alt"></i></button>
+                            </form>
+                        @endif
                     </td>
                     </tr>
                 @endforeach
                 <tr>
-                <th scope="col">#</th>
-                <th scope="col">Tên cửa hàng</th>
-                <th scope="col">Thành phố/ tỉnh</th>
-                <th scope="col">Quận/ huyện</th>
-                <th scope="col">Khu vực</th>
-                <th scope="col">Địa chỉ</th>
-                <th scope="col">Chi tiết</th>
-                <th scope="col">Create at</th>
-                <th scope="col">Update at</th>
-                <th scope="col">Action</th>
-                    
+                    <th scope="col">#</th>
+                    <th scope="col">Tên cửa hàng</th>
+                    <th scope="col">Thành phố/ tỉnh</th>
+                    <th scope="col">Quận/ huyện</th>
+                    <th scope="col">Khu vực</th>
+                    <th scope="col">Địa chỉ</th>
+                    <th scope="col">Chi tiết</th>
+                    <th scope="col">Create at</th>
+                    <th scope="col">Update at</th>
+                    <th scope="col">Action</th>
                 </tr>
             </tbody>
             

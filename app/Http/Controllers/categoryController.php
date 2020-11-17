@@ -175,7 +175,7 @@ class categoryController extends Controller
         );
         if($validated->fails()) return response()->json(['error'=>$validated->getMessageBag()]);
         DB::table('tbl_category')->where('category_id',$id)->update(
-            $request->except(['_token'])
+           array_merge($request->except(['_token'],['update_at'=>Carbon::now('Asia/Ho_Chi_Minh')->toDateTimeString()]) )
         );
         return response()->json(['success'=>'Edit success']);
     }

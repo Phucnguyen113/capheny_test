@@ -21,26 +21,35 @@ class colorController extends Controller
      */
     public function index(Request $request)
     {
+        
         if(!p_author('view','tbl_color')){
             die('Bạn đéo đủ quyền truy cập');
         }
-        if($request->has('search')){ 
-            
-            if($request->create_at_from == null) $request->create_at_from='';
-            if($request->create_at_to   == null)  $request->create_at_to=Carbon::now('Asia/Ho_Chi_Minh')->toDateTimeString();
-
-            if($request->update_at_from == null && $request->update_at_to == null){
-                if(!empty($request->color)) $list_color=DB::table('tbl_color')->whereIn('color_id',$request->color)->whereBetween('create_at',[$request->create_at_from,$request->create_at_to])->paginate(20);
-                else $list_color=DB::table('tbl_color')->whereBetween('create_at',[$request->create_at_from,$request->create_at_to])->paginate(20);
-            }else{
-                if($request->upddate_at_from== null) $request->update_at_from='';
-                if($request->upddate_at_to== null) $request->update_at_to= Carbon::now('Asia/Ho_Chi_Minh')->toDateTimeString();
-                if(!empty($request->color)) $list_color=DB::table('tbl_color')->whereIn('color_id',$request->color)->whereBetween('create_at',[$request->create_at_from,$request->create_at_to])->whereBetween('update_at',[$request->update_at_from,$request->update_at_to])->paginate(20);
-                else $list_color=DB::table('tbl_color')->whereBetween('create_at',[$request->create_at_from,$request->create_at_to])->whereBetween('update_at',[$request->update_at_from,$request->update_at_to])->paginate(20);
-            }
-        }else{
-            $list_color= DB::table('tbl_color')->orderByDesc('color_id')->paginate(20);
+        $list_color=DB::table('tbl_color');
+        if($request->color!==null && empty($request->color)){
+            $list_color=$list_color->whereIn('color_id',$request->color);
         }
+        
+        // create_at product process
+        if($request->create_at_from!==null && $request->create_at_to!==null){
+            $list_color=$list_color->whereBetween('create_at',[$request->create_at_from,$request->create_at_to]);
+        }else if($request->create_at_from==null && $request->create_at_to!==null ){
+            $list_color=$list_color->whereBetween('create_at',['',$request->create_at_to]);
+        }else if($request->create_at_from!==null && $request->create_at_to==null){
+            $list_color=$list_color->whereBetween('create_at',[$request->create_at_from,Carbon::now('Asia/Ho_Chi_Minh')->toDateTimeString()]);
+        }
+       
+        // update_at product process
+        if($request->update_at_from!==null && $request->update_at_to!==null){
+            $list_color=$list_color->whereBetween('update_at',[$request->update_at_from,$request->update_at_to]);
+        }else if($request->update_at_from==null && $request->update_at_to!==null){
+            $list_color=$list_color->whereBetween('update_at',['',$request->update_at_to]);
+        }else if($request->update_at_from!==null && $request->update_at_to==null){
+            $list_color=$list_color->whereBetween('update_at',[$request->update_at_from,Carbon::now('Asia/Ho_Chi_Minh')->toDateTimeString()]);
+        }
+        
+        $list_color=$list_color->orderByDesc('color_id')->paginate(20);
+        
         $list_color_for_search=DB::table('tbl_color')->orderByDesc('color_id')->get();
         return view('admin/color/index',['list_color'=>$list_color,'color_search'=>$list_color_for_search]);
     }

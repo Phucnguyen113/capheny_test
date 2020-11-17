@@ -103,7 +103,9 @@
         </div>
         <!-- end search -->
         <h5 class="card-title" style="font-size:36px;text-align:center">Danh sách kích cỡ</h5>
-        <a href="{{url('admin/size/create')}}" style="color:white" class="btn btn-success mb-2">Thêm mới kích cỡ</a>
+        @if(p_author('add','tbl_size'))
+            <a href="{{url('admin/size/create')}}" style="color:white" class="btn btn-success mb-2">Thêm mới kích cỡ</a>
+        @endif
         <table class="table">
             <thead>
                 <tr>
@@ -122,13 +124,16 @@
                     <td>{{$value->create_at}}</td>
                     <td>{{$value->update_at}}</td>
                     <td>
+                        @if(p_author('edit','tbl_size'))
                         <a href="{{url('admin/size')}}/{{$value->size_id}}/edit" class="btn btn-primary"><div class="fa fa-edit"></div></a>
+                        @endif
+                        @if(p_author('delete','tbl_size'))
                         <form  style=" display:inline-block" action="{{url('admin/size')}}/{{$value->size_id}}" method="post">
                             @method('DELETE')
                             @csrf
                            <button type="submit" class="btn btn-danger"><div class="fa fa-trash-alt"></div></button>
                         </form>
-                        
+                        @endif
                     </td>
                     </tr>
                 @endforeach
