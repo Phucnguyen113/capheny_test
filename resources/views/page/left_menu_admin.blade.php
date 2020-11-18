@@ -177,6 +177,14 @@
                         </a>
                     </li>
                     @endif
+                    @if(p_author('add','tbl_user'))
+                        <li>
+                            <a href="{{url('admin/user/create')}}" class="{{request()->is('admin/user/create')?'mm-active':''}}">
+                                <i class="metismenu-icon pe-7s-display2"></i>
+                                Thêm  người dùng
+                            </a>
+                        </li>
+                    @endif
                     @if(p_author('add_role','tbl_user'))
                         <li>
                             <a href="{{url('admin/user/addrole')}}" class="{{request()->is('admin/user/addrole')?'mm-active':''}}">
@@ -185,14 +193,7 @@
                             </a>
                         </li>
                     @endif
-                    @if(p_author('edit_role','tbl_user'))
-                        <li>
-                            <a href="{{url('admin/user/editrole')}}" class="{{request()->is('admin/user/editrole')?'mm-active':''}}">
-                                <i class="metismenu-icon pe-7s-display2"></i>
-                                Thêm vai trò cho người dùng
-                            </a>
-                        </li>
-                    @endif
+                 
                 @endif
 
                 @if(p_author('view','tbl_product',false,true))
@@ -205,7 +206,7 @@
                         </a>
                     </li>
                     @endif
-                    @if(p_author('view','tbl_product'))
+                    @if(p_author('add','tbl_product'))
                     <li>
                         <a href="{{url('admin/product/create')}}" class="{{request()->is('admin/product/create')?'mm-active':''}}">
                             <i class="metismenu-icon pe-7s-display2"></i>

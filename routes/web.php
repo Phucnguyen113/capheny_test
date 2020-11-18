@@ -5,6 +5,7 @@ use App\Http\Controllers\categoryController;
 use App\Http\Controllers\colorController;
 use App\Http\Controllers\commentController;
 use App\Http\Controllers\orderController;
+use App\Http\Controllers\permissionController;
 use App\Http\Controllers\productController;
 use App\Http\Controllers\roleController;
 use App\Http\Controllers\sizeController;
@@ -58,6 +59,12 @@ Route::group(['prefix'=>'admin'],function(){
         Route::post('user/{id}/delete',[userController::class,'delete']);
         Route::get('user/addrole',[roleController::class,'add_role_for_user_form']);
         Route::post('user/addrole',[roleController::class,'add_role']);
+        Route::get('user/{id}/editrole',[roleController::class,'edit_role_for_user_form'] );
+        Route::post('user/{id}/editrole', [roleController::class,'edit_role']);
+        Route::get('user/addpermission',[permissionController::class,'add_permission_for_user_form']);
+        Route::post('user/addpermission',[permissionController::class,'add_permission']);
+        Route::get('user/{id}/editpermission',[permissionController::class,'edit_permission_for_user_form']);
+        Route::post('user/{id}/editpermission',[permissionController::class,'edit_permission']);
         // order 
         Route::get('order/create',[orderController::class,'add_form']);
         Route::post('order/create',[orderController::class,'add']);
@@ -70,6 +77,11 @@ Route::group(['prefix'=>'admin'],function(){
         Route::get('comment',[commentController::class,'index']);
         Route::get('comment/create',[commentController::class,'add_form']);
         Route::post('comment/create',[commentController::class,'add']);
+        //role
+        Route::get('role', [roleController::class,'index']);
+        Route::post('role/{id}/delete', [roleController::class,'delete_role']);
+        Route::get('role/{id}/edit',[roleController::class,'edit_name_role_form']);
+        Route::post('role/{id}/edit',[roleController::class,'edit_name_role']);
     });
     Route::get('auth',[AuthController::class,'login_form']);
     Route::post('auth',[AuthController::class,'login']);

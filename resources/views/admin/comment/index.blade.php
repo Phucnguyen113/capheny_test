@@ -4,7 +4,7 @@
         <div class="card-body">
             <div class="card-title" style="text-align: center;font-size:36px">Danh sách comment</div>
             @if(p_author('add','tbl_comment'))
-                <a href="{{url('admin/comment/create')}}" class="btn btn-success">Thêm mới bình luận</a>
+                <a href="{{url('admin/comment/create')}}" class="btn btn-success mb-2">Thêm mới bình luận</a>
             @endif
             <div class="table-responsive">
                 <table class="table">

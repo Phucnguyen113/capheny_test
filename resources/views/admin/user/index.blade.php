@@ -214,13 +214,39 @@
                             
                         </script>
                     <div class="form-row form-group">
-                        <div class="col-md-2">
-                            <input type="checkbox" @if(request()->has('active'))  checked @endif name="active" id="active" class="form-control-checkbox">
+                        <div class="col-md-3">
                             <label for="active">Kích hoạt</label>
+                            <select name="active" id="active" class="form-control">
+                                <option value="0" @if(request()->active==0) selected @endif>Tất cả</option>
+                                <option value="1" @if(request()->active==1) selected @endif >Kích hoạt</option>
+                                <option value="2" @if(request()->active==2) selected @endif>Không kích hoạt</option>
+                            </select>
                         </div>
-                        <div class="col-md-2">
-                            <input type="checkbox"  @if(request()->has('user_type'))  checked @endif name="user_type" id="user_type" class="form-control-checkbox">
+                        <div class="col-md-3">
                             <label for="user_type">Người dùng Admin</label>
+                            <select name="user_type" id="user_type" class="form-control">
+                                <option value="0" @if(request()->user_type==0) selected  @endif>Tất cả</option>
+                                <option value="1" @if(request()->user_type==1) selected  @endif>Admin</option>
+                                <option value="2" @if(request()->user_type==2) selected  @endif>Client</option>
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <label for="role">Vai trò</label>
+                            <select name="role" id="role" class="form-control">
+                                <option value="0"  >Tất cả</option>
+                                @foreach($list_role as $roles => $role)
+                                    <option value="{{$role->role_id}}" @if(request()->role==$role->role_id) selected  @endif >{{$role->role}}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <label for="permission">Quyền</label>
+                            <select name="permission" id="permission" class="form-control">
+                                <option value="0">Tất cả</option>
+                                @foreach($list_permission as $permissions => $permission)
+                                    <option value="{{$permission->permission_id}}" @if(request()->permission==$permission->permission_id) selected  @endif >{{$permission->permission}}</option>
+                                @endforeach
+                            </select>
                         </div>
                     </div>
                     <div class="form-row form-group">
@@ -246,13 +272,15 @@
             <div class="table-responsive">
                 <table class="table">
                     <thead>
-                        <th>Họ tên</th>
+                        <th class="name">Họ tên</th>
                         <th>Email</th>
                         <th>Điện thoại</th>
                         <th>Thành phố/Tỉnh</th>
                         <th>Quận/Huyện</th>
                         <th>Khu vực</th>
                         <th>Địa chỉ</th>
+                        <th>Admin</th>
+                        <th>Vai trò</th>
                         <th>Kích hoạt</th>
                         <th>Ngày tạo</th>
                         <th>Ngày sửa</th>
@@ -262,14 +290,26 @@
                        @foreach($list_user as $users => $user)
                             <tr>
                                
-                                <td>{{$user->user_first_name}}&nbsp; {{$user->user_last_name}}</td>
+                                <td class="name">{{$user->user_first_name}}&nbsp; {{$user->user_last_name}}</td>
                                 <td>{{$user->user_email}}</td>
                                 <td>{{$user->user_phone}}</td>
                                 <td>{{$user->province}}</td>
                                 <td>{{$user->district}}</td>
                                 <td>{{$user->ward}}</td>
                                 <td>{{$user->user_address}}</td>
-                                <td>{{($user->active==1)?'Kích hoạt':'Không'}}</td>
+                                <td>
+                                    @if($user->user_type==1)
+                                        <i class="fas fa-check" style="color:#3ac47d"></i>
+                                    @else
+                                        <i class="fas fa-times" style="color:#b81f44"></i>
+                                    @endif
+                                </td>
+                                <td>
+                                    @if($user->user_type==1)
+                                        <a href="{{url('admin/user')}}/{{$user->user_id}}/editrole" class="btn btn-primary"> <div class="fa fa-edit"></div></a>
+                                    @endif
+                                </td>
+                                <td>{!!($user->active==1)?'<i class="fas fa-check" style="color:#3ac47d"></i>':'<i class="fas fa-times" style="color:#b81f44"></i>'!!}</td>
                                 <td>{{$user->create_at}}</td>
                                 <td>{{$user->update_at}}</td>
                                 <td>
@@ -287,13 +327,14 @@
                        @endforeach
                     </tbody>
                     <tfoot>
-                        <th>Họ tên</th>
+                        <th class="name">Họ tên</th>
                         <th>Email</th>
                         <th>Điện thoại</th>
                         <th>Thành phố/Tỉnh</th>
                         <th>Quận/Huyện</th>
                         <th>Khu vực</th>
                         <th>Địa chỉ</th>
+                        <th>Admin</th>
                         <th>Kích hoạt</th>
                         <th>Ngày tạo</th>
                         <th>Ngày sửa</th>
@@ -305,4 +346,5 @@
             {{$list_user->appends(request()->all())->links()}}
         </div>
     </div>
+    
 @endsection

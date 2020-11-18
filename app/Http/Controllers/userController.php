@@ -20,6 +20,8 @@ class userController extends Controller
             die('Bạn đéo đủ quyền truy cập');
         }
         $list_province=DB::table('tbl_province')->get();
+        $list_role=DB::table('tbl_role')->get();
+        $list_permission=DB::table('tbl_permission')->get();
         $param_search=[];
         $list_user=DB::table('tbl_user')->join('tbl_province','tbl_province.id','=','tbl_user.province')
         ->join('tbl_district','tbl_district.id','=','tbl_user.district')
@@ -58,10 +60,70 @@ class userController extends Controller
         // email & phone
         if($request->user_email !==null)  $param_search[]=['user_email','LIKE','%'.$request->user_email.'%'];
         if($request->user_phone !==null)  $param_search[]=['user_phone','LIKE','%'.$request->user_phone.'%'];
-        if($request->has('active'))  $param_search[]=['active','=',1];
-        if($request->has('user_type'))  $param_search[]=['user_type','=',1];
+        if($request->has('active') && $request->active!=='0'){
+            if($request->active==1){
+                $param_search[]=['active','=',1];
+            }
+            if($request->active==2){
+                $param_search[]=['active','=',0];
+            }
+        }
+        if($request->has('user_type') && $request->user_type!=='0'){
+            if($request->user_type==1){
+                $param_search[]=['user_type','=',1];
+            }
+            if($request->user_type==2){
+                $param_search[]=['user_type','=',0];
+            }
+        }
+        $user_id_role=[];
+        if($request->has('role') && $request->role!=='0'){
+            $role_user=DB::table('tbl_user_role')->where('role_id',$request->role)->get(['user_id']);
+            foreach ($role_user as $roles => $role) {
+                if(!in_array($role->user_id,$user_id_role)){
+                    $user_id_role[]=$role->user_id;
+                }
+                
+            }
+        }
+        $user_id_permission=[];
+        if($request->has('permission') && $request->permission!=='0'){
+            $permission_user=DB::table('tbl_user_permission')->where('permission_id',$request->permission)->get(['user_id']);
+            foreach ($permission_user as $permissions => $permission) {
+                if(!in_array($permission->user_id,$user_id_permission)){
+                    $user_id_permission[]=$permission->user_id;
+                }
+            }
+            
+        }
+     
+        if(!empty($user_id_role) && !empty($user_id_permission) ){
+            $final_user_id=[];
+            foreach ($user_id_role as $key_id1 => $user_id1) {
+                foreach ($user_id_permission as $key_id2 => $user_id2) {
+                    if($user_id1==$user_id2){
+                        $final_user_id[]=$user_id2;
+                        unset($user_id_permission[$key_id2]);
+                        unset($user_id_role[$key_id1]);
+                        break;
+                    } 
+                }
+            }
+            
+            $list_user=$list_user->whereIn('user_id',$final_user_id);
+            
+        }else{
+            if(!empty($user_id_role) && empty($user_id_permission)){
+                $list_user=$list_user->whereIn('user_id',$user_id_role);
+            }else{
+                if(empty($user_id_role) && !empty($user_id_permission)){
+                    $list_user=$list_user->whereIn('user_id',$user_id_permission);
+                }
+            }
+        }
+        
         $list_user=$list_user->where($param_search)->paginate(15);
-        return view('admin.user.index',compact('list_user','list_province','list_ward','list_district'));
+        return view('admin.user.index',compact('list_user','list_province','list_ward','list_district','list_role','list_permission'));
     }
     public function add_form(){
         if(!is_admin()){

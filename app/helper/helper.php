@@ -74,7 +74,7 @@ if(!function_exists('p_author')){
             die();
         }
 
-        if(!in_array($table,['tbl_user','tbl_category','tbl_product','tbl_comment','tbl_order','tbl_store','tbl_size','tbl_color','tbl_user_role','tbl_user_permission'])){
+        if(!in_array($table,['tbl_user','tbl_category','tbl_product','tbl_comment','tbl_order','tbl_store','tbl_size','tbl_color','tbl_user_role','tbl_user_permission','tbl_role','tbl_permission'])){
             echo 'Table is invalid<br>';
             echo 'undefined table '.$table;
             die();
@@ -87,6 +87,7 @@ if(!function_exists('p_author')){
         $user=session()->get('user');
         if($user['is_admin']){
             return true;
+
         }
         if($table !=='tbl_user'){
             if(in_array(2,$user['role'])){
@@ -94,102 +95,24 @@ if(!function_exists('p_author')){
             }
         }
 
-        switch ($table) {
-            case 'tbl_user':
-                $rule=[
-                    'add'    => 1,
-                    'edit'   => 2,
-                    'delete' => 3,
-                    'view'   => 4,
-                    'add_role'=> 37,
-                    'edit_role' => 38,
-                    'delete_role'=> 39,
-                    'add_permission'=>40,
-                    'edit_permission'=>41,
-                    'delete_permission'=>42
-                ];
-                $role=6;
-                break;
-            case 'tbl_product':
-                $rule=[
-                    'add'    => 5,
-                    'edit'   => 6,
-                    'delete' => 7,
-                    'view'   => 8,
-                    'active' => 36
-                ];
-                $role=4;
-                break;
-            case 'tbl_category':
-                $rule=[
-                    'add'    => 9,
-                    'edit'   => 10,
-                    'delete' => 11,
-                    'view'   => 12,
-                    'active' => 35
-                ];
-                $role=3;
-                break;
-            case 'tbl_order':
-                $rule=[
-                    'add'    => 13,
-                    'edit'   => 14,
-                    'delete' => 15,
-                    'view'   => 23,
-                ];
-                $role=9;
-                break;
-            case 'tbl_store':
-                $rule=[
-                    'add'    => 16,
-                    'edit'   => 17,
-                    'delete' => 18,
-                    'view'   => 24,
-                    'add_product'=>19
-                ];
-                $role=8;
-                break;
-            case 'tbl_color':
-                $rule=[
-                    'add'    => 20,
-                    'edit'   => 21,
-                    'delete' => 22,
-                    'view'   => 26,
-                ];
-                $role=10;
-                break;
-            case 'tbl_size':
-                $rule=[
-                    'add'    => 27,
-                    'edit'   => 28,
-                    'delete' => 29,
-                    'view'   => 30,
-                ];
-                $role=11;
-                break;
-            case 'tbl_comment':
-                $rule=[
-                    'add'    => 31,
-                    'edit'   => 32,
-                    'delete' => 33,
-                    'view'   => 34,
-                ];
-                $role=7;
-                break;                
-            default:
-                # code...
-                break;
-        }
+        $list_role_need=DB::table('tbl_role')->where('tble',$table)->get(['role_id']);
         // check role user 
         foreach ($user['role'] as $roles => $role_user) {
-            if($role_user==$role){
-                return true;
+            foreach ($list_role_need as $role_needs => $role_need) {
+                if($role_user==$role_need->role_id){
+                    return true;
+                }
             }
         }
+
         if(!$view){
             //check in controller
-            if(!isset($rule[$action])) return false;
-            if(in_array($rule[$action],$user['permission'])){
+            $rule=DB::table('tbl_permission')->where([
+                ['tble',$table],
+                ['action',$action]
+            ])->first();
+            if(empty($rule)) return false;
+            if(in_array($rule->permission_id,$user['permission'])){
                 return true;
             }
         
@@ -199,8 +122,13 @@ if(!function_exists('p_author')){
             return false;
         }else{
             // check in blade view
+            $rule=DB::table('tbl_permission')->where('tble',$table)->get();
+            $rule_id=[];
+            foreach ($rule as $rules => $rule_) {
+                $rule_id[]=$rule_->permission_id;
+            }
             foreach ($user['permission'] as $permissions => $user_permission) {
-                if(in_array($user_permission,$rule)) return true;
+                if(in_array($user_permission,$rule_id)) return true;
             }
             return false;
         }
