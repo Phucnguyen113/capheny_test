@@ -9,6 +9,10 @@ use Illuminate\Support\Facades\Validator;
 
 class roleController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('checkInput');
+    }
     public function index(Request $request){
         if(!p_author('view','tbl_role')){
             die('Bạn del đủ quyền truy cập');
@@ -172,5 +176,26 @@ class roleController extends Controller
             DB::table('tbl_role_permission')->insert(['role_id'=>$id,'permission_id'=>$permission]);
         }
         return response()->json(['success'=>'success']);
+    }
+    public function add_form(){
+        return view('admin.role.add');
+    }
+    public function add(Request $request){
+        $validated=Validator::make($request->all(),
+            [
+                'role'=>'bail|required|unique:tbl_role,role'
+            ],
+            [
+                'required'=>':attribute không được trống',
+                'unique' => ':attribute đã tồn tại'
+            ],
+            [
+                'role'=>'Vai trò'
+            ]
+        );
+        if($validated->fails()) return response()->json(['error'=>$validated->getMessageBag()]);
+        DB::table('tbl_role')->insert(['role'=>$request->role,'create_at'=>Carbon::now('Asia/Ho_Chi_Minh')->toDateTimeString()]);
+        return response()->json(['success'=>'success']);
+
     }
 }

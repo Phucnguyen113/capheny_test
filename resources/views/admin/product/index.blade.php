@@ -320,7 +320,7 @@
                         <td style="text-align:right">{{number_format($value->product_price)}} VND</td>
                         <td>{{$value->discount}}</td>
                         
-                        <td>@if($value->active==1) Kích hoạt @else Không kích hoạt @endif</td>
+                        <td>@if($value->active==1) <i class="fa fa-check" style="color:green" aria-hidden="true"></i> @else <i class="fas fa-times" style="color:#b81f44"></i>  @endif</td>
                         <td>
                             @if(p_author('edit','tbl_product'))
                                 <a href="{{url('admin/product')}}/{{$value->product_id}}/edit" class="btn btn-primary"><i class="fa fa-edit"></i></a>

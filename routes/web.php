@@ -82,6 +82,15 @@ Route::group(['prefix'=>'admin'],function(){
         Route::post('role/{id}/delete', [roleController::class,'delete_role']);
         Route::get('role/{id}/edit',[roleController::class,'edit_name_role_form']);
         Route::post('role/{id}/edit',[roleController::class,'edit_name_role']);
+        Route::get('role/create', [roleController::class,'add_form']);
+        Route::post('role/create', [roleController::class,'add']);
+        //permission
+        Route::get('permission', [permissionController::class,'index']);
+        Route::get('permission/create',[permissionController::class,'add_form']);
+        Route::post('permission/create',[permissionController::class,'add']);
+        Route::get('permission/{id}/edit',[permissionController::class,'edit_form']);
+        Route::post('permission/{id}/edit',[permissionController::class,'edit']);
+        Route::post('permission/{id}/delete',[permissionController::class,'delete']);
     });
     Route::get('auth',[AuthController::class,'login_form']);
     Route::post('auth',[AuthController::class,'login']);

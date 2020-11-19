@@ -26,15 +26,26 @@ if(!function_exists('p_auth')){
                 if(in_array(1,$role)){
                     $admin=true;
                 }
+                // $ui_setting=DB::table('tbl_system_ui')->where(
+                //     [
+                //         ['user_id','=',session()->get('user')['user_id']],
+                //     ]
+                // )->get(['name','value']);
+                // $ui_setting_parse=[];
+                // foreach ($ui_setting as $settings => $setting) {
+                //     $ui_setting_parse[$setting->name]=json_decode($setting->value);
+                // }
                 session(
                     [
                         'user'=>[
+                                    'user_id'=>$user->user_id,
                                     'user_email'=>$user->user_email,
                                     'user_name'=>$user->user_name,
                                     'user_phone'=>$user->user_phone,
                                     'role'     => $role,
                                     'permission' => $permission,
-                                    'is_admin' => $admin
+                                    'is_admin' => $admin,
+                                    // 'ui_setting'=>$ui_setting_parse
                                 ]
                     ]
             );
@@ -68,7 +79,7 @@ if(!function_exists('p_check')){
 
 if(!function_exists('p_author')){
     function p_author($action,$table,$excetion=false,$view=false){
-        if(!in_array($action,['add','edit','delete','view','add_product','active','add_role','edit_role','delete_role'])){
+        if(!in_array($action,['add','edit','delete','view','add_product','active','add_role','edit_role','delete_role','add_permission'])){
             echo 'Action is invalid<br>';
             echo 'Action must be in Array Rule';
             die();
@@ -95,16 +106,23 @@ if(!function_exists('p_author')){
             }
         }
 
-        $list_role_need=DB::table('tbl_role')->where('tble',$table)->get(['role_id']);
-        // check role user 
-        foreach ($user['role'] as $roles => $role_user) {
-            foreach ($list_role_need as $role_needs => $role_need) {
-                if($role_user==$role_need->role_id){
-                    return true;
-                }
-            }
-        }
+        // $list_role_need=DB::table('tbl_role')->where('tble',$table)->get(['role_id']);
+        // // check role user 
+        // foreach ($user['role'] as $roles => $role_user) {
+        //     foreach ($list_role_need as $role_needs => $role_need) {
+        //         if($role_user==$role_need->role_id){
+        //             return true;
+        //         }
+        //     }
+        // }
 
+        // list permission of role user
+        $list_role_of_permission=DB::table('tbl_role_permission')->whereIn('role_id',$user['role'])->distinct(['permission_id'])->get(['permission_id']);
+        $list_role_id_of_perimssion=[];
+        foreach($list_role_of_permission as $permissions => $permission){
+            $list_role_id_of_perimssion[]=$permission->permission_id;
+        }
+       
         if(!$view){
             //check in controller
             $rule=DB::table('tbl_permission')->where([
@@ -115,7 +133,8 @@ if(!function_exists('p_author')){
             if(in_array($rule->permission_id,$user['permission'])){
                 return true;
             }
-        
+            // check permission in role_user
+            if(in_array($rule->permission_id,$list_role_id_of_perimssion)) return true;
             if($excetion){
 
             }
@@ -127,6 +146,7 @@ if(!function_exists('p_author')){
             foreach ($rule as $rules => $rule_) {
                 $rule_id[]=$rule_->permission_id;
             }
+            $user['permission']=array_merge($user['permission'],$list_role_id_of_perimssion);
             foreach ($user['permission'] as $permissions => $user_permission) {
                 if(in_array($user_permission,$rule_id)) return true;
             }
@@ -143,5 +163,27 @@ if(!function_exists('is_admin')){
         }
     }
 }
-
+if(!function_exists('p_get_ui_setting')){
+    function p_get_ui_setting(){
+        return session()->get('user')['ui_setting'];
+    }
+}
+if(!function_exists('p_ui_setting')){
+    function p_ui_setting($table,$column='all'){
+        $ui_setting=DB::table('tbl_system_ui')->where([
+            ['name','=',$table],
+        ])->first(['value']);
+        $ui_setting=json_decode($ui_setting->value);
+        if(empty($ui_setting)) return false;
+        if(!isset($ui_setting->$column)) return false;
+        if($ui_setting->$column==1) return true;
+        return false;
+        
+    }
+}
+if(!function_exists('p_user')){
+    function p_user(){
+        return session()->get('user');
+    }
+}
 ?>

@@ -3,6 +3,7 @@
 use App\Http\Controllers\districtController;
 use App\Http\Controllers\orderController;
 use App\Http\Controllers\productController;
+use App\Http\Controllers\uiSettingController;
 use App\Http\Controllers\userController;
 use App\Http\Controllers\wardController;
 use Illuminate\Http\Request;
@@ -40,3 +41,4 @@ Route::post('infouser/{id}',[userController::class,'user']);
 // delete product order detail
 Route::post('delete/product/order/{order}/{product}/{size}/{color}',[orderController::class,'delete_product_order_detail']);
 
+Route::post('ui_setting',[uiSettingController::class,'set_ui']);

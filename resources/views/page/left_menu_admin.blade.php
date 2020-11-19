@@ -69,6 +69,25 @@
                         Danh sách vai trò
                     </a>
                 </li>
+                <li>
+                    <a href="{{url('admin/role/create')}}" class="{{request()->is('admin/role/create')?'mm-active':''}}">
+                        <i class="metismenu-icon pe-7s-rocket"></i>
+                       Thêm vai trò
+                    </a>
+                </li>
+                <li class="app-sidebar__heading">Quyền</li>
+                <li>
+                    <a href="{{url('admin/permission')}}" class="{{request()->is('admin/permission')?'mm-active':''}}">
+                        <i class="metismenu-icon pe-7s-rocket"></i>
+                        Danh sách quyền
+                    </a>
+                </li>
+                <li>
+                    <a href="{{url('admin/permission/create')}}" class="{{request()->is('admin/permission/create')?'mm-active':''}}">
+                        <i class="metismenu-icon pe-7s-rocket"></i>
+                       Thêm quyền
+                    </a>
+                </li>
                 @endif
                 <!-- <li>
                     <a href="#">
@@ -193,7 +212,14 @@
                             </a>
                         </li>
                     @endif
-                 
+                    @if(p_author('add_permission','tbl_user'))
+                        <li>
+                            <a href="{{url('admin/user/addpermission')}}" class="{{request()->is('admin/user/addpermission')?'mm-active':''}}">
+                                <i class="metismenu-icon pe-7s-display2"></i>
+                                Thêm quyền cho người dùng
+                            </a>
+                        </li>
+                    @endif
                 @endif
 
                 @if(p_author('view','tbl_product',false,true))

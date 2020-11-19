@@ -1,5 +1,33 @@
 @extends('layouts.admin')
 @section('js')
+   <script>
+       function view_setting(){
+
+           var formdata= new FormData();
+           $('.view-setting').each(function(index,item){
+               if($(this).is(':checked')==true){
+                    $(`.${$(this).val()}`).show();
+                    formdata.append($(this).val(),1)
+               }else{
+                    $(`.${$(this).val()}`).hide();
+                    formdata.append($(this).val(),0)
+               }
+           })
+           formdata.append('user_id','{{p_user()["user_id"]}}');
+           formdata.append('table','user');
+            $.ajax({
+                type: "POST",
+                url: "{{url('api/ui_setting')}}",
+                data: formdata,
+                processData:false,
+                contentType:false,
+                dataType: "json",
+                success: function (response) {
+                    console.log(response);
+                }
+            });
+       }
+   </script>
    
 @endsection
 @section('body')
@@ -268,51 +296,136 @@
             <div class="card-title" style="font-size:36px;text-align:center">
                 Danh sách người dùng
             </div>
-            <a href="{{url('admin/user/create')}}" class="btn btn-success mb-2">Thêm mới người dùng</a>
+            <div class="">
+                <a href="{{url('admin/user/create')}}" class="btn btn-success mb-2">Thêm mới người dùng</a>
+                <div style="float:right" class="col-md-9">
+                   
+                    <p style="text-align:right">
+                        <a class="" data-toggle="collapse" href="#view" role="button" aria-expanded="false" aria-controls="view">
+                            <i class="fas fa-cog"></i> Tùy chọn hiển thị
+                        </a>
+                    </p>
+                    <div class="collapse col-md-12" id="view">
+                        <div class="form-row" style="float:right">
+                           
+                            <div class="m-2">
+                                <input type="checkbox" @if(p_ui_setting('user','email'))  checked @endif onclick="view_setting()" name="email" id="email" class="form-control-checkbox view-setting" value="email">
+                                <label for="email">Email</label>
+                            </div>
+                            <div class="m-2">
+                                <input type="checkbox" @if(p_ui_setting('user','phone'))  checked @endif onclick="view_setting()" name="phone" id="phone" class="form-control-checkbox view-setting" value="phone">
+                                <label for="phone">Điện thoại</label>
+                            </div>
+                            <div class="m-2">
+                                <input type="checkbox" @if(p_ui_setting('user','province')) checked @endif onclick="view_setting()" name="provincee" id="provincee" class="form-control-checkbox view-setting" value="province">
+                                <label for="provincee">Thành phố/Tỉnh</label>
+                            </div>
+                            <div class="m-2">
+                                <input type="checkbox" @if(p_ui_setting('user','district')) checked @endif onclick="view_setting()" name="districtt" id="districtt" class="form-control-checkbox view-setting" value="district">
+                                <label for=districtt>Quận/huyện</label>
+                            </div>
+                            <div class="m-2">
+                                <input type="checkbox" @if(p_ui_setting('user','ward')) checked @endif onclick="view_setting()" name="wardd" id="wardd" class="form-control-checkbox view-setting" value="ward">
+                                <label for=wardd>Khu vực</label>
+                            </div>
+                            <div class="m-2">
+                                <input type="checkbox" @if(p_ui_setting('user','address')) checked @endif onclick="view_setting()" name="addresss" id="adresss" class="form-control-checkbox view-setting" value="address">
+                                <label for=adresss>Địa chỉ</label>
+                            </div>
+                            <div class="m-2">
+                                <input type="checkbox" @if(p_ui_setting('user','address')) checked @endif onclick="view_setting()" name="admin" id="admin" class="form-control-checkbox view-setting" value="admin">
+                                <label for=admin>Admin</label>
+                            </div>
+                            <div class="m-2">
+                                <input type="checkbox" @if(p_ui_setting('user','detail')) checked @endif onclick="view_setting()" name="detail" id="detail" class="form-control-checkbox view-setting" value="detail">
+                                <label for=detail>Chi tiết</label>
+                            </div>
+                            <div class="m-2">
+                                <input type="checkbox" @if(p_ui_setting('user','role')) checked @endif onclick="view_setting()" name="rolee" id="rolee" class="form-control-checkbox view-setting" value="role">
+                                <label for=rolee>Vai trò</label>
+                            </div>
+                            <div class="m-2">
+                                <input type="checkbox" @if(p_ui_setting('user','permission')) checked @endif onclick="view_setting()" name="permissionn" id="permissionn" class="form-control-checkbox view-setting" value="permission">
+                                <label for=permissionn>Quyền</label>
+                            </div>
+                            <div class="m-2">
+                                <input type="checkbox" @if(p_ui_setting('user','permission')) checked @endif onclick="view_setting()" name="activee" id="activee" class="form-control-checkbox view-setting" value="active">
+                                <label for=activee>Kích hoạt</label>
+                            </div>
+                            <div class="m-2">
+                                <input type="checkbox" @if(p_ui_setting('user','create_at')) checked @endif onclick="view_setting()" name="create_att" id="create_att" class="form-control-checkbox view-setting" value="create_at">
+                                <label for=create_att>Ngày tạo</label>
+                            </div>
+                            <div class="m-2">
+                                <input type="checkbox" @if(p_ui_setting('user','create_at')) checked @endif onclick="view_setting()" name="update_att" id="update_att" class="form-control-checkbox view-setting" value="update_at">
+                                <label for=update_att>Ngày sửa</label>
+                            </div>
+                            <div class="m-2">
+                                <input type="checkbox" @if(p_ui_setting('user','action')) checked @endif onclick="view_setting()" name="action" id="action" class="form-control-checkbox view-setting" value="action">
+                                <label for=action>Thao tác</label>
+                            </div>
+                        </div>
+                       
+                    </div>
+                </div>
+            </div>  
+            
             <div class="table-responsive">
                 <table class="table">
                     <thead>
-                        <th class="name">Họ tên</th>
-                        <th>Email</th>
-                        <th>Điện thoại</th>
-                        <th>Thành phố/Tỉnh</th>
-                        <th>Quận/Huyện</th>
-                        <th>Khu vực</th>
-                        <th>Địa chỉ</th>
-                        <th>Admin</th>
-                        <th>Vai trò</th>
-                        <th>Kích hoạt</th>
-                        <th>Ngày tạo</th>
-                        <th>Ngày sửa</th>
-                        <th>Thao tác</th>
+                        <th  >Họ tên</th>
+                        <th class="email p_setting" @if(!p_ui_setting('user','email'))  style="display:none" @endif>Email</th>
+                        <th class="phone p_setting" @if(!p_ui_setting('user','phone'))  style="display:none" @endif>Điện thoại</th>
+                        <th class="province p_setting" @if(!p_ui_setting('user','province'))  style="display:none" @endif>Thành phố/Tỉnh</th>
+                        <th class="district p_setting" @if(!p_ui_setting('user','district'))  style="display:none" @endif>Quận/Huyện</th>
+                        <th class="ward p_setting" @if(!p_ui_setting('user','ward'))  style="display:none" @endif>Khu vực</th>
+                        <th class="address p_setting" @if(!p_ui_setting('user','address'))  style="display:none" @endif>Địa chỉ</th>
+                        <th class="admin p_setting" @if(!p_ui_setting('user','admin'))  style="display:none" @endif>Admin</th>
+                        <th class="detail p_setting" @if(!p_ui_setting('user','detail'))  style="display:none" @endif>Chi tiết</th>
+                        <th class="role p_setting" @if(!p_ui_setting('user','role'))  style="display:none" @endif>Vai trò</th>
+                        <th class="permission p_setting" @if(!p_ui_setting('user','permission'))  style="display:none" @endif>Quyền</th>
+                        <th class="active p_setting" @if(!p_ui_setting('user','active'))  style="display:none" @endif>Kích hoạt</th>
+                        <th class="create_at p_setting" @if(!p_ui_setting('user','create_at'))  style="display:none" @endif>Ngày tạo</th>
+                        <th class="update_at p_setting" @if(!p_ui_setting('user','update_at'))  style="display:none" @endif>Ngày sửa</th>
+                        <th class="action p_setting" @if(!p_ui_setting('user','action'))  style="display:none" @endif>Thao tác</th>
                     </thead>
                     <tbody>
                        @foreach($list_user as $users => $user)
                             <tr>
                                
-                                <td class="name">{{$user->user_first_name}}&nbsp; {{$user->user_last_name}}</td>
-                                <td>{{$user->user_email}}</td>
-                                <td>{{$user->user_phone}}</td>
-                                <td>{{$user->province}}</td>
-                                <td>{{$user->district}}</td>
-                                <td>{{$user->ward}}</td>
-                                <td>{{$user->user_address}}</td>
-                                <td>
+                                <td >{{$user->user_first_name}}&nbsp; {{$user->user_last_name}}</td>
+                                <td class="email p_setting" @if(!p_ui_setting('user','email'))  style="display:none" @endif>{{$user->user_email}}</td>
+                                <td class="phone p_setting" @if(!p_ui_setting('user','phone'))  style="display:none" @endif>{{$user->user_phone}}</td>
+                                <td class="province p_setting" @if(!p_ui_setting('user','province')) style="display:none" @endif  >{{$user->province}}</td>
+                                <td class="district p_setting" @if(!p_ui_setting('user','district')) style="display:none" @endif >{{$user->district}}</td>
+                                <td class="ward p_setting" @if(!p_ui_setting('user','ward')) style="display:none" @endif >{{$user->ward}}</td>
+                                <td class="address p_setting" @if(!p_ui_setting('user','address')) style="display:none" @endif >{{$user->user_address}}</td>
+                                <td class="admin p_setting" @if(!p_ui_setting('user','admin')) style="display:none" @endif >
                                     @if($user->user_type==1)
                                         <i class="fas fa-check" style="color:#3ac47d"></i>
                                     @else
                                         <i class="fas fa-times" style="color:#b81f44"></i>
                                     @endif
                                 </td>
-                                <td>
+                                <td class="detail p_setting" @if(!p_ui_setting('user','detail')) style="display:none" @endif >
+                                    <a href="{{url('admin/user')}}/{{$user->user_id}}/detail" class="btn btn-info">Chi tiết</a>
+                                </td>
+                                <td class="role p_setting" @if(!p_ui_setting('user','role')) style="display:none" @endif >
                                     @if($user->user_type==1)
                                         <a href="{{url('admin/user')}}/{{$user->user_id}}/editrole" class="btn btn-primary"> <div class="fa fa-edit"></div></a>
                                     @endif
                                 </td>
-                                <td>{!!($user->active==1)?'<i class="fas fa-check" style="color:#3ac47d"></i>':'<i class="fas fa-times" style="color:#b81f44"></i>'!!}</td>
-                                <td>{{$user->create_at}}</td>
-                                <td>{{$user->update_at}}</td>
-                                <td>
+                                <td class="permission p_setting" @if(!p_ui_setting('user','permission')) style="display:none" @endif >
+                                    @if($user->user_type==1)
+                                        <a href="{{url('admin/user')}}/{{$user->user_id}}/editpermission" class="btn btn-primary"> <div class="fa fa-edit"></div></a>
+                                    @endif
+                                </td>
+                                <td class="active p_setting" @if(!p_ui_setting('user','active')) style="display:none" @endif>
+                                    {!!($user->active==1)?'<i class="fas fa-check" style="color:#3ac47d"></i>':'<i class="fas fa-times" style="color:#b81f44"></i>'!!}
+                                </td>
+                                <td class="create_at p_setting" @if(!p_ui_setting('user','create_at')) style="display:none" @endif>{{$user->create_at}}</td>
+                                <td class="update_at p_setting" @if(!p_ui_setting('user','update_at')) style="display:none" @endif> {{$user->update_at}}</td>
+                                <td class="action p_setting" @if(!p_ui_setting('user','action')) style="display:none" @endif>
                                     @if(p_author('edit','tbl_user'))
                                     <a class="btn btn-primary" style="display:inline-block" href="{{url('admin/user/')}}/{{$user->user_id}}/edit"><div class="fa fa-edit"></div></a>
                                     @endif
@@ -327,18 +440,23 @@
                        @endforeach
                     </tbody>
                     <tfoot>
-                        <th class="name">Họ tên</th>
-                        <th>Email</th>
-                        <th>Điện thoại</th>
-                        <th>Thành phố/Tỉnh</th>
-                        <th>Quận/Huyện</th>
-                        <th>Khu vực</th>
-                        <th>Địa chỉ</th>
-                        <th>Admin</th>
-                        <th>Kích hoạt</th>
-                        <th>Ngày tạo</th>
-                        <th>Ngày sửa</th>
-                        <th>Thao tác</th>
+                    <thead>
+                        <th >Họ tên</th>
+                        <th class="email p_setting" @if(!p_ui_setting('user','email'))  style="display:none" @endif>Email</th>
+                        <th class="phone p_setting" @if(!p_ui_setting('user','phone'))  style="display:none" @endif>Điện thoại</th>
+                        <th class="province p_setting" @if(!p_ui_setting('user','province'))  style="display:none" @endif>Thành phố/Tỉnh</th>
+                        <th class="district p_setting" @if(!p_ui_setting('user','district'))  style="display:none" @endif>Quận/Huyện</th>
+                        <th class="ward p_setting" @if(!p_ui_setting('user','ward'))  style="display:none" @endif>Khu vực</th>
+                        <th class="address p_setting" @if(!p_ui_setting('user','address'))  style="display:none" @endif>Địa chỉ</th>
+                        <th class="admin p_setting" @if(!p_ui_setting('user','admin'))  style="display:none" @endif>Admin</th>
+                        <th class="detail p_setting" @if(!p_ui_setting('user','detail'))  style="display:none" @endif>Chi tiết</th>
+                        <th class="role p_setting" @if(!p_ui_setting('user','role'))  style="display:none" @endif>Vai trò</th>
+                        <th class="permission p_setting" @if(!p_ui_setting('user','permission'))  style="display:none" @endif>Quyền</th>
+                        <th class="active p_setting" @if(!p_ui_setting('user','active'))  style="display:none" @endif>Kích hoạt</th>
+                        <th class="create_at p_setting" @if(!p_ui_setting('user','create_at'))  style="display:none" @endif>Ngày tạo</th>
+                        <th class="update_at p_setting" @if(!p_ui_setting('user','update_at'))  style="display:none" @endif>Ngày sửa</th>
+                        <th class="action p_setting" @if(!p_ui_setting('user','action'))  style="display:none" @endif>Thao tác</th>
+                    </thead>
                     </tfoot>
                 </table>
             </div> 

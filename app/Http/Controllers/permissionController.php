@@ -13,7 +13,8 @@ class permissionController extends Controller
         $this->middleware('checkInput');
     }
     public function index(Request $request){
-
+        $list_permission=DB::table('tbl_permission')->orderByDesc('permission_id')->paginate(15);
+        return view('admin.permission.index',compact('list_permission'));
     }
     public function add_permission_for_user_form(){
         $list_user=DB::table('tbl_user')->where('user_type','=',1)->orderByDesc('user_id')->get();
