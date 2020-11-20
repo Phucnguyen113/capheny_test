@@ -115,6 +115,7 @@ class productController extends Controller
             }else{
                 $list_product[$key]->colors=[];
             }
+
             $list_size=DB::table('tbl_size')->select(['size'])->join('tbl_product_size','tbl_product_size.size_id','=','tbl_size.size_id')->where('tbl_product_size.product_id',$value->product_id)->get()->toArray();
             if(!empty($list_size)){
                 foreach ($list_size as $sizes => $size) {
@@ -123,7 +124,16 @@ class productController extends Controller
             }else{
                 $list_product[$key]->sizes=[];
             }
-            
+            //get list category
+            $list_category=DB::table('tbl_category_product')->join('tbl_category','tbl_category.category_id','=','tbl_category_product.category_id')
+            ->where('tbl_category_product.product_id',$value->product_id)->get(['tbl_category.category_id','tbl_category.category_name'])->toArray();
+            if(!empty($list_category)){
+                foreach ($list_category as $categories => $category) {
+                    $list_product[$key]->category[]=$category;
+                }
+            }else{
+                $list_product[$key]->category=[];
+            }
         }
         
         return view('admin.product.index',['list_product'=>$list_product,'color_search'=>$list_color_search,'size_search'=>$list_size_search]);
@@ -742,5 +752,19 @@ class productController extends Controller
         }
         return redirect('admin/product/'.$product_id.'/detail');
     }
-   
+    public function active_api(Request $request){
+        try {
+            $check_product=DB::table('tbl_product')->where('product_id',$request->id)->first();
+            if(empty($check_product)) return response()->json(['error'=>'error']);
+            if($check_product->active==1){
+                $active=0;
+            }else{
+                $active=1;
+            }
+            DB::table('tbl_product')->where('product_id',$request->id)->update(['active'=>$active]);
+            return response()->json(['success'=>$active]);
+        } catch (\Throwable $th) {
+            return response()->json(['error'=>'error']);
+        }
+    }
 }

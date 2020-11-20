@@ -7,7 +7,7 @@
                 <a href="{{url('admin/comment/create')}}" class="btn btn-success mb-2">Thêm mới bình luận</a>
             @endif
             <div class="table-responsive">
-                <table class="table">
+                <table class="table table-bordered">
                     <thead>
                         <tr>
                             <th>Người dùng</th>

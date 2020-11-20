@@ -1,4 +1,7 @@
 @extends('layouts.admin');
+@section('js')
+<script src="{{asset('p_js/view_setting.js')}}"></script>
+@endsection
 @section('body')
 @if($errors->has('isset'))
     <script>
@@ -282,46 +285,153 @@
         </div>
         <!-- end search -->
         <div class="card-title" style="font-size:36px;text-align:center">Danh sách sản phẩm</div>
-        @if(p_author('add','tbl_product'))
-            <a href="{{url('admin/product/create')}}" class="btn btn-success mb-2">Thêm mới sản phẩm</a>
-        @endif
-        <table class="table">
+        <!-- setting view -->
+        <div class="">
+            @if(p_author('add','tbl_product'))
+                <a href="{{url('admin/product/create')}}" class="btn btn-success mb-2">Thêm mới sản phẩm</a>
+            @endif
+            <div style="float:right" >
+                <p style="text-align:right">
+                    <a class="" data-toggle="collapse" href="#view" role="button" aria-expanded="false" aria-controls="view">
+                        <i class="fas fa-cog"></i> Tùy chọn hiển thị
+                    </a>
+                </p>
+                <div class="collapse col-md-12" id="view">
+                    <div class="form-row" style="float:right">
+                        <div class="m-2">
+                            <input type="checkbox" @if(p_ui_setting('product','description'))  checked @endif onclick="view_setting({{p_user()['user_id']}},'product')" name="descriptionn" id="descriptionn" value="description" class="form-control-checkbox view-setting" >
+                            <label for="descriptionn">Mô tả</label>
+                        </div>
+                        <div class="m-2">
+                            <input type="checkbox" @if(p_ui_setting('product','list_cate'))  checked @endif onclick="view_setting({{p_user()['user_id']}},'product')" name="list_cate" id="list_cate" value="list_cate" class="form-control-checkbox view-setting" >
+                            <label for="list_cate">Danh mục</label>
+                        </div>
+                        <div class="m-2">
+                            <input type="checkbox" @if(p_ui_setting('product','color'))  checked @endif onclick="view_setting({{p_user()['user_id']}},'product')" name="colorr" id="colorr" value="color" class="form-control-checkbox view-setting" >
+                            <label for="colorr">Màu</label>
+                        </div>
+                        <div class="m-2">
+                            <input type="checkbox" @if(p_ui_setting('product','size'))  checked @endif onclick="view_setting({{p_user()['user_id']}},'product')" name="sizee" id="sizee" value="size" class="form-control-checkbox view-setting" >
+                            <label for="sizee">Kích cỡ</label>
+                        </div>
+                        <div class="m-2">
+                            <input type="checkbox" @if(p_ui_setting('product','price'))  checked @endif onclick="view_setting({{p_user()['user_id']}},'product')" name="pricee" id="pricee" value="price" class="form-control-checkbox view-setting" >
+                            <label for="pricee">Giá sản phẩm</label>
+                        </div>
+                        <div class="m-2">
+                            <input type="checkbox" @if(p_ui_setting('product','discount'))  checked @endif onclick="view_setting({{p_user()['user_id']}},'product')" name="discountt" id="discountt" value="discount" class="form-control-checkbox view-setting" >
+                            <label for="discountt">Đang giảm giá</label>
+                        </div>
+                        <div class="m-2">
+                            <input type="checkbox" @if(p_ui_setting('product','active'))  checked @endif onclick="view_setting({{p_user()['user_id']}},'product')" name="activee" id="activee" value="active" class="form-control-checkbox view-setting" >
+                            <label for="activee">Kích hoạt</label>
+                        </div>
+                        <div class="m-2">
+                            <input type="checkbox" @if(p_ui_setting('product','detail'))  checked @endif onclick="view_setting({{p_user()['user_id']}},'product')" name="detaile" id="detaile" value="detail" class="form-control-checkbox view-setting" >
+                            <label for="detaile">Chi tiết</label>
+                        </div>
+                        <div class="m-2">
+                            <input type="checkbox" @if(p_ui_setting('product','action'))  checked @endif onclick="view_setting({{p_user()['user_id']}},'product')" name="action" id="action" value="action" class="form-control-checkbox view-setting" >
+                            <label for="action">Thao tác</label>
+                        </div>
+                    </div>
+                    
+                </div>
+            </div>
+        </div> 
+        <table class="table table-bordered">
             <thead>
                 <tr>
-                    <th>Id</th>
-                    <th>Tên sản phẩm</th>
-                    <th>Mô tả</th>
-                    <th>Chi tiết</th>
-                    <th>Màu</th>
-                    <th>Kích cỡ</th>
-                    <th style="text-align:right">Giá sản phẩm</th>
-                    <th>Đang giảm giá</th>
-                    <th>Kích hoạt</th>
-                    <th>Thao tác</th>
+                    <th >Tên sản phẩm</th>
+                    <th class="p_setting description" @if(!p_ui_setting('product','description')) style="display: none;" @endif> Mô tả</th>
+                    <th class="p_setting list_cate" @if(!p_ui_setting('product','list_cate')) style="display: none;" @endif>Danh mục</th>
+                    <th class="p_setting color" @if(!p_ui_setting('product','color')) style="display: none;" @endif>Màu</th>
+                    <th class="p_setting size" @if(!p_ui_setting('product','size')) style="display: none;" @endif>Kích cỡ</th>
+                    <th class="p_setting price" @if(!p_ui_setting('product','price')) style="display: none;" @endif>Giá sản phẩm</th>
+                    <th class="p_setting discount" @if(!p_ui_setting('product','discount')) style="display: none;" @endif>Đang giảm giá</th>
+                    <th class="p_setting active" @if(!p_ui_setting('product','active')) style="display: none;" @endif>Kích hoạt</th>
+                    <th class="p_setting detail" @if(!p_ui_setting('product','detail')) style="display: none;" @endif>Chi tiết</th>
+                    <th class="p_setting action" @if(!p_ui_setting('product','action')) style="display: none;" @endif>Thao tác</th>
                 </tr>
             </thead>
             <tbody>
                 @foreach($list_product as $key =>$value)
                     <tr>
-                        <td scope="row">{{$value->product_id}}</td>
-                        <td>{{$value->product_name}}</td>
-                        <td>{!!Str::limit($value->description,50)!!}</td>
-                        <td><a href="{{url('admin/product')}}/{{$value->product_id}}/detail" class="btn btn-info">Chi tiết</a></td>
-                        <td>
+                        
+                        <td >{{$value->product_name}}</td>
+                        <td class="p_setting description" @if(!p_ui_setting('product','description')) style="display: none;" @endif>  {!!Str::limit($value->description,50)!!}</td>
+                        <td  class="p_setting list_cate" @if(!p_ui_setting('product','list_cate')) style="display: none;" @endif>
+                            @php 
+                                $categoryText='';
+                            @endphp
+                            @foreach($value->category as $categories => $category)
+                                @php 
+                                    $categoryText.=$category->category_name.','
+                                @endphp
+                            @endforeach
+                            @if(p_author('edit','tbl_product'))
+                                <a href="{{url('admin/product')}}/{{$value->product_id}}/edit" class="href">{{Str::limit(rtrim($categoryText,','),30)}}   </a> 
+                            @else
+                                {{Str::limit(rtrim($categoryText,','),30)}}   
+                            @endif
+                        </td>
+                        <td class="p_setting color" @if(!p_ui_setting('product','color')) style="display: none;" @endif>
                             @foreach ($value->colors as $colors => $color)
                                 <div style="width:15px;height:15px;display:inline-block;background-color:#{{$color}}"></div>
                             @endforeach
                         </td>
-                        <td>
+                        <td class="p_setting size" @if(!p_ui_setting('product','size')) style="display: none;" @endif>
                             @foreach ($value->sizes as $sizes => $size)
                                 <p style="display:inline-block;margin:0; margin-right:5px;">{{$size}}</p>
                             @endforeach
                         </td>
-                        <td style="text-align:right">{{number_format($value->product_price)}} VND</td>
-                        <td>{{$value->discount}}</td>
+                        <td class="p_setting price" @if(!p_ui_setting('product','price')) style="display: none;" @endif style="text-align:right">{{number_format($value->product_price)}} VND</td>
+                        <td class="p_setting discount" @if(!p_ui_setting('product','discount')) style="display: none;" @endif>{{$value->discount}}</td>
                         
-                        <td>@if($value->active==1) <i class="fa fa-check" style="color:green" aria-hidden="true"></i> @else <i class="fas fa-times" style="color:#b81f44"></i>  @endif</td>
-                        <td>
+                        <td class="p_setting active" @if(!p_ui_setting('product','active')) style="display: none;" @endif>
+                            @if(p_author('active','tbl_product'))
+                                @if($value->active==1) 
+                                    <a href="#" class="p_product_active" data-id="{{$value->product_id}}"><i class="fa fa-check" style="color:green" aria-hidden="true"></i></a>
+                                @else 
+                                    <a href="#" class="p_product_active" data-id="{{$value->product_id}}"><i class="fas fa-times" style="color:#b81f44"></i></a>
+                                @endif
+                                <script>
+                                    $('.p_product_active').unbind().click(function(){
+                                        var id=$(this).attr('data-id');
+                                        var element=$(this);
+                                       $.ajax({
+                                           type: "POST",
+                                           url: "{{url('api/product/active')}}",
+                                           data: {id:id},
+                                           dataType: "json",
+                                           success: function (response) {
+                                               console.log(response);
+                                               if(!$.isEmptyObject(response.error)){
+
+                                               }else{
+                                                    if(response.success==1){
+                                                        var html='<i class="fa fa-check" style="color:green" aria-hidden="true"></i>'        
+                                                    }else{
+                                                        var html='<i class="fas fa-times" style="color:#b81f44"></i>'
+                                                    }
+                                                    element.html(html)
+                                               }
+                                           }
+                                       });
+                                    })
+                                </script>
+                            @else
+                                @if($value->active==1) 
+                                    <i class="fa fa-check" style="color:green" aria-hidden="true"></i>
+                                @else 
+                                    <i class="fas fa-times" style="color:#b81f44"></i> 
+                                @endif
+                            @endif
+                        </td>
+                        <td class="p_setting detail" @if(!p_ui_setting('product','detail')) style="display: none;" @endif>
+                            <a href="{{url('admin/product')}}/{{$value->product_id}}/detail" class="btn btn-info">Chi tiết</a>
+                        </td>
+                        <td class="p_setting action" @if(!p_ui_setting('product','action')) style="display: none;" @endif>
                             @if(p_author('edit','tbl_product'))
                                 <a href="{{url('admin/product')}}/{{$value->product_id}}/edit" class="btn btn-primary"><i class="fa fa-edit"></i></a>
                             @endif
@@ -338,23 +448,23 @@
             </tbody>
             <tfoot>
             <tr>
-                    <th>Id</th>
-                    <th>Tên sản phẩm</th>
-                    <th>Mô tả</th>
-                    <th>Chi tiết</th>
-                    <th>Màu</th>
-                    <th>Kích cỡ</th>
-                    <th style="text-align:right">Giá sản phẩm</th>
-                    <th>Đang giảm giá</th>
-                    <th>Kích hoạt</th>
-                    <th>Thao tác</th>
+                    <th >Tên sản phẩm</th>
+                    <th class="p_setting description" @if(!p_ui_setting('product','description')) style="display: none;" @endif> Mô tả</th>
+                    <th class="p_setting list_cate" @if(!p_ui_setting('product','list_cate')) style="display: none;" @endif>Danh mục</th>
+                    <th class="p_setting color" @if(!p_ui_setting('product','color')) style="display: none;" @endif>Màu</th>
+                    <th class="p_setting size" @if(!p_ui_setting('product','size')) style="display: none;" @endif>Kích cỡ</th>
+                    <th class="p_setting price" @if(!p_ui_setting('product','price')) style="display: none;" @endif>Giá sản phẩm</th>
+                    <th class="p_setting discount" @if(!p_ui_setting('product','discount')) style="display: none;" @endif>Đang giảm giá</th>
+                    <th class="p_setting active" @if(!p_ui_setting('product','active')) style="display: none;" @endif>Kích hoạt</th>
+                    <th class="p_setting detail" @if(!p_ui_setting('product','detail')) style="display: none;" @endif>Chi tiết</th>
+                    <th class="p_setting action" @if(!p_ui_setting('product','action')) style="display: none;" @endif>Thao tác</th>
                 </tr>
             </tfoot>
         </table>
     </div>
-                            <div  style="display:flex;justify-content:center">
-                                {{$list_product->appends(request()->all())->links()}}
-                            </div>
+            <div  style="display:flex;justify-content:center">
+                {{$list_product->appends(request()->all())->links()}}
+            </div>
 </div>
 
 <script>

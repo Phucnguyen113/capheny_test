@@ -176,19 +176,22 @@
             </div>
         </div>
         <!-- active -->
-        <div class="form-row" style="margin-top:10px;">
-            <div class="col-md-12">
-                <div class="position-relative form-group ">    
-                    <div class="form-check">
-                        <label class="form-check-label">
-                            <input type="checkbox" class="form-check-input" name="active" id="active" value="1" >
-                            Kích hoạt
-                        </label>
-                    </div>
-                </div>
+        
+            <div class="form-row" style="margin-top:10px;">
+                @if(p_author('active','tbl_product'))
+                    <div class="col-md-12">
+                        <div class="position-relative form-group ">    
+                            <div class="form-check">
+                                <label class="form-check-label">
+                                    <input type="checkbox" class="form-check-input" name="active" id="active" value="1" >
+                                    Kích hoạt
+                                </label>
+                            </div>
+                        </div>
+                    </div> 
+                @endif
             </div>
-        </div>
-             
+       
             <!-- <div class="position-relative form-check">
                 <input name="check" id="exampleCheck" type="checkbox" class="form-check-input">
                 <label for="exampleCheck" class="form-check-label">Check me out</label>

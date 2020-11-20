@@ -106,7 +106,7 @@
         @if(p_author('add','tbl_size'))
             <a href="{{url('admin/size/create')}}" style="color:white" class="btn btn-success mb-2">Thêm mới kích cỡ</a>
         @endif
-        <table class="table">
+        <table class="table table-bordered" >
             <thead>
                 <tr>
                     <th scope="col">#</th>

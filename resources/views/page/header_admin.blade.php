@@ -66,6 +66,7 @@
                                 <div class="widget-content-left">
                                     <div class="btn-group">
                                         <a data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="p-0 btn">
+                                            {{p_user()['user_email']}}
                                             <img width="42" class="rounded-circle" src="{{asset('')}}/assets/images/avatars/1.jpg" alt="">
                                             <i class="fa fa-angle-down ml-2 opacity-8"></i>
                                         </a>
@@ -75,7 +76,7 @@
                                             <h6 tabindex="-1" class="dropdown-header">Header</h6>
                                             <button type="button" tabindex="0" class="dropdown-item">Actions</button>
                                             <div tabindex="-1" class="dropdown-divider"></div>
-                                            <button type="button" tabindex="0" class="dropdown-item">Dividers</button>
+                                            <a href="{{url('admin/auth/logout')}}" tabindex="0" class="dropdown-item">Logout</a>
                                         </div>
                                     </div>
                                 </div>

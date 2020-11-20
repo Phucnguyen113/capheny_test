@@ -8,7 +8,8 @@ if(!function_exists('p_auth')){
     function p_auth($data){
         $user=DB::table('tbl_user')->where([
                                         ['user_email','=',$data['user_email']],
-                                        ['user_type','=',1]
+                                        ['user_type','=',1],
+                                        ['active','=',1]
         ])->first();
         if(!empty($user)){
             if(Hash::check($data['user_password'],$user->user_password)){
@@ -79,7 +80,7 @@ if(!function_exists('p_check')){
 
 if(!function_exists('p_author')){
     function p_author($action,$table,$excetion=false,$view=false){
-        if(!in_array($action,['add','edit','delete','view','add_product','active','add_role','edit_role','delete_role','add_permission'])){
+        if(!in_array($action,['add','edit','delete','view','add_product','active','add_role','edit_role','delete_role','add_permission','edit_permission'])){
             echo 'Action is invalid<br>';
             echo 'Action must be in Array Rule';
             die();
@@ -100,7 +101,7 @@ if(!function_exists('p_author')){
             return true;
 
         }
-        if($table !=='tbl_user'){
+        if($table !=='tbl_user' && $table!=='tbl_permission' && $table!=='tbl_role'){
             if(in_array(2,$user['role'])){
                 return true;
             }
@@ -169,16 +170,16 @@ if(!function_exists('p_get_ui_setting')){
     }
 }
 if(!function_exists('p_ui_setting')){
-    function p_ui_setting($table,$column='all'){
+    function p_ui_setting($table,$column){
         $ui_setting=DB::table('tbl_system_ui')->where([
             ['name','=',$table],
+            ['user_id','=',p_user()['user_id']]
         ])->first(['value']);
+        if(empty($ui_setting)) return true;
         $ui_setting=json_decode($ui_setting->value);
-        if(empty($ui_setting)) return false;
         if(!isset($ui_setting->$column)) return false;
         if($ui_setting->$column==1) return true;
         return false;
-        
     }
 }
 if(!function_exists('p_user')){

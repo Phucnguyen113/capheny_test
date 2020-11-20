@@ -11,7 +11,7 @@ class AuthController extends Controller
     }
     public function login(Request $request){
         if( p_auth($request->only(['user_email','user_password']))){
-           
+                
         }else{
             return redirect()->back();
         }

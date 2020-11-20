@@ -1,33 +1,6 @@
 @extends('layouts.admin')
 @section('js')
-   <script>
-       function view_setting(){
-
-           var formdata= new FormData();
-           $('.view-setting').each(function(index,item){
-               if($(this).is(':checked')==true){
-                    $(`.${$(this).val()}`).show();
-                    formdata.append($(this).val(),1)
-               }else{
-                    $(`.${$(this).val()}`).hide();
-                    formdata.append($(this).val(),0)
-               }
-           })
-           formdata.append('user_id','{{p_user()["user_id"]}}');
-           formdata.append('table','user');
-            $.ajax({
-                type: "POST",
-                url: "{{url('api/ui_setting')}}",
-                data: formdata,
-                processData:false,
-                contentType:false,
-                dataType: "json",
-                success: function (response) {
-                    console.log(response);
-                }
-            });
-       }
-   </script>
+  <script src="{{asset('p_js/view_setting.js')}}"></script>
    
 @endsection
 @section('body')
@@ -296,6 +269,7 @@
             <div class="card-title" style="font-size:36px;text-align:center">
                 Danh sách người dùng
             </div>
+            <!-- setting view -->
             <div class="">
                 <a href="{{url('admin/user/create')}}" class="btn btn-success mb-2">Thêm mới người dùng</a>
                 <div style="float:right" class="col-md-9">
@@ -309,59 +283,59 @@
                         <div class="form-row" style="float:right">
                            
                             <div class="m-2">
-                                <input type="checkbox" @if(p_ui_setting('user','email'))  checked @endif onclick="view_setting()" name="email" id="email" class="form-control-checkbox view-setting" value="email">
+                                <input type="checkbox" @if(p_ui_setting('user','email'))  checked @endif onclick="view_setting({{p_user()['user_id']}},'user')" name="email" id="email" class="form-control-checkbox view-setting" value="email">
                                 <label for="email">Email</label>
                             </div>
                             <div class="m-2">
-                                <input type="checkbox" @if(p_ui_setting('user','phone'))  checked @endif onclick="view_setting()" name="phone" id="phone" class="form-control-checkbox view-setting" value="phone">
+                                <input type="checkbox" @if(p_ui_setting('user','phone'))  checked @endif onclick="view_setting({{p_user()['user_id']}},'user')" name="phone" id="phone" class="form-control-checkbox view-setting" value="phone">
                                 <label for="phone">Điện thoại</label>
                             </div>
                             <div class="m-2">
-                                <input type="checkbox" @if(p_ui_setting('user','province')) checked @endif onclick="view_setting()" name="provincee" id="provincee" class="form-control-checkbox view-setting" value="province">
+                                <input type="checkbox" @if(p_ui_setting('user','province')) checked @endif onclick="view_setting({{p_user()['user_id']}},'user')" name="provincee" id="provincee" class="form-control-checkbox view-setting" value="province">
                                 <label for="provincee">Thành phố/Tỉnh</label>
                             </div>
                             <div class="m-2">
-                                <input type="checkbox" @if(p_ui_setting('user','district')) checked @endif onclick="view_setting()" name="districtt" id="districtt" class="form-control-checkbox view-setting" value="district">
+                                <input type="checkbox" @if(p_ui_setting('user','district')) checked @endif onclick="view_setting({{p_user()['user_id']}},'user')" name="districtt" id="districtt" class="form-control-checkbox view-setting" value="district">
                                 <label for=districtt>Quận/huyện</label>
                             </div>
                             <div class="m-2">
-                                <input type="checkbox" @if(p_ui_setting('user','ward')) checked @endif onclick="view_setting()" name="wardd" id="wardd" class="form-control-checkbox view-setting" value="ward">
+                                <input type="checkbox" @if(p_ui_setting('user','ward')) checked @endif onclick="view_setting({{p_user()['user_id']}},'user')" name="wardd" id="wardd" class="form-control-checkbox view-setting" value="ward">
                                 <label for=wardd>Khu vực</label>
                             </div>
                             <div class="m-2">
-                                <input type="checkbox" @if(p_ui_setting('user','address')) checked @endif onclick="view_setting()" name="addresss" id="adresss" class="form-control-checkbox view-setting" value="address">
+                                <input type="checkbox" @if(p_ui_setting('user','address')) checked @endif onclick="view_setting({{p_user()['user_id']}},'user')" name="addresss" id="adresss" class="form-control-checkbox view-setting" value="address">
                                 <label for=adresss>Địa chỉ</label>
                             </div>
                             <div class="m-2">
-                                <input type="checkbox" @if(p_ui_setting('user','address')) checked @endif onclick="view_setting()" name="admin" id="admin" class="form-control-checkbox view-setting" value="admin">
+                                <input type="checkbox" @if(p_ui_setting('user','address')) checked @endif onclick="view_setting({{p_user()['user_id']}},'user')" name="admin" id="admin" class="form-control-checkbox view-setting" value="admin">
                                 <label for=admin>Admin</label>
                             </div>
                             <div class="m-2">
-                                <input type="checkbox" @if(p_ui_setting('user','detail')) checked @endif onclick="view_setting()" name="detail" id="detail" class="form-control-checkbox view-setting" value="detail">
+                                <input type="checkbox" @if(p_ui_setting('user','detail')) checked @endif onclick="view_setting({{p_user()['user_id']}},'user')" name="detail" id="detail" class="form-control-checkbox view-setting" value="detail">
                                 <label for=detail>Chi tiết</label>
                             </div>
                             <div class="m-2">
-                                <input type="checkbox" @if(p_ui_setting('user','role')) checked @endif onclick="view_setting()" name="rolee" id="rolee" class="form-control-checkbox view-setting" value="role">
+                                <input type="checkbox" @if(p_ui_setting('user','role')) checked @endif onclick="view_setting({{p_user()['user_id']}},'user')"  name="rolee" id="rolee" class="form-control-checkbox view-setting" value="role">
                                 <label for=rolee>Vai trò</label>
                             </div>
                             <div class="m-2">
-                                <input type="checkbox" @if(p_ui_setting('user','permission')) checked @endif onclick="view_setting()" name="permissionn" id="permissionn" class="form-control-checkbox view-setting" value="permission">
+                                <input type="checkbox" @if(p_ui_setting('user','permission')) checked @endif onclick="view_setting({{p_user()['user_id']}},'user')" name="permissionn" id="permissionn" class="form-control-checkbox view-setting" value="permission">
                                 <label for=permissionn>Quyền</label>
                             </div>
                             <div class="m-2">
-                                <input type="checkbox" @if(p_ui_setting('user','permission')) checked @endif onclick="view_setting()" name="activee" id="activee" class="form-control-checkbox view-setting" value="active">
+                                <input type="checkbox" @if(p_ui_setting('user','permission')) checked @endif onclick="view_setting({{p_user()['user_id']}},'user')" name="activee" id="activee" class="form-control-checkbox view-setting" value="active">
                                 <label for=activee>Kích hoạt</label>
                             </div>
                             <div class="m-2">
-                                <input type="checkbox" @if(p_ui_setting('user','create_at')) checked @endif onclick="view_setting()" name="create_att" id="create_att" class="form-control-checkbox view-setting" value="create_at">
+                                <input type="checkbox" @if(p_ui_setting('user','create_at')) checked @endif onclick="view_setting({{p_user()['user_id']}},'user')" name="create_att" id="create_att" class="form-control-checkbox view-setting" value="create_at">
                                 <label for=create_att>Ngày tạo</label>
                             </div>
                             <div class="m-2">
-                                <input type="checkbox" @if(p_ui_setting('user','create_at')) checked @endif onclick="view_setting()" name="update_att" id="update_att" class="form-control-checkbox view-setting" value="update_at">
+                                <input type="checkbox" @if(p_ui_setting('user','create_at')) checked @endif onclick="view_setting({{p_user()['user_id']}},'user')" name="update_att" id="update_att" class="form-control-checkbox view-setting" value="update_at">
                                 <label for=update_att>Ngày sửa</label>
                             </div>
                             <div class="m-2">
-                                <input type="checkbox" @if(p_ui_setting('user','action')) checked @endif onclick="view_setting()" name="action" id="action" class="form-control-checkbox view-setting" value="action">
+                                <input type="checkbox" @if(p_ui_setting('user','action')) checked @endif onclick="view_setting({{p_user()['user_id']}},'user')" name="action" id="action" class="form-control-checkbox view-setting" value="action">
                                 <label for=action>Thao tác</label>
                             </div>
                         </div>
@@ -369,9 +343,9 @@
                     </div>
                 </div>
             </div>  
-            
+            <!-- //table -->
             <div class="table-responsive">
-                <table class="table">
+                <table class="table table-bordered">
                     <thead>
                         <th  >Họ tên</th>
                         <th class="email p_setting" @if(!p_ui_setting('user','email'))  style="display:none" @endif>Email</th>
@@ -411,17 +385,115 @@
                                     <a href="{{url('admin/user')}}/{{$user->user_id}}/detail" class="btn btn-info">Chi tiết</a>
                                 </td>
                                 <td class="role p_setting" @if(!p_ui_setting('user','role')) style="display:none" @endif >
-                                    @if($user->user_type==1)
-                                        <a href="{{url('admin/user')}}/{{$user->user_id}}/editrole" class="btn btn-primary"> <div class="fa fa-edit"></div></a>
+                                    @if(p_author('edit_role','tbl_user'))
+                                        @if($user->user_type==1)
+                                            @if(!empty($user->role))
+                                                <a href="{{url('admin/user')}}/{{$user->user_id}}/editrole" >
+                                                    @php
+                                                        $roleText='';  
+                                                    @endphp  
+                                                    @foreach($user->role as $roles => $role)
+                                                        @php
+                                                            $roleText.=$role->role.',';  
+                                                        @endphp 
+                                                    @endforeach
+                                                    {{Str::limit(rtrim($roleText,','),30)}}
+                                                </a>
+                                            @else
+                                                <a href="{{url('admin/user')}}/{{$user->user_id}}/editrole" style="font-size:25px" >+</a>
+                                            @endif
+                                        @endif
+                                    @else
+                                        @if($user->user_type==1)
+                                            @if(!empty($user->role))
+                                                @php
+                                                    $roleText='';  
+                                                @endphp  
+                                                @foreach($user->role as $roles => $role)
+                                                    @php
+                                                        $roleText.=$role->role.',';  
+                                                    @endphp 
+                                                @endforeach
+                                                {{Str::limit(rtrim($roleText,','),30)}}
+                                            @endif
+                                        @endif
                                     @endif
                                 </td>
                                 <td class="permission p_setting" @if(!p_ui_setting('user','permission')) style="display:none" @endif >
-                                    @if($user->user_type==1)
-                                        <a href="{{url('admin/user')}}/{{$user->user_id}}/editpermission" class="btn btn-primary"> <div class="fa fa-edit"></div></a>
+                                    @if(p_author('edit_permission','tbl_user'))
+                                        @if($user->user_type==1)
+                                            <a href="{{url('admin/user')}}/{{$user->user_id}}/editpermission" >
+                                                @if(!empty($user->permission))
+                                                    @php
+                                                        $permissionText='';  
+                                                    @endphp 
+                                                    @foreach($user->permission as $permissions => $permission)
+                                                        @php
+                                                            $permissionText.=$permission->permission.',';  
+                                                        @endphp 
+                                                    @endforeach
+                                                    {{Str::limit(rtrim($permissionText,','),30)}}
+                                                @else
+                                                <a href="{{url('admin/user')}}/{{$user->user_id}}/editpermission" style="font-size:25px" >+</a>
+                                                @endif
+                                            </a>
+                                        @endif
+                                    @else
+                                        @if($user->user_type==1)
+                                            @if(!empty($user->permission))
+                                                @php
+                                                    $permissionText='';  
+                                                @endphp  
+                                                @foreach($user->permission as $permissions => $permission)
+                                                    @php
+                                                        $permissionText.=$permission->permission.',';  
+                                                    @endphp 
+                                                @endforeach
+                                                {{Str::limit(rtrim($permissionText,','),30)}}
+                                          
+                                            @endif
+                                            
+                                        @endif
                                     @endif
                                 </td>
                                 <td class="active p_setting" @if(!p_ui_setting('user','active')) style="display:none" @endif>
-                                    {!!($user->active==1)?'<i class="fas fa-check" style="color:#3ac47d"></i>':'<i class="fas fa-times" style="color:#b81f44"></i>'!!}
+                                    @if(!p_author('active','tbl_user'))
+                                        {!!($user->active==1)?'<i class="fas fa-check" style="color:#3ac47d"></i>':'<i class="fas fa-times" style="color:#b81f44"></i>'!!}
+                                    @else
+                                        @if($user->active==1)
+                                            <a href="#active" class="p_user_active" data-id="{{$user->user_id}}"><i class="fas fa-check" style="color:#3ac47d"></i></a>
+                                        @else
+                                            <a href="#" class="p_user_active" data-id="{{$user->user_id}}"><i class="fas fa-times" style="color:#b81f44"></i></a>
+                                        @endif
+                                        <!-- script active user -->
+                                        <script>
+                                                $('.p_user_active').unbind().click(function(){
+                                                    var id=$(this).attr('data-id');
+                                                    var element=$(this);
+                                                    $.ajax({
+                                                        type: "POST",
+                                                        url: "{{url('api/user/active')}}",
+                                                        data: {id:id},
+                                                        dataType: "json",
+                                                        success: function (response) {
+                                                            console.log(response);
+                                                            if(!$.isEmptyObject(response.error)){
+
+                                                            }else{
+                                                                if(response.success==1){
+                                                                    element.html('<i class="fas fa-check" style="color:#3ac47d"></i>')
+                                                                }else{
+                                                                    element.html('<i class="fas fa-times" style="color:#b81f44"></i>')
+                                                                }
+                                                                
+                                                            }
+                                                        }
+                                                    });
+                                                    return false;
+                                                })
+                                        </script>
+                                    @endif
+
                                 </td>
                                 <td class="create_at p_setting" @if(!p_ui_setting('user','create_at')) style="display:none" @endif>{{$user->create_at}}</td>
                                 <td class="update_at p_setting" @if(!p_ui_setting('user','update_at')) style="display:none" @endif> {{$user->update_at}}</td>

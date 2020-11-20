@@ -147,7 +147,7 @@
         <!-- end search -->
         <h5 class="card-title" style="text-align: center;font-size:36px;">Danh sách màu</h5>
         <a href="{{url('admin/color/create')}}" class="btn btn-success mb-2">Thêm mới màu</a>
-        <table class="table">
+        <table class="table table-bordered">
             <thead>
                 <tr>
                     <th scope="col">#</th>

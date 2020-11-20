@@ -1,5 +1,8 @@
 
 @extends('layouts.admin')
+@section('js')
+<script src="{{asset('p_js/view_setting.js')}}"></script>
+@endsection
 @section('body')
 <!-- Button trigger modal -->
 
@@ -217,37 +220,83 @@
         </div>
         <!-- end search -->
         <h5 class="card-title" style="text-align:center;font-size:36px">Danh sách cửa hàng</h5>
-        @if(p_author('add','tbl_store'))
-            <a href="{{url('admin/store/create')}}" style="color:white" class="btn btn-success mb-2">Thêm mới cửa hàng</a>
-        @endif
-        <table class="table">
+       
+        <div class="">
+            @if(p_author('add','tbl_store'))
+                <a href="{{url('admin/store/create')}}" style="color:white" class="btn btn-success mb-2">Thêm mới cửa hàng</a>
+            @endif
+            <div style="float:right" >
+                <p style="text-align:right">
+                    <a class="" data-toggle="collapse" href="#view" role="button" aria-expanded="false" aria-controls="view">
+                        <i class="fas fa-cog"></i> Tùy chọn hiển thị
+                    </a>
+                </p>
+                <div class="collapse col-md-12" id="view">
+                    <div class="form-row" style="float:right">
+                        <div class="m-2">
+                            <input type="checkbox" @if(p_ui_setting('store','province'))  checked @endif onclick="view_setting({{p_user()['user_id']}},'store')" name="provincee" id="provincee" value="province" class="form-control-checkbox view-setting" >
+                            <label for="provincee">Thành phố/Tỉnh</label>
+                        </div>
+                        <div class="m-2">
+                            <input type="checkbox" @if(p_ui_setting('store','district'))  checked @endif onclick="view_setting({{p_user()['user_id']}},'store')" name="districtt" id="districtt" value="district" class="form-control-checkbox view-setting" >
+                            <label for="districtt">Quận/Huyện</label>
+                        </div>
+                        <div class="m-2">
+                            <input type="checkbox" @if(p_ui_setting('store','ward'))  checked @endif onclick="view_setting({{p_user()['user_id']}},'store')" name="wardd" id="wardd" value="ward" class="form-control-checkbox view-setting" >
+                            <label for="wardd">Khu vực</label>
+                        </div>
+                        <div class="m-2">
+                            <input type="checkbox" @if(p_ui_setting('store','address'))  checked @endif onclick="view_setting({{p_user()['user_id']}},'store')" name="addresss" id="addresss" value="address" class="form-control-checkbox view-setting" >
+                            <label for="addresss">Địa chỉ</label>
+                        </div>
+                        <div class="m-2">
+                            <input type="checkbox" @if(p_ui_setting('store','create_at'))  checked @endif onclick="view_setting({{p_user()['user_id']}},'store')" name="create_att" id="create_att" value="create_at" class="form-control-checkbox view-setting" >
+                            <label for="create_att">Ngày tạo</label>
+                        </div>
+                        <div class="m-2">
+                            <input type="checkbox" @if(p_ui_setting('store','update_at'))  checked @endif onclick="view_setting({{p_user()['user_id']}},'store')" name="update_att" id="update_att" value="update_at" class="form-control-checkbox view-setting" >
+                            <label for="update_att">Ngày sửa</label>
+                        </div>
+                        <div class="m-2">
+                            <input type="checkbox" @if(p_ui_setting('store','detail'))  checked @endif onclick="view_setting({{p_user()['user_id']}},'store')" name="detailt" id="detailt" value="detail" class="form-control-checkbox view-setting" >
+                            <label for="detailt">Chi tiết</label>
+                        </div>
+                        <div class="m-2">
+                            <input type="checkbox" @if(p_ui_setting('store','action'))  checked @endif onclick="view_setting({{p_user()['user_id']}},'store')" name="action" id="action" value="action" class="form-control-checkbox view-setting" >
+                            <label for="action">Thao tác</label>
+                        </div>
+                    </div>
+                    
+                </div>
+            </div>
+            </div> 
+        <table class="table table-bordered">
             <thead>
                 <tr>
-                <th scope="col">#</th>
-                <th scope="col">Tên cửa hàng</th>
-                <th scope="col">Thành phố/ tỉnh</th>
-                <th scope="col">Quận/ huyện</th>
-                <th scope="col">Khu vực</th>
-                <th scope="col">Địa chỉ</th>
-                <th scope="col">Create at</th>
-                <th scope="col">Update at</th>
-                <th scope="col">Chi tiết</th>
-                <th scope="col">Action</th>
+                    <th scope="col">Tên cửa hàng</th>
+                    <th scope="col" class="p_setting province" @if(!p_ui_setting('store','province'))  style=" display:none" @endif>Thành phố/ tỉnh</th>
+                    <th scope="col" class="p_setting district" @if(!p_ui_setting('store','district'))  style=" display:none" @endif>Quận/ huyện</th>
+                    <th scope="col" class="p_setting ward" @if(!p_ui_setting('store','ward'))  style=" display:none" @endif>Khu vực</th>
+                    <th scope="col" class="p_setting address" @if(!p_ui_setting('store','address'))  style=" display:none" @endif>Địa chỉ</th>
+                    <th scope="col" class="p_setting create_at" @if(!p_ui_setting('store','create_at'))  style=" display:none" @endif>Ngày tạo</th>
+                    <th scope="col" class="p_setting update_at" @if(!p_ui_setting('store','update_at'))  style=" display:none" @endif>Ngày sửa</th>
+                    <th scope="col" class="p_setting detail" @if(!p_ui_setting('store','detail'))  style=" display:none" @endif>Chi tiết</th>
+                    <th scope="col" class="p_setting action" @if(!p_ui_setting('store','action'))  style=" display:none" @endif>Action</th>
                 </tr>
             </thead>
             <tbody>
                 @foreach($list_store as $key =>$value)
                     <tr>
-                    <th scope="row">{{$value->store_id}}</th>
+                   
                     <th >{{$value->store_name}}</th>
-                    <th >{{$value->province}}</th>
-                    <th >{{$value->district}}</th>
-                    <th >{{$value->ward}}</th>
-                    <th >{{$value->store_address}}</th>
-                    <td>{{$value->create_at}}</td>
-                    <td>{{$value->update_at}}</td>
-                    <th><a href="{{url('admin/store')}}/{{$value->store_id}}/detail" class="btn btn-info">Chi tiết</a></th>
-                    <td>
+                    <th class="p_setting province" @if(!p_ui_setting('store','province'))  style=" display:none" @endif>{{$value->province}}</th>
+                    <th class="p_setting district" @if(!p_ui_setting('store','district'))  style=" display:none" @endif>{{$value->district}}</th>
+                    <th class="p_setting ward" @if(!p_ui_setting('store','ward'))  style=" display:none" @endif>{{$value->ward}}</th>
+                    <th class="p_setting address" @if(!p_ui_setting('store','address'))  style=" display:none" @endif>{{$value->store_address}}</th>
+                    <td class="p_setting create_at" @if(!p_ui_setting('store','create_at'))  style=" display:none" @endif> {{$value->create_at}}</td>
+                    <td  class="p_setting update_at" @if(!p_ui_setting('store','update_at'))  style=" display:none" @endif>{{$value->update_at}}</td>
+                    <th class="p_setting detail" @if(!p_ui_setting('store','detail'))  style=" display:none" @endif><a href="{{url('admin/store')}}/{{$value->store_id}}/detail" class="btn btn-info">Chi tiết</a></th>
+                    <td class="p_setting action" @if(!p_ui_setting('store','action'))  style=" display:none" @endif>
                         @if(p_author('edit','tbl_store'))
                             <a href="{{url('admin/store')}}/{{$value->store_id}}/edit" class="btn btn-primary"><i class="fa fa-edit"></i> </a>
                         @endif
@@ -261,16 +310,15 @@
                     </tr>
                 @endforeach
                 <tr>
-                    <th scope="col">#</th>
                     <th scope="col">Tên cửa hàng</th>
-                    <th scope="col">Thành phố/ tỉnh</th>
-                    <th scope="col">Quận/ huyện</th>
-                    <th scope="col">Khu vực</th>
-                    <th scope="col">Địa chỉ</th>
-                    <th scope="col">Chi tiết</th>
-                    <th scope="col">Create at</th>
-                    <th scope="col">Update at</th>
-                    <th scope="col">Action</th>
+                    <th scope="col" class="p_setting province" @if(!p_ui_setting('store','province'))  style=" display:none" @endif>Thành phố/ tỉnh</th>
+                    <th scope="col" class="p_setting district" @if(!p_ui_setting('store','district'))  style=" display:none" @endif>Quận/ huyện</th>
+                    <th scope="col" class="p_setting ward" @if(!p_ui_setting('store','ward'))  style=" display:none" @endif>Khu vực</th>
+                    <th scope="col" class="p_setting address" @if(!p_ui_setting('store','address'))  style=" display:none" @endif>Địa chỉ</th>
+                    <th scope="col" class="p_setting create_at" @if(!p_ui_setting('store','create_at'))  style=" display:none" @endif>Ngày tạo</th>
+                    <th scope="col" class="p_setting update_at" @if(!p_ui_setting('store','update_at'))  style=" display:none" @endif>Ngày sửa</th>
+                    <th scope="col" class="p_setting detail" @if(!p_ui_setting('store','detail'))  style=" display:none" @endif>Chi tiết</th>
+                    <th scope="col" class="p_setting action" @if(!p_ui_setting('store','action'))  style=" display:none" @endif>Action</th>
                 </tr>
             </tbody>
             

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
@@ -13,14 +14,19 @@ class permissionController extends Controller
         $this->middleware('checkInput');
     }
     public function index(Request $request){
+        if(!p_author('view','tbl_permission')){
+            die('bạn không đủ quyền truy cập');
+        }
         $list_permission=DB::table('tbl_permission')->orderByDesc('permission_id')->paginate(15);
         return view('admin.permission.index',compact('list_permission'));
     }
+
     public function add_permission_for_user_form(){
         $list_user=DB::table('tbl_user')->where('user_type','=',1)->orderByDesc('user_id')->get();
         $list_permission=DB::table('tbl_permission')->orderByDesc('permission_id')->get();
         return view('admin.user.addpermission',compact('list_permission','list_user'));
     }
+
     public function add_permission(Request $request){
         $validated=Validator::make($request->all(),
             [
@@ -53,6 +59,7 @@ class permissionController extends Controller
         }
         return response()->json(['success'=>'success']);
     }
+
     public function edit_permission_for_user_form($id){
         $user=DB::table('tbl_user')->where('user_id',$id)->first();
         if(empty($user)) return redirect()->back();
@@ -64,6 +71,7 @@ class permissionController extends Controller
         $list_permission=DB::table('tbl_permission')->orderByDesc('permission_id')->get();
         return view('admin.user.editpermission',compact('user','list_permission','id_permission_of_user'));
     }
+
     public function edit_permission(Request $request,$id){
         $validated=Validator::make($request->all(),
             [
@@ -96,5 +104,37 @@ class permissionController extends Controller
             DB::table('tbl_user_permission')->insert(['user_id'=>$user->user_id,'permission_id'=>$request->permission_id[$i]]);
         }
         return response()->json(['success'=>'success']);
+    }
+    public function add_form(){
+        return view('admin.permission.add');
+    }
+    public function add(Request $request){
+        $validated=Validator::make($request->all(),
+            [
+                'permission' => 'bail|required|unique:tbl_permission,permission',
+                'action' => 'bail|required',
+                'table' => 'bail|required'
+            ],
+            [
+                'permission.required'=>'Quyền không được rỗng',
+                'permission.unique' => 'Quyền này đã tồn tại',
+                'action.required' => 'Chưa chọn hành động',
+                'table.required' => 'Chưa chọn bảng'
+            ],
+            [
+
+            ]
+        );
+        if($validated->fails()) return response()->json(['error'=>$validated->getMessageBag()]);
+        DB::table('tbl_permission')->insert(['permission'=>$request->permission,'tble'=>$request->table,'action'=>$request->action,'create_at'=>Carbon::now('Asia/Ho_Chi_Minh')->toDateTimeString()]);
+        return response()->json(['success'=>'success']);
+    }
+    public function get_action($table){
+       try {
+            $data=DB::table('tbl_permission')->where('tble',$table)->distinct()->get(['action']);
+            return response()->json(['data'=>$data]);
+       } catch (\Throwable $th) {
+            return response()->json(['error'=>'error']);
+       }
     }
 }

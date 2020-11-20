@@ -58,6 +58,11 @@ class categoryController extends Controller
         }else{
             $list_cate=DB::table('tbl_category')->paginate(20);
         }
+        foreach ($list_cate as $cates => $cate) {
+            $count=DB::table('tbl_category_product')->where('category_id',$cate->category_id)->get();
+            $count=count($count);
+            $list_cate[$cates]->totalProduct=$count;
+        }
         $cate=DB::table('tbl_category')->get();
         $cate=$this->get_category_tree($cate);
         return view('admin.category.index',['list_cate'=>$list_cate,'cate_tree'=>$cate]);
@@ -265,6 +270,19 @@ class categoryController extends Controller
         }
         $tree=$this->get_category_select_tree($data);
         return response()->json($tree);
+    }
+
+    // active category in list category
+    public function active_api(Request $request){
+        $check_category=DB::table('tbl_category')->where('category_id',$request->id)->first();
+        if(empty($check_category)) return response()->json(['error'=>'error']);
+        if($check_category->active==1){
+            $active=0;
+        }else{
+            $active=1;
+        }
+        DB::table('tbl_category')->where('category_id',$request->id)->update(['active'=>$active]);
+        return response()->json(['success'=>$active]);
     }
 }
 

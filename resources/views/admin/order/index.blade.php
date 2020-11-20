@@ -1,4 +1,7 @@
 @extends('layouts.admin')
+@section('js')
+<script src="{{asset('p_js/view_setting.js')}}"></script>
+@endsection
 @section('body')
     <div class="card main-card">
         <div class="card-body">
@@ -196,38 +199,97 @@
             </div>
              <!-- list order -->
             <div class="card-title" style="text-align: center;font-size:36px">Danh sách đơn hàng</div>
-            @if(p_author('add','tbl_order'))
-            <a href="{{url('admin/order/create')}}" class="btn btn-success mb-2">Thêm đơn hàng </a>
-            @endif
+            <!-- ui_setting -->
+            <div class="">
+                @if(p_author('add','tbl_order'))
+                    <a href="{{url('admin/order/create')}}" class="btn btn-success mb-2">Thêm đơn hàng </a>
+                @endif
+                <div style="float:right" >
+                    <p style="text-align:right">
+                        <a class="" data-toggle="collapse" href="#view" role="button" aria-expanded="false" aria-controls="view">
+                            <i class="fas fa-cog"></i> Tùy chọn hiển thị
+                        </a>
+                    </p>
+                    <div class="collapse col-md-12" id="view">
+                        <div class="form-row" style="float:right">
+                            <div class="m-2">
+                                <input type="checkbox" @if(p_ui_setting('order','order_email'))  checked @endif onclick="view_setting({{p_user()['user_id']}},'order')" name="order_email" id="order_email" value="order_email" class="form-control-checkbox view-setting" >
+                                <label for="order_email">Email</label>
+                            </div>
+                            <div class="m-2">
+                                <input type="checkbox" @if(p_ui_setting('order','phone'))  checked @endif onclick="view_setting({{p_user()['user_id']}},'order')" name="phonee" id="phonee" value="phone" class="form-control-checkbox view-setting" >
+                                <label for="phonee">Điện thoại</label>
+                            </div>
+                            <div class="m-2">
+                                <input type="checkbox" @if(p_ui_setting('order','province'))  checked @endif onclick="view_setting({{p_user()['user_id']}},'order')" name="provincee" id="provincee" value="province" class="form-control-checkbox view-setting" >
+                                <label for="provincee">Thành phố/Tỉnh</label>
+                            </div>
+                            <div class="m-2">
+                                <input type="checkbox" @if(p_ui_setting('order','district'))  checked @endif onclick="view_setting({{p_user()['user_id']}},'order')" name="districtt" id="districtt" value="district" class="form-control-checkbox view-setting" >
+                                <label for="districtt">Quận/Huyện</label>
+                            </div>
+                            <div class="m-2">
+                                <input type="checkbox" @if(p_ui_setting('order','ward'))  checked @endif onclick="view_setting({{p_user()['user_id']}},'order')" name="wardd" id="wardd" value="ward" class="form-control-checkbox view-setting" >
+                                <label for="wardd">Khu vực</label>
+                            </div>
+                            <div class="m-2">
+                                <input type="checkbox" @if(p_ui_setting('order','address'))  checked @endif onclick="view_setting({{p_user()['user_id']}},'order')" name="addresss" id="adresss" value="address" class="form-control-checkbox view-setting" >
+                                <label for="adresss">Địa chỉ</label>
+                            </div>
+                            <div class="m-2">
+                                <input type="checkbox" @if(p_ui_setting('order','status'))  checked @endif onclick="view_setting({{p_user()['user_id']}},'order')" name="statuss" id="statuss" value="status" class="form-control-checkbox view-setting" >
+                                <label for="statuss">Trạng thái</label>
+                            </div>
+                            <div class="m-2">
+                                <input type="checkbox" @if(p_ui_setting('order','create_at'))  checked @endif onclick="view_setting({{p_user()['user_id']}},'order')" name="create_att" id="create_att" value="create_at" class="form-control-checkbox view-setting" >
+                                <label for="create_att">Ngày tạo</label>
+                            </div>
+                            <div class="m-2">
+                                <input type="checkbox" @if(p_ui_setting('order','update_at'))  checked @endif onclick="view_setting({{p_user()['user_id']}},'order')" name="update_att" id="update_att" value="update_at" class="form-control-checkbox view-setting" >
+                                <label for="update_att">Ngày sửa</label>
+                            </div>
+                            <div class="m-2">
+                                <input type="checkbox" @if(p_ui_setting('order','detail'))  checked @endif onclick="view_setting({{p_user()['user_id']}},'order')" name="detaill" id="detaill" value="detail" class="form-control-checkbox view-setting" >
+                                <label for="detaill">Chi tiết</label>
+                            </div>
+                            <div class="m-2">
+                                <input type="checkbox" @if(p_ui_setting('order','action'))  checked @endif onclick="view_setting({{p_user()['user_id']}},'order')" name="action" id="action" value="action" class="form-control-checkbox view-setting" >
+                                <label for="action">Hành động</label>
+                            </div>
+                        </div>
+                        
+                    </div>
+                </div>
+            </div> 
             <div class="table-responsive">
-                <table class="table">
+                <table class="table table-bordered">
                     <thead>
                         <tr>
                             <th>Tên người mua</th>
-                            
-                            <th>Điện thoại</th>
-                            <th>Thành phố/Tỉnh</th>
-                            <th>Quận/Huyện</th>
-                            <th>Khu vực</th>
-                            <th>Địa chỉ</th>
-                            <th>Trạng thái</th>
-                            <th>Ngày tạo</th>
-                            <th>Ngày Sửa</th>
-                            <th>Chi tiết</th>
-                            <th>Thao tác</th>
+                            <th class="p_setting order_email" @if(!p_ui_setting('order','order_email'))  style="display: none;" @endif >Email</th>
+                            <th class="p_setting phone" @if(!p_ui_setting('order','phone'))  style="display: none;" @endif >Điện thoại</th>
+                            <th class="p_setting province" @if(!p_ui_setting('order','province'))  style="display: none;" @endif >Thành phố/Tỉnh</th>
+                            <th class="p_setting district" @if(!p_ui_setting('order','district'))  style="display: none;" @endif >Quận/Huyện</th>
+                            <th class="p_setting ward" @if(!p_ui_setting('order','ward'))  style="display: none;" @endif >Khu vực</th>
+                            <th class="p_setting address" @if(!p_ui_setting('order','address'))  style="display: none;" @endif >Địa chỉ</th>
+                            <th class="p_setting status" @if(!p_ui_setting('order','status'))  style="display: none;" @endif >Trạng thái</th>
+                            <th class="p_setting create_at" @if(!p_ui_setting('order','create_at'))  style="display: none;" @endif > Ngày tạo</th>
+                            <th class="p_setting update_at" @if(!p_ui_setting('order','update_at'))  style="display: none;" @endif >Ngày Sửa</th>
+                            <th class="p_setting detail" @if(!p_ui_setting('order','detail'))  style="display: none;" @endif >Chi tiết</th>
+                            <th class="p_setting action" @if(!p_ui_setting('order','action'))  style="display: none;" @endif >Thao tác</th>
                         </tr>
                     </thead>
                     <tbody>
                         @foreach($list_order as $orders => $order)
                             <tr>
                                 <td>{{$order->order_name}}</td>
-                               
-                                <td>{{$order->order_phone}}</td>
-                                <td>{{$order->province_}}</td>
-                                <td>{{$order->district_}}</td>
-                                <td>{{$order->ward_}}</td>
-                                <td>{{$order->order_address}}</td>
-                                <td>
+                                <td class="p_setting order_email" @if(!p_ui_setting('order','order_email'))  style="display: none;" @endif >{{$order->order_email}}</td>
+                                <td class="p_setting phone" @if(!p_ui_setting('order','phone'))  style="display: none;" @endif >{{$order->order_phone}}</td>
+                                <td class="p_setting province" @if(!p_ui_setting('order','province'))  style="display: none;" @endif >{{$order->province_}}</td>
+                                <td class="p_setting district" @if(!p_ui_setting('order','district'))  style="display: none;" @endif>{{$order->district_}}</td>
+                                <td class="p_setting ward" @if(!p_ui_setting('order','ward'))  style="display: none;" @endif>{{$order->ward_}}</td>
+                                <td class="p_setting address" @if(!p_ui_setting('order','address'))  style="display: none;" @endif>{{$order->order_address}}</td>
+                                <td class="p_setting status" @if(!p_ui_setting('order','status'))  style="display: none;" @endif>
                                     @if($order->order_status==0) 
                                         Chờ xử lý
                                     @elseif($order->order_status==1)
@@ -240,15 +302,15 @@
                                         Trả hàng về
                                     @endif
                                 </td>
-                                <td>{{$order->create_at}}</td>
-                                <td>{{$order->update_at}}</td>
-                                <td><a href="{{url('admin/order/')}}/{{$order->order_id}}/detail" class="btn btn-info">Chi tiết</a></td>
-                                <td>
+                                <td class="p_setting create_at" @if(!p_ui_setting('order','create_at'))  style="display: none;" @endif>{{$order->create_at}}</td>
+                                <td class="p_setting update_at" @if(!p_ui_setting('order','update_at'))  style="display: none;" @endif>{{$order->update_at}}</td>
+                                <td class="p_setting detail" @if(!p_ui_setting('order','detail'))  style="display: none;" @endif><a href="{{url('admin/order/')}}/{{$order->order_id}}/detail" class="btn btn-info">Chi tiết</a></td>
+                                <td class="p_setting action" @if(!p_ui_setting('order','action'))  style="display: none;" @endif>
                                     @if(p_author('edit','tbl_order'))
                                         <a href="{{url('admin/order')}}/{{$order->order_id}}/edit" class="btn btn-primary"><div class="fa fa-edit"></div></a>
                                     @endif
                                     @if(p_author('delete','tbl_order'))
-                                    <form action="{{url('admin/order')}}/{{$order->order_id}}/delete" method="POST" id="form_{{$order->order_id}}" >
+                                    <form action="{{url('admin/order')}}/{{$order->order_id}}/delete" method="POST" id="form_{{$order->order_id}}" style="display:inline-block" >
                                         @csrf
                                         @method('PUT')
                                         <button class="btn btn-danger" onclick="check_delete('{{$order->order_id}}')"><div class="fa fa-trash-alt"></div></button>
@@ -283,17 +345,17 @@
                     <tfoot>
                     <tr>
                             <th>Tên người mua</th>
-                            
-                            <th>Điện thoại</th>
-                            <th>Thành phố/Tỉnh</th>
-                            <th>Quận/Huyện</th>
-                            <th>Khu vực</th>
-                            <th>Địa chỉ</th>
-                            <th>Trạng thái</th>
-                            <th>Ngày tạo</th>
-                            <th>Ngày Sửa</th>
-                            <th>Chi tiết</th>
-                            <th>Thao tác</th>
+                            <th class="p_setting order_email" @if(!p_ui_setting('order','order_email'))  style="display: none;" @endif >Email</th>
+                            <th class="p_setting phone" @if(!p_ui_setting('order','phone'))  style="display: none;" @endif >Điện thoại</th>
+                            <th class="p_setting province" @if(!p_ui_setting('order','province'))  style="display: none;" @endif >Thành phố/Tỉnh</th>
+                            <th class="p_setting district" @if(!p_ui_setting('order','district'))  style="display: none;" @endif >Quận/Huyện</th>
+                            <th class="p_setting ward" @if(!p_ui_setting('order','ward'))  style="display: none;" @endif >Khu vực</th>
+                            <th class="p_setting address" @if(!p_ui_setting('order','address'))  style="display: none;" @endif >Địa chỉ</th>
+                            <th class="p_setting status" @if(!p_ui_setting('order','status'))  style="display: none;" @endif >Trạng thái</th>
+                            <th class="p_setting create_at" @if(!p_ui_setting('order','create_at'))  style="display: none;" @endif > Ngày tạo</th>
+                            <th class="p_setting update_at" @if(!p_ui_setting('order','update_at'))  style="display: none;" @endif >Ngày Sửa</th>
+                            <th class="p_setting detail" @if(!p_ui_setting('order','detail'))  style="display: none;" @endif >Chi tiết</th>
+                            <th class="p_setting action" @if(!p_ui_setting('order','action'))  style="display: none;" @endif >Thao tác</th>
                         </tr>
                     </tfoot>
                 </table>

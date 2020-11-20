@@ -82,12 +82,12 @@
                         Danh sách quyền
                     </a>
                 </li>
-                <li>
+                <!-- <li>
                     <a href="{{url('admin/permission/create')}}" class="{{request()->is('admin/permission/create')?'mm-active':''}}">
                         <i class="metismenu-icon pe-7s-rocket"></i>
                        Thêm quyền
                     </a>
-                </li>
+                </li> -->
                 @endif
                 <!-- <li>
                     <a href="#">
@@ -208,7 +208,7 @@
                         <li>
                             <a href="{{url('admin/user/addrole')}}" class="{{request()->is('admin/user/addrole')?'mm-active':''}}">
                                 <i class="metismenu-icon pe-7s-display2"></i>
-                                Thêm vai trò cho người dùng
+                                Thêm vai trò người dùng
                             </a>
                         </li>
                     @endif
@@ -216,7 +216,7 @@
                         <li>
                             <a href="{{url('admin/user/addpermission')}}" class="{{request()->is('admin/user/addpermission')?'mm-active':''}}">
                                 <i class="metismenu-icon pe-7s-display2"></i>
-                                Thêm quyền cho người dùng
+                                Thêm quyền người dùng
                             </a>
                         </li>
                     @endif

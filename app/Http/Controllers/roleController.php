@@ -75,7 +75,7 @@ class roleController extends Controller
         return response()->json(['success'=>'success']);
     }
     public function edit_role_for_user_form($id){
-        if(!p_author('edit','tbl_role')){
+        if(!p_author('edit','tbl_user')){
             die('Bạn del đủ quyền truy cập');
         }
         $user=DB::table('tbl_user')->where([
@@ -132,6 +132,9 @@ class roleController extends Controller
         return response()->json(['success'=>'success']);
     }
     public function delete_role($id){
+        if(!p_author('delete','tbl_role')){
+            die('bạn không đủ quyền truy cập');
+        }
         $check_permission=DB::table('tbl_role_permission')->where('role_id',$id)->first();
         if(!empty($check_permission)) return redirect()->back()->withErrors(['error_permission'=>'error']);
         $check_user =DB::table('tbl_user_role')->where('role_id',$id)->first();
@@ -139,8 +142,9 @@ class roleController extends Controller
         DB::table('tbl_role')->where('role_id',$id)->delete();
         return redirect()->back()->with('success','success');
     }
+    
     public function edit_name_role_form($id){
-        if(!p_author('view','tbl_role')){
+        if(!p_author('edit','tbl_role')){
             die('bạn không đủ quyền truy cập');
         }
         $role=DB::table('tbl_role')->where('role_id',$id)->first();
@@ -178,6 +182,9 @@ class roleController extends Controller
         return response()->json(['success'=>'success']);
     }
     public function add_form(){
+        if(!p_author('add','tbl_role')){
+            die('bạn không đủ quyền truy cập');
+        }
         return view('admin.role.add');
     }
     public function add(Request $request){
@@ -196,6 +203,6 @@ class roleController extends Controller
         if($validated->fails()) return response()->json(['error'=>$validated->getMessageBag()]);
         DB::table('tbl_role')->insert(['role'=>$request->role,'create_at'=>Carbon::now('Asia/Ho_Chi_Minh')->toDateTimeString()]);
         return response()->json(['success'=>'success']);
-
+        
     }
 }

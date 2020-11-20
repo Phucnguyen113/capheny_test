@@ -16,7 +16,7 @@ class userController extends Controller
         $this->middleware('checkInput');
     }
     public function index(Request $request){
-        if(!is_admin()){
+        if(!p_author('view','tbl_user')){
             die('Bạn đéo đủ quyền truy cập');
         }
         $list_province=DB::table('tbl_province')->get();
@@ -123,6 +123,14 @@ class userController extends Controller
         }
         
         $list_user=$list_user->where($param_search)->paginate(15);
+        foreach ($list_user as $users => $Euser) {
+            $role=DB::table('tbl_user_role')->join('tbl_role','tbl_role.role_id','=','tbl_user_role.role_id')->where('user_id',$Euser->user_id)->get(['tbl_role.role','tbl_role.role_id'])->toArray();
+            $list_user[$users]->role=$role;
+        }
+        foreach ($list_user as $users => $Euser) {
+            $permission=DB::table('tbl_user_permission')->join('tbl_permission','tbl_permission.permission_id','=','tbl_user_permission.permission_id')->where('user_id',$Euser->user_id)->get(['tbl_permission.permission','tbl_permission.permission_id'])->toArray();
+            $list_user[$users]->permission=$permission;
+        }
         return view('admin.user.index',compact('list_user','list_province','list_ward','list_district','list_role','list_permission'));
     }
     public function add_form(){
@@ -286,6 +294,9 @@ class userController extends Controller
             $user=DB::table('tbl_order')->where('user_id',$id)->first();
             if(!empty($user)) return redirect()->back()->withErrors(['error'=>'User đã mua hàng']);
             DB::table('tbl_user')->where('user_id',$id)->delete();
+            DB::table('tbl_user_role')->where('user_id',$id)->delete();
+            DB::table('tbl_user_permission')->where('user_id',$id)->delete();
+            DB::table('tbl_system_ui')->where('user_id',$id)->delete();
             return redirect()->back()->withErrors(['success'=>'success']);
         }catch(\Exception $e){
             return redirect()->back()->withErrors(['error_sv'=>'Lỗi không xác định']);
@@ -303,5 +314,17 @@ class userController extends Controller
             return response()->json(['error'=>'server error'],500);
         }
         
+    }
+    // active user api in page list user
+    public function active_api(Request $request){
+        $user=DB::table('tbl_user')->where('user_id',$request->id)->first();
+        if(empty($user)) return response()->json(['error'=>'error']);
+        if($user->active==1){
+            $active=0;
+        }else{
+            $active=1;
+        }
+        DB::table('tbl_user')->where('user_id',$request->id)->update(['active'=>$active]);
+        return response()->json(['success'=>$active]);
     }
 }
