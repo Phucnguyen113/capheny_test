@@ -14,6 +14,13 @@
                     $('.p_error').html('')
                     $.each(response.error,function(index,item){
                         $(`#${index}_error`).html(item);
+                        if(index=='admin'){
+                            Swal.fire({
+                                icon:'error',
+                                title:'Thêm thất bại',
+                                text:'Super Admin đã có toàn quyền'
+                            })
+                        }
                     })
                 }else{
                     Swal.fire({

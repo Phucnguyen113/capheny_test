@@ -9,4 +9,5 @@ class authorController extends Controller
     public function is_admin(){
        return is_admin();
     }
+    
 }

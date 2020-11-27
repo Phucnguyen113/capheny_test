@@ -1,7 +1,10 @@
 <?php
 
+use App\Http\Controllers\ApiCategoryController;
+use App\Http\Controllers\ApiProductController;
 use App\Http\Controllers\categoryController;
 use App\Http\Controllers\districtController;
+use App\Http\Controllers\mailController;
 use App\Http\Controllers\orderController;
 use App\Http\Controllers\productController;
 use App\Http\Controllers\uiSettingController;
@@ -52,3 +55,20 @@ Route::post('user/active',[userController::class,'active_api']);
 Route::post('category/active',[categoryController::class,'active_api']);
 //active api product
 Route::post('product/active',[productController::class,'active_api']);
+//edit status order
+Route::post('order/status',[orderController::class,'edit_status_api']);
+//send mail order
+Route::post('send/mail/{order_id}',[mailController::class,'sendmail']);
+
+Route::group(['middleware'=>'p_cors'],function(){
+    //category API
+    Route::post('tree_cate',[ApiCategoryController::class,'list_category']);
+    // product API
+    Route::get('list_product',[ApiProductController::class,'list_product']);
+    //category API
+    Route::get('column_cate/{id}',[ApiCategoryController::class,'category_column']);
+    // detail product API
+    Route::get('detail/product',[ApiProductController::class,'detail']);
+    //get product_new
+    Route::get('product_new',[ApiProductController::class,'list_product_new_api']);
+});

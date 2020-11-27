@@ -290,17 +290,26 @@
                                 <td class="p_setting ward" @if(!p_ui_setting('order','ward'))  style="display: none;" @endif>{{$order->ward_}}</td>
                                 <td class="p_setting address" @if(!p_ui_setting('order','address'))  style="display: none;" @endif>{{$order->order_address}}</td>
                                 <td class="p_setting status" @if(!p_ui_setting('order','status'))  style="display: none;" @endif>
-                                    @if($order->order_status==0) 
-                                        Chờ xử lý
-                                    @elseif($order->order_status==1)
-                                        Đã tiếp nhận
-                                    @elseif($order->order_status==2)
-                                        Đang giao hàng
-                                    @elseif($order->order_status==3)
-                                        Đã nhận hàng
-                                    @else 
-                                        Trả hàng về
-                                    @endif
+                                   
+                                    <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
+                                       
+                                            <button id="btnGroupDrop{{$order->order_id}}" type="button" class="btn btn-secondary " >
+                                                @if($order->order_status==0) 
+                                                    Chờ xử lý
+                                                @elseif($order->order_status==1)
+                                                    Đã tiếp nhận
+                                                @elseif($order->order_status==2)
+                                                    Đang giao hàng
+                                                @elseif($order->order_status==3)
+                                                    Đã nhận hàng
+                                                @else 
+                                                    Trả hàng về
+                                                @endif
+                                            </button>
+                                            
+                                            
+                                    </div>
+                                </div>
                                 </td>
                                 <td class="p_setting create_at" @if(!p_ui_setting('order','create_at'))  style="display: none;" @endif>{{$order->create_at}}</td>
                                 <td class="p_setting update_at" @if(!p_ui_setting('order','update_at'))  style="display: none;" @endif>{{$order->update_at}}</td>

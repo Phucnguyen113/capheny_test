@@ -14,8 +14,8 @@ class roleController extends Controller
         $this->middleware('checkInput');
     }
     public function index(Request $request){
-        if(!p_author('view','tbl_role')){
-            die('Bạn del đủ quyền truy cập');
+        if(!is_admin()){
+            return view('error.403');
         }
         $list_role=DB::table('tbl_role');
         if($request->role!==null){
@@ -41,8 +41,8 @@ class roleController extends Controller
         return view('admin.role.index',compact('list_role'));
     }
     public function add_role_for_user_form(){
-        if(!p_author('add_role','tbl_user')){
-            die('Bạn del đủ quyền truy cập');
+        if(!is_admin()){
+            return view('error.403');
         }
         $list_user=DB::table('tbl_user')->where('user_type',1)->orderByDesc('user_id')->get();
         $list_role=DB::table('tbl_role')->orderByDesc('role_id')->get();
@@ -64,6 +64,12 @@ class roleController extends Controller
             ]
         );
         if($validated->fails()) return response()->json(['error'=>$validated->getMessageBag()]);
+        $admin=DB::table('tbl_user_role')->where('user_id',$request->user_id)->get(['role_id']);
+        foreach ($admin as $adms => $ad) {
+            if($ad->role_id==1){
+                return response()->json(['error'=>['admin'=>'Đây là Super admin']]);
+            }
+        }
         foreach ($request->role_id as $roles => $role) {
             $role_old=DB::table('tbl_user_role')->where([
                 ['user_id','=',$request->user_id],
@@ -75,8 +81,8 @@ class roleController extends Controller
         return response()->json(['success'=>'success']);
     }
     public function edit_role_for_user_form($id){
-        if(!p_author('edit','tbl_user')){
-            die('Bạn del đủ quyền truy cập');
+        if(!is_admin()){
+            return view('error.403');
         }
         $user=DB::table('tbl_user')->where([
             ['user_id','=',$id],
@@ -118,6 +124,12 @@ class roleController extends Controller
             ['user_type','=',1]
         ])->first();
         if(empty($user)) return response()->json(['error'=>['user_id'=>'Không tìm thấy người dùng']]);
+        $admin=DB::table('tbl_user_role')->where('user_id',$id)->get(['role_id']);
+        foreach ($admin as $adms => $ad) {
+            if($ad->role_id==1){
+                return response()->json(['error'=>['admin'=>'Đây là Super admin']]);
+            }
+        }
         //delete role old 
         DB::table('tbl_user_role')->where('user_id',$user->user_id)->delete();
         //add new role
@@ -132,8 +144,8 @@ class roleController extends Controller
         return response()->json(['success'=>'success']);
     }
     public function delete_role($id){
-        if(!p_author('delete','tbl_role')){
-            die('bạn không đủ quyền truy cập');
+        if(!is_admin()){
+            return view('error.403');
         }
         $check_permission=DB::table('tbl_role_permission')->where('role_id',$id)->first();
         if(!empty($check_permission)) return redirect()->back()->withErrors(['error_permission'=>'error']);
@@ -144,8 +156,8 @@ class roleController extends Controller
     }
     
     public function edit_name_role_form($id){
-        if(!p_author('edit','tbl_role')){
-            die('bạn không đủ quyền truy cập');
+        if(!is_admin()){
+            return view('error.403');
         }
         $role=DB::table('tbl_role')->where('role_id',$id)->first();
         $permission_old=DB::table('tbl_role_permission')->where('role_id',$id)->get();
@@ -182,8 +194,8 @@ class roleController extends Controller
         return response()->json(['success'=>'success']);
     }
     public function add_form(){
-        if(!p_author('add','tbl_role')){
-            die('bạn không đủ quyền truy cập');
+        if(!is_admin()){
+            return view('error.403');
         }
         return view('admin.role.add');
     }

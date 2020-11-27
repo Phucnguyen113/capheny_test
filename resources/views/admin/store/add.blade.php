@@ -134,7 +134,14 @@
                         $('#'+index+"_error").html(item);
                     });
                 }else{
-                    window.location.href='{{url("admin/store")}}';
+                    Swal.fire({
+                        icon:'success',
+                        title:'Thêm thành công!',
+                        text:'Bạn vừa thêm 1 cửa hàng'
+                    }).then(()=>{
+                        window.location.href='{{url("admin/store")}}';
+                    })
+                    
                 }
             }
         });

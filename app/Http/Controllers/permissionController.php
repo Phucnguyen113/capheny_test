@@ -14,14 +14,17 @@ class permissionController extends Controller
         $this->middleware('checkInput');
     }
     public function index(Request $request){
-        if(!p_author('view','tbl_permission')){
-            die('bạn không đủ quyền truy cập');
+        if(!is_admin()){
+            return view('error.403');
         }
         $list_permission=DB::table('tbl_permission')->orderByDesc('permission_id')->paginate(15);
         return view('admin.permission.index',compact('list_permission'));
     }
 
     public function add_permission_for_user_form(){
+        if(!is_admin()){
+            return view('error.403');
+        }
         $list_user=DB::table('tbl_user')->where('user_type','=',1)->orderByDesc('user_id')->get();
         $list_permission=DB::table('tbl_permission')->orderByDesc('permission_id')->get();
         return view('admin.user.addpermission',compact('list_permission','list_user'));
@@ -46,6 +49,12 @@ class permissionController extends Controller
         //check user is isset
         $user_check=DB::table('tbl_user')->where('user_id',$request->user_id)->first();
         if(empty($user_check)) return response()->json(['error'=>['user_id'=>'Không tìm thấy người dùng này']]);
+        $admin=DB::table('tbl_user_role')->where('user_id',$request->user_id)->get(['role_id']);
+        foreach ($admin as $adms => $ad) {
+            if($ad->role_id==1){
+                return response()->json(['error'=>['admin'=>'Đây là Super admin']]);
+            }
+        }
         for ($i=0; $i <count($request->permission_id) ; $i++) { 
             //check permission is already ?
             $check_permission_isset=DB::table('tbl_user_permission')->where(
@@ -61,6 +70,9 @@ class permissionController extends Controller
     }
 
     public function edit_permission_for_user_form($id){
+        if(!is_admin()){
+            return view('error.403');
+        }
         $user=DB::table('tbl_user')->where('user_id',$id)->first();
         if(empty($user)) return redirect()->back();
         $permission_of_user=DB::table('tbl_user_permission')->where('user_id',$id)->get(['permission_id']);
@@ -91,6 +103,13 @@ class permissionController extends Controller
             ['user_type','=',1]
         ])->first();
         if(empty($user)) return response()->json(['error'=>['user_id'=>'Không tìm thấy người dùng']]);
+        //check user is SP admin
+        $admin=DB::table('tbl_user_role')->where('user_id',$id)->get(['role_id']);
+        foreach ($admin as $adms => $ad) {
+            if($ad->role_id==1){
+                return response()->json(['error'=>['admin'=>'Đây là Super admin']]);
+            }
+        }
         //delete permission old 
         DB::table('tbl_user_permission')->where('user_id',$user->user_id)->delete();
         // case remove all permission
@@ -106,6 +125,9 @@ class permissionController extends Controller
         return response()->json(['success'=>'success']);
     }
     public function add_form(){
+        if(!is_admin()){
+            return view('error.403');
+        }
         return view('admin.permission.add');
     }
     public function add(Request $request){

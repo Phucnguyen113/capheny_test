@@ -16,7 +16,7 @@ class commentController extends Controller
     }
     public function index(Request $request){
         if(!p_author('view','tbl_comment')){
-            die('Bạn đéo đủ quyền truy cập');
+            return view('error.403');
         }
         $list_comment=DB::table('tbl_comment')
         ->join('tbl_product','tbl_product.product_id','=','tbl_comment.product_id')
@@ -26,7 +26,7 @@ class commentController extends Controller
     }
     public function add_form(){
         if(!p_author('add','tbl_comment')){
-            die('Bạn đéo đủ quyền truy cập');
+            return view('error.403');
         }
         $list_product=DB::table('tbl_product')->orderByDesc('product_id')->get();
         $list_user=DB::table('tbl_user')->orderByDesc('user_id')->get();

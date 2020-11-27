@@ -35,6 +35,7 @@
             <div class="card-title" style="text-align:center;font-size:36px;">
                 Danh sách vai trò
             </div>
+            <a href="{{url('admin/role/create')}}" class="btn btn-success mb-2">Thêm vai trò</a>
             <div class="table-responsive">
                 <table class="table table-bordered">
                     <thead>

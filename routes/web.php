@@ -1,9 +1,11 @@
 <?php
 
+use App\Http\Controllers\ApiCategoryController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\categoryController;
 use App\Http\Controllers\colorController;
 use App\Http\Controllers\commentController;
+use App\Http\Controllers\mailController;
 use App\Http\Controllers\orderController;
 use App\Http\Controllers\permissionController;
 use App\Http\Controllers\productController;
@@ -23,6 +25,7 @@ use Illuminate\Support\Facades\Route;
 | contains the "web" middleware group. Now create something great!
 |
 */
+
 
 Route::group(['prefix'=>'admin'],function(){
     Route::group(['middleware'=>'p_auth'],function(){
@@ -101,3 +104,5 @@ Route::group(['prefix'=>'admin'],function(){
 Route::post('category/tree_category/select/{id}',[categoryController::class,'get_tree_category']);
 // get category product detail
 Route::post('product/get_category/{id}',[productController::class,'get_category_product_detail']);
+
+Route::get('send/{id}',[mailController::class,'sendmail']);

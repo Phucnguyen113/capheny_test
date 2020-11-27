@@ -83,7 +83,7 @@ class storeController extends Controller
         ]);
         if($validated->fails()) return response()->json(['error'=>$validated->getMessageBag()]);
         $create_at=Carbon::now('Asia/Ho_Chi_Minh')->toDateTimeString(); 
-        DB::table('tbl_store')->insert(array_merge($request->except(['_token']),['create_at'=>$create_at]));
+        DB::table('tbl_store')->insert(array_merge($request->except(['_token']),['create_at'=>$create_at],['user_create'=>p_user()['user_id']]));
         return response()->json(['success'=>'sucess']);
     }
     public function form_add_product(){
@@ -149,7 +149,7 @@ class storeController extends Controller
     //detail store
     public function detail($id){
         if(!p_author('view','tbl_store')){
-            die('Bạn đéo đủ quyền truy cập');
+            return view('error.403');
         }
         $data=DB::table('tbl_store')->join('tbl_province','tbl_province.id','=','tbl_store.province')
         ->join('tbl_district','tbl_district.id','=','tbl_store.district')
@@ -161,7 +161,7 @@ class storeController extends Controller
         ->join('tbl_size','tbl_size.size_id','=','tbl_store_product.product_size')
         ->join('tbl_color','tbl_color.color_id','=','tbl_store_product.product_color')
         ->join('tbl_product','tbl_product.product_id','=','tbl_store_product.product_id')
-        ->orderByDesc('tbL_product.product_id')
+        ->orderByDesc('tbl_product.product_id')
         ->select(['tbl_store_product.id','tbl_store_product.amount_','tbl_size.size as size','tbl_color.color as color','tbl_store_product.product_amount','tbl_product.product_name as product_name','tbl_store_product.create_at as create_at'])
         ->paginate(20);
         $data->list_product=$list_product;
@@ -258,12 +258,12 @@ class storeController extends Controller
         ]);
         if($validated->fails()) return response()->json(['error'=>$validated->getMessageBag()]);
         $update_at=Carbon::now('Asia/Ho_Chi_Minh')->toDateTimeString(); 
-        DB::table('tbl_store')->where('store_id',$id)->update(array_merge($request->except(['_token']),['update_at'=>$update_at]));
+        DB::table('tbl_store')->where('store_id',$id)->update(array_merge($request->except(['_token']),['update_at'=>$update_at],['user_update'=>p_user()['user_id']]));
         return response()->json(['success'=>'sucess']);
     }
     public function delete_store($id){
         if(!p_author('delete','tbl_store')){
-            die('Bạn đéo đủ quyền truy cập');
+            return view('error.403');
         }
         $list_product_of_store=DB::table('tbl_store_product')->where('store_id',$id)->get()->toArray();
         if(count($list_product_of_store)>0){

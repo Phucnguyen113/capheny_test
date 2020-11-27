@@ -14,6 +14,13 @@
                     $('.p_error').html('')
                     $.each(response.error,function(index,item){
                         $(`#${index}_error`).html(item);
+                        if(index=='admin'){
+                            Swal.fire({
+                                icon:'error',
+                                title:'Sửa thất bại!',
+                                text:'Không thể chỉnh sửa tài khoản Super Admin'
+                            })
+                        }
                     })
                 }else{
                     Swal.fire({

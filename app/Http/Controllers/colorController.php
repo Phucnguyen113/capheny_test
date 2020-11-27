@@ -23,7 +23,7 @@ class colorController extends Controller
     {
         
         if(!p_author('view','tbl_color')){
-            die('Bạn đéo đủ quyền truy cập');
+            return view('error.403');
         }
         $list_color=DB::table('tbl_color');
         if($request->color!==null && empty($request->color)){
@@ -62,7 +62,7 @@ class colorController extends Controller
     public function create()
     {
         if(!p_author('add','tbl_color')){
-            die('Bạn đéo đủ quyền truy cập');
+            return view('error.403');
         }
         return view('admin/color/add');
     }
@@ -115,7 +115,7 @@ class colorController extends Controller
     public function edit($id)
     {
         if(!p_author('edit','tbl_color')){
-            die('Bạn đéo đủ quyền truy cập');
+            return view('error.403');
         }
         $color=DB::table('tbl_color')->where('color_id',$id)->first();
 
@@ -168,7 +168,7 @@ class colorController extends Controller
     public function destroy($id)
     {
         if(!p_author('delete','tbl_color')){
-            die('Bạn đéo đủ quyền truy cập');
+            return view('error.403');
         }
         $check_isset=DB::table('tbl_product_color')->where('color_id',$id)->first();
         if(!empty($check_isset)) return redirect()->back()->withErrors(['error'=>'Màu này đã có sản phẩm']);

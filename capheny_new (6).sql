@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Máy chủ: 127.0.0.1
--- Thời gian đã tạo: Th10 16, 2020 lúc 08:18 AM
+-- Thời gian đã tạo: Th10 25, 2020 lúc 03:04 PM
 -- Phiên bản máy phục vụ: 10.3.16-MariaDB
 -- Phiên bản PHP: 7.3.6
 
@@ -47,7 +47,7 @@ INSERT INTO `tbl_category` (`category_id`, `category_name`, `category_parent_id`
 (2, 'Hằng ngày', 1, 'Hang-ngay', 0, '2020-11-11 11:39:19', NULL),
 (3, 'Áo phông', 2, 'Ao-phong', 0, '2020-11-11 11:39:34', NULL),
 (6, 'Áo sơ mi', 2, 'Ao-so-mi', 0, '2020-11-13 23:07:11', NULL),
-(7, 'test dd', 0, 'test-dd', 0, '2020-11-16 14:16:08', NULL);
+(7, 'test dd', 0, 'test-dd', 1, '2020-11-16 14:16:08', NULL);
 
 -- --------------------------------------------------------
 
@@ -71,7 +71,10 @@ INSERT INTO `tbl_category_product` (`category_id`, `product_id`) VALUES
 (6, 2),
 (2, 2),
 (1, 2),
-(6, 3);
+(6, 3),
+(7, 4),
+(7, 6),
+(7, 5);
 
 -- --------------------------------------------------------
 
@@ -895,7 +898,10 @@ CREATE TABLE `tbl_image` (
 INSERT INTO `tbl_image` (`image_id`, `image_path`, `type`) VALUES
 (1, 'product-5_0_2020_11_13.jpg', 1),
 (2, 'Ao-so-mi_0_2020_11_13.jpg', 1),
-(3, 'test-product-no-discount-edited_0_2020_11_15.jpg', 1);
+(3, 'test-product-no-discount-edited_0_2020_11_15.jpg', 1),
+(4, 'test-no-active_0_2020_11_20.jpg', 1),
+(5, 'product2_0_2020_11_22.jpg', 1),
+(6, 'product-450k_0_2020_11_24.jpg', 1);
 
 -- --------------------------------------------------------
 
@@ -919,6 +925,14 @@ CREATE TABLE `tbl_order` (
   `update_at` datetime DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+--
+-- Đang đổ dữ liệu cho bảng `tbl_order`
+--
+
+INSERT INTO `tbl_order` (`order_id`, `user_id`, `user_not_login_id`, `order_name`, `order_email`, `order_phone`, `province`, `district`, `ward`, `order_address`, `order_status`, `create_at`, `update_at`) VALUES
+(2, 1, 0, 'nguyen phuc', 'phucntps09285@fpt.edu.vn', '0344611101', 1, 2, 18, '43/3 Thành Thái, Phường 14 Quận 10', 1, '2020-11-20 15:20:14', '2020-11-24 10:26:08'),
+(3, 6, 0, 'ngiyen phucccc', 'qwed@gmail.com', '0344611101', 1, 2, 20, 'thanh thai', 1, '2020-11-22 17:01:24', '2020-11-23 12:52:49');
+
 -- --------------------------------------------------------
 
 --
@@ -937,6 +951,14 @@ CREATE TABLE `tbl_order_detail` (
   `update_at` datetime DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+--
+-- Đang đổ dữ liệu cho bảng `tbl_order_detail`
+--
+
+INSERT INTO `tbl_order_detail` (`order_detail_id`, `order_id`, `product_id`, `product_size_id`, `product_color_id`, `product_amount`, `product_price`, `create_at`, `update_at`) VALUES
+(12, 3, 1, 1, 1, 1, 125000, '2020-11-23 12:52:49', NULL),
+(17, 2, 1, 1, 1, 1, 125000, '2020-11-24 10:26:08', NULL);
+
 -- --------------------------------------------------------
 
 --
@@ -946,6 +968,8 @@ CREATE TABLE `tbl_order_detail` (
 CREATE TABLE `tbl_permission` (
   `permission_id` int(11) NOT NULL,
   `permission` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `tble` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `action` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `create_at` datetime DEFAULT NULL,
   `update_at` datetime DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -954,42 +978,44 @@ CREATE TABLE `tbl_permission` (
 -- Đang đổ dữ liệu cho bảng `tbl_permission`
 --
 
-INSERT INTO `tbl_permission` (`permission_id`, `permission`, `create_at`, `update_at`) VALUES
-(1, 'Thêm người dùng', NULL, NULL),
-(2, 'Sửa người dùng', NULL, NULL),
-(3, 'Xóa người dùng', NULL, NULL),
-(4, 'Xem danh sách người dùng', NULL, NULL),
-(5, 'Thêm sản phẩm', NULL, NULL),
-(6, 'Sửa sản phẩm', NULL, NULL),
-(7, 'Xóa sản phẩm', NULL, NULL),
-(8, 'Xem danh sách sản phẩm', NULL, NULL),
-(9, 'Thêm danh mục', NULL, NULL),
-(10, 'Sửa danh mục', NULL, NULL),
-(11, 'Xóa danh mục', NULL, NULL),
-(12, 'Xem danh sách danh mục', NULL, NULL),
-(13, 'Thêm đơn hàng', NULL, NULL),
-(14, 'Sửa đơn hàng', NULL, NULL),
-(15, 'Xóa đơn hàng', NULL, NULL),
-(16, 'Thêm cửa hàng', NULL, NULL),
-(17, 'Sửa cửa hàng', NULL, NULL),
-(18, 'Xóa cửa hàng', NULL, NULL),
-(19, 'Thêm sản phẩm vào cửa hàng', NULL, NULL),
-(20, 'Thêm màu', NULL, NULL),
-(21, 'Sửa màu', NULL, NULL),
-(22, 'Xóa màu', NULL, NULL),
-(23, 'Xem danh sách đơn hàng', NULL, NULL),
-(24, 'Xem danh sách cửa hàng', NULL, NULL),
-(26, 'Xem danh sách màu', NULL, NULL),
-(27, 'Thêm kích thước', NULL, NULL),
-(28, 'Sửa kích thước', NULL, NULL),
-(29, 'Xóa kích thước', NULL, NULL),
-(30, 'Xem danh sách kích thước', NULL, NULL),
-(31, 'Thêm bình luận', NULL, NULL),
-(32, 'Sửa bình luận', NULL, NULL),
-(33, 'Xóa bình luận', NULL, NULL),
-(34, 'Xem danh sách bình luận', NULL, NULL),
-(35, 'Kích hoạt danh mục', NULL, NULL),
-(36, 'Kích hoạt sản phẩm', NULL, NULL);
+INSERT INTO `tbl_permission` (`permission_id`, `permission`, `tble`, `action`, `create_at`, `update_at`) VALUES
+(1, 'Thêm người dùng', 'tbl_user', 'add', NULL, NULL),
+(2, 'Sửa người dùng', 'tbl_user', 'edit', NULL, NULL),
+(3, 'Xóa người dùng', 'tbl_user', 'delete', NULL, NULL),
+(4, 'Xem danh sách người dùng', 'tbl_user', 'view', NULL, NULL),
+(5, 'Thêm sản phẩm', 'tbl_product', 'add', NULL, NULL),
+(6, 'Sửa sản phẩm', 'tbl_product', 'edit', NULL, NULL),
+(7, 'Xóa sản phẩm', 'tbl_product', 'delete', NULL, NULL),
+(8, 'Xem danh sách sản phẩm', 'tbl_product', 'view', NULL, NULL),
+(9, 'Thêm danh mục', 'tbl_category', 'add', NULL, NULL),
+(10, 'Sửa danh mục', 'tbl_category', 'edit', NULL, NULL),
+(11, 'Xóa danh mục', 'tbl_category', 'delete', NULL, NULL),
+(12, 'Xem danh sách danh mục', 'tbl_category', 'view', NULL, NULL),
+(13, 'Thêm đơn hàng', 'tbl_order', 'add', NULL, NULL),
+(14, 'Sửa đơn hàng', 'tbl_order', 'edit', NULL, NULL),
+(15, 'Xóa đơn hàng', 'tbl_order', 'delete', NULL, NULL),
+(16, 'Thêm cửa hàng', 'tbl_store', 'add', NULL, NULL),
+(17, 'Sửa cửa hàng', 'tbl_store', 'edit', NULL, NULL),
+(18, 'Xóa cửa hàng', 'tbl_store', 'delete', NULL, NULL),
+(19, 'Thêm sản phẩm vào cửa hàng', 'tbl_store', 'add_product', NULL, NULL),
+(20, 'Thêm màu', 'tbl_color', 'add', NULL, NULL),
+(21, 'Sửa màu', 'tbl_color', 'edit', NULL, NULL),
+(22, 'Xóa màu', 'tbl_color', 'delete', NULL, NULL),
+(23, 'Xem danh sách đơn hàng', 'tbl_order', 'view', NULL, NULL),
+(24, 'Xem danh sách cửa hàng', 'tbl_store', 'view', NULL, NULL),
+(26, 'Xem danh sách màu', 'tbl_color', 'view', NULL, NULL),
+(27, 'Thêm kích thước', 'tbl_size', 'add', NULL, NULL),
+(28, 'Sửa kích thước', 'tbl_size', 'edit', NULL, NULL),
+(29, 'Xóa kích thước', 'tbl_size', 'delete', NULL, NULL),
+(30, 'Xem danh sách kích thước', 'tbl_size', 'view', NULL, NULL),
+(31, 'Thêm bình luận', 'tbl_comment', 'add', NULL, NULL),
+(32, 'Sửa bình luận', 'tbl_comment', 'edit', NULL, NULL),
+(33, 'Xóa bình luận', 'tbl_comment', 'delete', NULL, NULL),
+(34, 'Xem danh sách bình luận', 'tbl_comment', 'view', NULL, NULL),
+(35, 'Kích hoạt danh mục', 'tbl_category', 'active', NULL, NULL),
+(36, 'Kích hoạt sản phẩm', 'tbl_product', 'active', NULL, NULL),
+(37, 'Kích hoạt người dùng', 'tbl_user', 'active', NULL, NULL),
+(38, 'Kích hoạt bình luận', 'tbl_comment', 'active', NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -1006,15 +1032,20 @@ CREATE TABLE `tbl_product` (
   `product_image` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL,
   `active` tinyint(4) NOT NULL,
   `create_at` datetime DEFAULT NULL,
-  `update_at` datetime DEFAULT NULL
+  `update_at` datetime DEFAULT NULL,
+  `user_create` int(11) DEFAULT NULL,
+  `user_edit` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Đang đổ dữ liệu cho bảng `tbl_product`
 --
 
-INSERT INTO `tbl_product` (`product_id`, `product_name`, `product_price`, `description`, `product_slug`, `product_image`, `active`, `create_at`, `update_at`) VALUES
-(1, 'product 5', 125000, '<p>mota</p>', 'product-5', '[\"product-5_0_2020_11_13.jpg\"]', 0, '2020-11-13 19:54:51', NULL);
+INSERT INTO `tbl_product` (`product_id`, `product_name`, `product_price`, `description`, `product_slug`, `product_image`, `active`, `create_at`, `update_at`, `user_create`, `user_edit`) VALUES
+(1, 'product 5', 125000, '<p>mota</p>', 'product-5', '[\"product-5_0_2020_11_13.jpg\"]', 0, '2020-11-13 19:54:51', NULL, 0, 0),
+(4, 'test no active', 12000, '<p>dasd</p>', 'test-no-active', '[\"test-no-active_0_2020_11_20.jpg\"]', 1, '2020-11-20 11:58:14', NULL, 0, 0),
+(5, 'product2', 125000, '<p>jkjk</p>', 'product2', '[\"product2_0_2020_11_22.jpg\"]', 1, '2020-11-22 09:35:02', '2020-11-24 13:37:46', 1, 1),
+(6, 'product 450k', 450000, '<p>cc</p>', 'product-450k', '[\"product-450k_0_2020_11_24.jpg\"]', 1, '2020-11-24 13:34:55', NULL, 1, NULL);
 
 -- --------------------------------------------------------
 
@@ -1034,7 +1065,10 @@ CREATE TABLE `tbl_product_color` (
 INSERT INTO `tbl_product_color` (`product_id`, `color_id`) VALUES
 (1, 1),
 (2, 1),
-(3, 1);
+(3, 1),
+(4, 1),
+(5, 1),
+(6, 1);
 
 -- --------------------------------------------------------
 
@@ -1056,7 +1090,9 @@ CREATE TABLE `tbl_product_discount` (
 --
 
 INSERT INTO `tbl_product_discount` (`discount_id`, `product_id`, `discount_type`, `discount_amount`, `discount_from_date`, `discount_end_date`) VALUES
-(1, 2, 1, 20000, '2020-11-13 23:07:17', '2020-11-30 23:07:17');
+(1, 2, 1, 20000, '2020-11-13 23:07:17', '2020-11-30 23:07:17'),
+(2, 5, 1, 20000, '2020-11-24 13:06:03', '2020-11-30 13:06:03'),
+(3, 6, 2, 10, '2020-11-24 13:34:09', '2020-11-25 13:34:09');
 
 -- --------------------------------------------------------
 
@@ -1076,7 +1112,10 @@ CREATE TABLE `tbl_product_size` (
 INSERT INTO `tbl_product_size` (`product_id`, `size_id`) VALUES
 (1, 1),
 (2, 1),
-(3, 1);
+(3, 1),
+(4, 1),
+(5, 1),
+(6, 1);
 
 -- --------------------------------------------------------
 
@@ -1168,6 +1207,8 @@ INSERT INTO `tbl_province` (`id`, `_name`, `_code`) VALUES
 CREATE TABLE `tbl_role` (
   `role_id` int(11) NOT NULL,
   `role` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `tble` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `url_path` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `create_at` datetime DEFAULT NULL,
   `update_at` datetime DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -1176,17 +1217,17 @@ CREATE TABLE `tbl_role` (
 -- Đang đổ dữ liệu cho bảng `tbl_role`
 --
 
-INSERT INTO `tbl_role` (`role_id`, `role`, `create_at`, `update_at`) VALUES
-(1, 'Super Administrator', NULL, NULL),
-(2, 'Administrator\r\n', NULL, NULL),
-(3, 'Quản lí danh mục', NULL, NULL),
-(4, 'Quản lí sản phẩm', NULL, NULL),
-(6, 'Quản lí người dùng', NULL, NULL),
-(7, 'Quản lí bình luận', NULL, NULL),
-(8, 'Quản lí cửa hàng', NULL, NULL),
-(9, 'Quản lí đơn hàng', NULL, NULL),
-(10, 'Quản lí màu', NULL, NULL),
-(11, 'Quản lí kích thước', NULL, NULL);
+INSERT INTO `tbl_role` (`role_id`, `role`, `tble`, `url_path`, `create_at`, `update_at`) VALUES
+(1, 'Super Administrator', '', 'admin/dashboard', NULL, NULL),
+(2, 'Administrator\r\n', '', 'admin/product', NULL, NULL),
+(3, 'Quản lí danh mục', 'tbl_category', NULL, NULL, NULL),
+(4, 'Quản lí sản phẩm', 'tbl_product', NULL, NULL, NULL),
+(6, 'Quản lí người dùng', 'tbl_user', NULL, NULL, NULL),
+(7, 'Quản lí bình luận', 'tbl_comment', NULL, NULL, '2020-11-19 11:21:25'),
+(8, 'Quản lí cửa hàng', 'tbl_store', NULL, NULL, NULL),
+(9, 'Quản lí đơn hàng', 'tbl_order', NULL, NULL, NULL),
+(10, 'Quản lí màu', 'tbl_color', NULL, NULL, NULL),
+(11, 'Quản lí kích thước', 'tbl_size', NULL, NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -1204,10 +1245,21 @@ CREATE TABLE `tbl_role_permission` (
 --
 
 INSERT INTO `tbl_role_permission` (`role_id`, `permission_id`) VALUES
+(3, 9),
+(3, 10),
+(3, 11),
+(3, 12),
+(3, 35),
 (4, 5),
 (4, 6),
 (4, 7),
 (4, 8),
+(4, 36),
+(6, 1),
+(6, 2),
+(6, 3),
+(6, 4),
+(6, 37),
 (8, 16),
 (8, 17),
 (8, 18),
@@ -1216,6 +1268,7 @@ INSERT INTO `tbl_role_permission` (`role_id`, `permission_id`) VALUES
 (9, 13),
 (9, 14),
 (9, 15),
+(9, 23),
 (10, 20),
 (10, 21),
 (10, 22),
@@ -1228,8 +1281,7 @@ INSERT INTO `tbl_role_permission` (`role_id`, `permission_id`) VALUES
 (7, 32),
 (7, 33),
 (7, 34),
-(4, 35),
-(3, 36);
+(7, 38);
 
 -- --------------------------------------------------------
 
@@ -1249,7 +1301,8 @@ CREATE TABLE `tbl_size` (
 --
 
 INSERT INTO `tbl_size` (`size_id`, `size`, `create_at`, `update_at`) VALUES
-(1, 'L', '2020-11-13 19:54:02', NULL);
+(1, 'L', '2020-11-13 19:54:02', NULL),
+(2, 'S', '2020-11-24 14:52:44', NULL);
 
 -- --------------------------------------------------------
 
@@ -1265,15 +1318,18 @@ CREATE TABLE `tbl_store` (
   `ward` int(11) NOT NULL,
   `store_address` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `create_at` datetime DEFAULT NULL,
-  `update_at` datetime DEFAULT NULL
+  `update_at` datetime DEFAULT NULL,
+  `user_create` int(11) DEFAULT NULL,
+  `user_update` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Đang đổ dữ liệu cho bảng `tbl_store`
 --
 
-INSERT INTO `tbl_store` (`store_id`, `store_name`, `province`, `district`, `ward`, `store_address`, `create_at`, `update_at`) VALUES
-(1, 'Cửa hàng Hà nội', 1, 16, 206, '43/3 Thành Thái', '2020-11-13 19:55:49', NULL);
+INSERT INTO `tbl_store` (`store_id`, `store_name`, `province`, `district`, `ward`, `store_address`, `create_at`, `update_at`, `user_create`, `user_update`) VALUES
+(1, 'Cửa hàng Hà nội', 1, 16, 206, '43/3 Thành Thái', '2020-11-13 19:55:49', '2020-11-22 09:43:22', NULL, 1),
+(2, 'Cửa hàng quận 12', 15, 194, 2727, '43/3 Thành Thái e', '2020-11-22 09:42:12', '2020-11-22 09:44:40', 1, 1);
 
 -- --------------------------------------------------------
 
@@ -1298,7 +1354,7 @@ CREATE TABLE `tbl_store_product` (
 --
 
 INSERT INTO `tbl_store_product` (`id`, `store_id`, `product_id`, `product_size`, `product_color`, `product_amount`, `amount_`, `create_at`, `update_at`) VALUES
-(1, 1, 1, 1, 1, 9, 9, '2020-11-13 19:56:10', NULL);
+(1, 1, 1, 1, 1, 7, 9, '2020-11-13 19:56:10', NULL);
 
 -- --------------------------------------------------------
 
@@ -1311,6 +1367,31 @@ CREATE TABLE `tbl_system` (
   `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `value` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Cấu trúc bảng cho bảng `tbl_system_ui`
+--
+
+CREATE TABLE `tbl_system_ui` (
+  `system_ui_id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `name` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  `value` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL
+) ;
+
+--
+-- Đang đổ dữ liệu cho bảng `tbl_system_ui`
+--
+
+INSERT INTO `tbl_system_ui` (`system_ui_id`, `user_id`, `name`, `value`) VALUES
+(1, 1, 'user', '{\"email\":\"0\",\"phone\":\"0\",\"province\":\"1\",\"district\":\"0\",\"ward\":\"0\",\"address\":\"0\",\"admin\":\"0\",\"detail\":\"1\",\"role\":\"1\",\"permission\":\"1\",\"active\":\"1\",\"create_at\":\"1\",\"update_at\":\"1\",\"action\":\"1\"}'),
+(2, 1, 'product', '{\"description\":\"1\",\"list_cate\":\"1\",\"color\":\"1\",\"size\":\"0\",\"price\":\"0\",\"discount\":\"0\",\"active\":\"1\",\"detail\":\"0\",\"action\":\"1\"}'),
+(3, 4, 'user', '{\"email\":\"0\",\"phone\":\"1\",\"province\":\"0\",\"district\":\"0\",\"ward\":\"0\",\"address\":\"1\",\"admin\":\"1\",\"detail\":\"1\",\"role\":\"1\",\"permission\":\"1\",\"active\":\"1\",\"create_at\":\"0\",\"update_at\":\"0\",\"action\":\"0\"}'),
+(4, 1, 'category', '{\"slug\":\"1\",\"active\":\"1\",\"totalProduct\":\"1\",\"create_at\":\"1\",\"update_at\":\"1\",\"action\":\"1\"}'),
+(5, 1, 'order', '{\"order_email\":\"1\",\"phone\":\"1\",\"province\":\"1\",\"district\":\"0\",\"ward\":\"0\",\"address\":\"0\",\"status\":\"0\",\"create_at\":\"1\",\"update_at\":\"0\",\"detail\":\"0\",\"action\":\"1\"}'),
+(6, 1, 'store', '{\"province\":\"1\",\"district\":\"1\",\"ward\":\"1\",\"address\":\"1\",\"create_at\":\"1\",\"update_at\":\"1\",\"detail\":\"0\",\"action\":\"0\"}');
 
 -- --------------------------------------------------------
 
@@ -1342,11 +1423,10 @@ CREATE TABLE `tbl_user` (
 --
 
 INSERT INTO `tbl_user` (`user_id`, `user_type`, `user_name`, `user_email`, `user_phone`, `user_first_name`, `user_last_name`, `user_password`, `avatar`, `province`, `district`, `ward`, `user_address`, `active`, `create_at`, `update_at`) VALUES
-(1, 1, 'phucnguyene', 'phucntps09285@fpt.edu.vn', '0344611101', 'nguyen', 'phuc', '$2y$10$yqEGihsx3ze0//QOM8nWcuLLP9V2svJShdERPPcTlrMX2geLeVeA6', 'PS09285_Nguyễn_Trọng_Phúc.jpg2020_11_15.jpg', 1, 2, 18, '43/3 Thành Thái, Phường 14 Quận 10', 1, '2020-11-15 09:42:38', '2020-11-15 15:52:41'),
-(3, 1, 'phucnguyen', 'phucnguyen0113@gmail.com', '0344611101', 'ngiyen', 'phucccc', '$2y$10$pVCYNU6Uc0MWFzYFG9jqZ.hA637JcvtEtuBNY/jw//0wWoA20zr7m', '81228594_517548228850003_1264667452613066752_n.jpg2020_11_15.jpg', 1, 2, 20, 'thanh thai', 1, '2020-11-15 15:27:27', NULL),
-(4, 1, 'trongphuc', 'facebookp0113@gmail.com', '0344611101', 'nguyen', 'phuc', '$2y$10$Ru6z7BK2POGzGiy1GRShduAjJPE6Ohwk.k537q5KKWs3CVovk1lcW', NULL, 32, 409, 6572, 'Công viên Trần Quốc Đại, Thị Trấn Gò Dầu', 1, '2020-11-15 15:29:25', NULL),
-(5, 0, '12312dfasd', 'asdasd@gmail.com', '0344611101', 'nguyen', 'phuc', '$2y$10$RagsOQ0O/sC8a1tQ/zMBouIDwSrZYExPJiWoGw0ZWoLJDh2PrIJ9W', NULL, 2, 27, 375, '43/3 Thành Thái, Phường 14 Quận 10', 0, '2020-11-15 15:31:10', NULL),
-(6, 0, 'asdfasdq', 'qwed@gmail.com', '0344611101', 'ngiyen', 'phucccc', '$2y$10$pEJ2orie7bt.aloEuZe/T.W46C3.ElZxBE2kRwdxVdUieT//M1nUq', NULL, 1, 2, 20, 'thanh thai', 1, '2020-11-15 15:31:33', NULL);
+(1, 1, 'phucnguyene', 'phucntps09285@fpt.edu.vn', '0344611101', 'nguyen', 'phuc', '$2y$10$yqEGihsx3ze0//QOM8nWcuLLP9V2svJShdERPPcTlrMX2geLeVeA6', 'PS09285_Nguyễn_Trọng_Phúc.jpg2020_11_15.jpg', 1, 2, 18, '43/3 Thành Thái, Phường 14 Quận 10', 1, '2020-11-15 09:42:38', '2020-11-25 21:02:27'),
+(3, 1, 'phucnguyen', 'phucnguyen0113@gmail.com', '0344611101', 'ngiyen', 'phucccc', '$2y$10$pVCYNU6Uc0MWFzYFG9jqZ.hA637JcvtEtuBNY/jw//0wWoA20zr7m', '81228594_517548228850003_1264667452613066752_n.jpg2020_11_15.jpg', 1, 2, 20, 'thanh thai', 1, '2020-11-15 15:27:27', '2020-11-25 21:03:00'),
+(5, 1, '12312dfasd', 'asdasd@gmail.com', '0344611101', 'nguyen', 'phuc', '$2y$10$u8hkoXt247wA2HPxH8wyJ.bd1Inzo369L17su6.Hv2ih.eY0jr0S.', NULL, 2, 27, 375, '43/3 Thành Thái, Phường 14 Quận 10', 1, '2020-11-15 15:31:10', '2020-11-25 19:45:28'),
+(6, 0, 'asdfasdq', 'qwed@gmail.com', '0344611101', 'ngiyen', 'phucccc', '$2y$10$pEJ2orie7bt.aloEuZe/T.W46C3.ElZxBE2kRwdxVdUieT//M1nUq', NULL, 1, 2, 20, 'thanh thai', 1, '2020-11-15 15:31:33', '2020-11-18 09:14:44');
 
 -- --------------------------------------------------------
 
@@ -1390,7 +1470,11 @@ CREATE TABLE `tbl_user_permission` (
 --
 
 INSERT INTO `tbl_user_permission` (`user_id`, `permission_id`) VALUES
-(3, 12);
+(4, 5),
+(4, 4),
+(5, 37),
+(3, 4),
+(3, 2);
 
 -- --------------------------------------------------------
 
@@ -1408,8 +1492,11 @@ CREATE TABLE `tbl_user_role` (
 --
 
 INSERT INTO `tbl_user_role` (`user_id`, `role_id`) VALUES
-(3, 4),
-(1, 1);
+(1, 1),
+(3, 2),
+(4, 7),
+(4, 8),
+(5, 3);
 
 -- --------------------------------------------------------
 
@@ -12883,55 +12970,55 @@ ALTER TABLE `tbl_history`
 -- AUTO_INCREMENT cho bảng `tbl_image`
 --
 ALTER TABLE `tbl_image`
-  MODIFY `image_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `image_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT cho bảng `tbl_order`
 --
 ALTER TABLE `tbl_order`
-  MODIFY `order_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `order_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT cho bảng `tbl_order_detail`
 --
 ALTER TABLE `tbl_order_detail`
-  MODIFY `order_detail_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `order_detail_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
 
 --
 -- AUTO_INCREMENT cho bảng `tbl_permission`
 --
 ALTER TABLE `tbl_permission`
-  MODIFY `permission_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=37;
+  MODIFY `permission_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=55;
 
 --
 -- AUTO_INCREMENT cho bảng `tbl_product`
 --
 ALTER TABLE `tbl_product`
-  MODIFY `product_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `product_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT cho bảng `tbl_product_discount`
 --
 ALTER TABLE `tbl_product_discount`
-  MODIFY `discount_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `discount_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT cho bảng `tbl_role`
 --
 ALTER TABLE `tbl_role`
-  MODIFY `role_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
+  MODIFY `role_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
 
 --
 -- AUTO_INCREMENT cho bảng `tbl_size`
 --
 ALTER TABLE `tbl_size`
-  MODIFY `size_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `size_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT cho bảng `tbl_store`
 --
 ALTER TABLE `tbl_store`
-  MODIFY `store_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `store_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT cho bảng `tbl_store_product`
@@ -12944,6 +13031,12 @@ ALTER TABLE `tbl_store_product`
 --
 ALTER TABLE `tbl_system`
   MODIFY `system_id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT cho bảng `tbl_system_ui`
+--
+ALTER TABLE `tbl_system_ui`
+  MODIFY `system_ui_id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT cho bảng `tbl_user`

@@ -13,20 +13,20 @@ if(!function_exists('p_auth')){
         ])->first();
         if(!empty($user)){
             if(Hash::check($data['user_password'],$user->user_password)){
-                $role_collection=DB::table('tbl_user_role')->where('user_id',$user->user_id)->get(['role_id'])->toArray();
-                $role=[];
-                foreach ($role_collection as $roles => $rolef) {
-                  $role[]=$rolef->role_id;
-                }
-                $permission_collection=DB::table('tbl_user_permission')->where('user_id',$user->user_id)->get(['permission_id'])->toArray();
-                $permission=[];
-                foreach ($permission_collection as $permissions => $permissionf) {
-                    $permission[]=$permissionf->permission_id;
-                }
-                $admin=false;
-                if(in_array(1,$role)){
-                    $admin=true;
-                }
+                // $role_collection=DB::table('tbl_user_role')->where('user_id',$user->user_id)->get(['role_id'])->toArray();
+                // $role=[];
+                // foreach ($role_collection as $roles => $rolef) {
+                //   $role[]=$rolef->role_id;
+                // }
+                // $permission_collection=DB::table('tbl_user_permission')->where('user_id',$user->user_id)->get(['permission_id'])->toArray();
+                // $permission=[];
+                // foreach ($permission_collection as $permissions => $permissionf) {
+                //     $permission[]=$permissionf->permission_id;
+                // }
+                // $admin=false;
+                // if(in_array(1,$role)){
+                //     $admin=true;
+                // }
                 // $ui_setting=DB::table('tbl_system_ui')->where(
                 //     [
                 //         ['user_id','=',session()->get('user')['user_id']],
@@ -43,9 +43,6 @@ if(!function_exists('p_auth')){
                                     'user_email'=>$user->user_email,
                                     'user_name'=>$user->user_name,
                                     'user_phone'=>$user->user_phone,
-                                    'role'     => $role,
-                                    'permission' => $permission,
-                                    'is_admin' => $admin,
                                     // 'ui_setting'=>$ui_setting_parse
                                 ]
                     ]
@@ -95,33 +92,32 @@ if(!function_exists('p_author')){
             echo 'User not logined';
             die();
         }
-
         $user=session()->get('user');
-        if($user['is_admin']){
-            return true;
+        $role_collection=DB::table('tbl_user_role')->where('user_id',$user['user_id'])->get(['role_id'])->toArray();
+        $role=[];
+        foreach ($role_collection as $roles => $rolef) {
+            $role[]=$rolef->role_id;
+        }
+        $permission_collection=DB::table('tbl_user_permission')->where('user_id',$user['user_id'])->get(['permission_id'])->toArray();
+        $permission=[];
+        foreach ($permission_collection as $permissions => $permissionf) {
+            $permission[]=$permissionf->permission_id;
+        }
 
+        if(in_array(1,$role)){
+            return true;
         }
         if($table !=='tbl_user' && $table!=='tbl_permission' && $table!=='tbl_role'){
-            if(in_array(2,$user['role'])){
+            if(in_array(2,$role)){
                 return true;
             }
         }
 
-        // $list_role_need=DB::table('tbl_role')->where('tble',$table)->get(['role_id']);
-        // // check role user 
-        // foreach ($user['role'] as $roles => $role_user) {
-        //     foreach ($list_role_need as $role_needs => $role_need) {
-        //         if($role_user==$role_need->role_id){
-        //             return true;
-        //         }
-        //     }
-        // }
-
         // list permission of role user
-        $list_role_of_permission=DB::table('tbl_role_permission')->whereIn('role_id',$user['role'])->distinct(['permission_id'])->get(['permission_id']);
+        $list_role_of_permission=DB::table('tbl_role_permission')->whereIn('role_id',$role)->distinct(['permission_id'])->get(['permission_id']);
         $list_role_id_of_perimssion=[];
-        foreach($list_role_of_permission as $permissions => $permission){
-            $list_role_id_of_perimssion[]=$permission->permission_id;
+        foreach($list_role_of_permission as $permissions => $permissionf){
+            $list_role_id_of_perimssion[]=$permissionf->permission_id;
         }
        
         if(!$view){
@@ -131,7 +127,7 @@ if(!function_exists('p_author')){
                 ['action',$action]
             ])->first();
             if(empty($rule)) return false;
-            if(in_array($rule->permission_id,$user['permission'])){
+            if(in_array($rule->permission_id,$permission)){
                 return true;
             }
             // check permission in role_user
@@ -147,8 +143,8 @@ if(!function_exists('p_author')){
             foreach ($rule as $rules => $rule_) {
                 $rule_id[]=$rule_->permission_id;
             }
-            $user['permission']=array_merge($user['permission'],$list_role_id_of_perimssion);
-            foreach ($user['permission'] as $permissions => $user_permission) {
+            $permission=array_merge($permission,$list_role_id_of_perimssion);
+            foreach ($permission as $permissions => $user_permission) {
                 if(in_array($user_permission,$rule_id)) return true;
             }
             return false;
@@ -158,7 +154,15 @@ if(!function_exists('p_author')){
 if(!function_exists('is_admin')){
     function is_admin(){
         if(session()->has('user')){
-            return session()->get('user')['is_admin'];
+            $user=session()->get('user');
+            $role_collection=DB::table('tbl_user_role')->where('user_id',$user['user_id'])->get(['role_id'])->toArray();
+            $role=[];
+            foreach ($role_collection as $roles => $rolef) {
+                $role[]=$rolef->role_id;
+            }
+            if(in_array(1,$role)){
+                return true;
+            }
         }else{
             return false;
         }

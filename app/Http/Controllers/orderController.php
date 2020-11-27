@@ -15,7 +15,7 @@ class orderController extends Controller
     }
     public function index(Request $request){
         if(!p_author('view','tbl_order')){
-            die('Bạn đéo đủ quyền truy cập');
+            return view('error.403');
         }
         $paramWhere=[]; // param to search
         $list_order=DB::table('tbl_order')->orderByDesc('order_id')
@@ -278,7 +278,7 @@ class orderController extends Controller
     }
     public function edit_form($id){
         if(!p_author('edit','tbl_order')){
-            die('Bạn đéo đủ quyền truy cập');
+            return view('error.403');
         }
         $order=DB::table('tbl_order')->where('order_id',$id)->first();
         //get order detail 
@@ -548,7 +548,7 @@ class orderController extends Controller
     }
     public function delete($id){
         if(!p_author('delete','tbl_order')){
-            die('Bạn đéo đủ quyền truy cập');
+            return view('error.403');
         }
         $check_already=DB::table('tbl_order')->where('order_id',$id)->first();
         if(empty($check_already)){
@@ -597,7 +597,7 @@ class orderController extends Controller
 
     public function detail($id){
         if(!p_author('view','tbl_order')){
-            die('Bạn đéo đủ quyền truy cập');
+            return view('error.403');
         }
         $checkNull=DB::table('tbl_order')->where('order_id',$id)->first();
         if(empty($checkNull)) return redirect()->back();
@@ -712,4 +712,5 @@ class orderController extends Controller
         ])->delete();
         return response()->json(['success'=>'success']);
     }
+   
 }

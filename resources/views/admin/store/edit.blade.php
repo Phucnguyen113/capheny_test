@@ -140,7 +140,13 @@
                         $('#'+index+"_error").html(item);
                     });
                 }else{
-                    window.location.href='{{url("admin/store")}}';
+                    Swal.fire({
+                        icon:'success',
+                        title:'Sửa thành công!',
+                        text:'Bạn vừa chỉnh sửa 1 cửa hàng'
+                    }).then(()=>{
+                        window.location.href='{{url("admin/store")}}';
+                    })
                 }
             }
         });

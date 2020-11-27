@@ -17,6 +17,15 @@
 @endsection
 @section('body')
     <a href="{{url()->previous()}}" class="btn btn-warning  mb-2" style="color:white">Quay lại</a>
+    <div class="card mb-2">
+        <div class="card-body">
+            <div class="card-title" style="text-align:center;font-size:36px;">Gửi lại email</div>
+            <form action="{{url('api/send/mail/')}}/{{$order->order_id}}"  onsubmit="return sendmail()" method="post">
+                <button type="submit" class="btn btn-success">Gửi mail</button>
+            </form>
+            
+        </div>
+    </div>
     <div class="card">
         <div class="card-body">
             <div class="card-title" style="text-align:center;font-size:36px">Chỉnh sửa đơn hàng</div>
@@ -287,6 +296,17 @@
                         <!-- script add order -->
                         <script>
                                 function edit_order(){
+                                    Swal.fire ({
+                                        title: 'Xin chờ...',
+                                        onBeforeOpen: () => {
+                                            Swal.showLoading ()
+                                        }
+                                        ,allowEscapeKey: false,
+                                        allowOutsideClick: false,
+                                        showCloseButton:false,
+                                        showCancelButton:false,
+                                        showConfirmButton:false,
+                                    })
                                     var formdata= new FormData();
                                     var _token=$("input[name='_token']").val();
                                     formdata.append('_token',_token)
@@ -312,6 +332,31 @@
                                         formdata.append('product_amount[]',product['product_amount']);
                                         formdata.append('product_price[]',product['price']);
                                     })
+
+                                    
+                                    
+                                    var sendmail=$('#sendmail').val();
+                                    if(sendmail!=='0'){
+                                        $.ajax({
+                                            type: "POST",
+                                            url: "{{url('api/send/mail')}}/{{$order->order_id}}",
+                                            data: {},
+                                            
+                                            dataType: "json",
+                                            success: function (response) {
+                                                console.log(response);
+                                                if(!$.isEmptyObject(response.error)){
+                                                    Swal.fire({
+                                                        icon:'error',
+                                                        title:'Gửi thất bại !',
+                                                        text:'Đã xảy ra lỗi, hãy thử lại sau'
+                                                    })
+                                                }
+                                                
+                                            }
+                                        });
+                                    }
+                                   
 
                                     $.ajax({
                                         type: "post",
@@ -419,6 +464,13 @@
                         </select>
                         <div id="order_status_error" class="p-error" style="color:Red"></div>
                     </div>
+                    <div class="col-md-4">
+                        <label for="sendmail" >Gửi email</label>
+                        <select name="sendmail" id="sendmail" class="form-control">
+                                <option value="0">Không gửi lại</option>
+                                <option value="1">Gửi lại </option>
+                        </select>
+                    </div>
                 </div>
                 <div class="form-row form-group">
                     <div class="col-md-12" >
@@ -426,4 +478,5 @@
                     </div>
                 </div>
             </form>
+        </div>
 @endsection

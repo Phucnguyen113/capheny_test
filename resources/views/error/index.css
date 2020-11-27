@@ -1,0 +1,30 @@
+.page_not{
+    margin-top: 80px;
+}
+
+.page_not .block-title {
+    font-weight: 500;
+    line-height: 19px;
+    position: relative;
+    max-width: 435px;
+    margin: 0 auto 60px;
+}
+
+.page_not .block-title:before {
+    content: "404";
+    font-weight: 800;
+    font-size: 44px;
+    line-height: 1;
+    color: #da291c;
+    position: absolute;
+    top: -5px;
+    right: 100%;
+    margin-right: 12px;
+}
+
+.page_not .block-title h1 {
+    font-weight: 800;
+    font-size: 18px;
+    text-transform: uppercase;
+    margin: 0 0 35px;
+}

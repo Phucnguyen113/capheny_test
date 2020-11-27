@@ -28,6 +28,22 @@
                 text: 'Hãy thử tải lại trang',
             })
         </script>
+    @elseif($errors->has('admin'))
+        <script>
+            Swal.fire({
+                icon: 'error',
+                title: 'Xóa thất bại',
+                text: 'Không thể xóa Super Admin',
+            })
+        </script>
+    @elseif($errors->has('user_index'))
+        <script>
+            Swal.fire({
+                icon: 'error',
+                title: 'Xóa thất bại',
+                text: 'Không thể xóa bản thân',
+            })
+        </script>
     @endif
     <div class="card">
         <div class="card-body">
@@ -469,6 +485,9 @@
                                         <script>
                                                 $('.p_user_active').unbind().click(function(){
                                                     var id=$(this).attr('data-id');
+                                                    if(id=='{{p_user()["user_id"]}}'){
+                                                        return;
+                                                    }
                                                     var element=$(this);
                                                     $.ajax({
                                                         type: "POST",
@@ -478,7 +497,15 @@
                                                         success: function (response) {
                                                             console.log(response);
                                                             if(!$.isEmptyObject(response.error)){
-
+                                                                $.each(response.error,function(index,item){
+                                                                    if(index =='admin'){
+                                                                        Swal.fire({
+                                                                            icon:'error',
+                                                                            title:'Không thể hủy kích hoạt',
+                                                                            text:'Đây là Super Admin'
+                                                                        })
+                                                                    }
+                                                                })
                                                             }else{
                                                                 if(response.success==1){
                                                                     element.html('<i class="fas fa-check" style="color:#3ac47d"></i>')

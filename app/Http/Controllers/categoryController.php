@@ -76,7 +76,7 @@ class categoryController extends Controller
     public function create()
     {
         if(!p_author('add','tbl_category')){
-            die('Bạn đéo đủ quyền truy cập');
+            return view('error.403');
         }
         $list_cate=DB::table('tbl_category')->get();
         $list_cate=$this->get_category_tree($list_cate);
@@ -141,7 +141,7 @@ class categoryController extends Controller
     public function edit($id)
     {
         if(!p_author('edit','tbl_category')){
-            die('Bạn đéo đủ quyền truy cập');
+            return view('error.403');
         }
         $list_cate=DB::table('tbl_category')->get();
         $list_cate=$this->get_category_tree($list_cate);
@@ -194,7 +194,7 @@ class categoryController extends Controller
     public function destroy($id)
     {
         if(!p_author('delete','tbl_category')){
-            die('Bạn đéo đủ quyền truy cập');
+            return view('error.403');
         }
         $check_child=DB::table('tbl_category')->where('category_parent_id',$id)->first();
         if(!empty($check_child)){

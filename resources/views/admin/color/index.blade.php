@@ -49,7 +49,7 @@
                                 </div>
                                 <div class="col-md-3">
                                     <div class="position-relative form-group">
-                                        <label for="create_at_from" class="">Create_at from</label>
+                                        <label for="create_at_from" class="">Ngày tạo bắt đầu</label>
                                         <input name="create_at_from" value="@isset($_GET['create_at_from']) {{$_GET['create_at_from']}} @endisset" id="create_at_from" placeholder="Ngày sửa"  readonly='true' type="text" class="form-control">
                                         <div id="picker_time_create_at_from" style="display:flex;justify-content:center;position:absolute;z-index:99"></div>
                                         <div id="update_at_error" style="color:red"></div>
@@ -58,7 +58,7 @@
 
                                 <div class="col-md-3">
                                     <div class="position-relative form-group">
-                                        <label for="create_at_to" class="">Create_at to</label>
+                                        <label for="create_at_to" class="">Ngày tạo kết thúc</label>
                                         <input name="create_at_to" value="@isset($_GET['create_at_to']) {{$_GET['create_at_to']}} @endisset" id="create_at_to" placeholder="Ngày sửa" readonly='true'  type="text" class="form-control">
                                         <div id="picker_time_create_at_to" style="display:flex;justify-content:center;position:absolute;z-index:99"></div>
                                         <div id="update_at_error" style="color:red"></div>
@@ -66,7 +66,7 @@
                                 </div>
                                 <div class="col-md-3">
                                     <div class="position-relative form-group">
-                                        <label for="update_at_from" class="">Update_at from</label>
+                                        <label for="update_at_from" class="">Ngày sửa bắt đầu</label>
                                         <input name="update_at_from" value="@isset($_GET['update_at_from']) {{$_GET['update_at_from']}} @endisset" id="update_at_from" placeholder="Ngày sửa" readonly='true' type="text" class="form-control">
                                         <div id="picker_time_update_at_from" style="display:flex;justify-content:center;position:absolute;z-index:99"></div>
                                         <div id="update_at_error" style="color:red"></div>
@@ -74,7 +74,7 @@
                                 </div>
                                 <div class="col-md-3">
                                     <div class="position-relative form-group">
-                                        <label for="update_at_to" class="">Update_at to</label>
+                                        <label for="update_at_to" class="">Ngày sửa kết thúc</label>
                                         <input name="update_at_to" value="@isset($_GET['update_at_to']) {{$_GET['update_at_to']}} @endisset" id="update_at_to" placeholder="Ngày sửa" readonly='true' type="text" class="form-control">
                                         <div id="picker_time_update_at_to" style="display:flex;justify-content:center;position:absolute;z-index:99"></div>
                                         <div id="update_at_error" style="color:red"></div>

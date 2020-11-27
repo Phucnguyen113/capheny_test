@@ -139,10 +139,15 @@
                    </div>
                 </div>
                 <div class="form-row form-group">
-                    <div class="col-md-2">
-                        <input type="checkbox" name="active" @if($user->active) checked @endif id="active" class="form-control-checkbox">
-                        <label for="active">Kích hoạt</label>
-                    </div>
+                    @if(p_author('active','tbl_user'))
+                        <div class="col-md-2">
+                            <input type="checkbox" name="active" @if($user->active) checked @endif id="active" class="form-control-checkbox">
+                            <label for="active">Kích hoạt</label>
+                        </div>
+                        @else
+                        <input type="hidden" name="active" value="no_action" id="active" class="form-control-checkbox">
+
+                    @endif
                     <div class="col-md-2">
                         <input type="checkbox" @if($user->user_type) checked @endif name="user_type" id="user_type" class="form-control-checkbox">
                         <label for="user_type"  >Người dùng Admin</label>
@@ -201,7 +206,12 @@
                 formdata.append('avatar',avatar)
             }   
             if(active!==undefined){
-                formdata.append('active',1)
+                if(active!=='no_action'){
+                    formdata.append('active',1)
+                }else{
+                    formdata.append('active',2)
+                }
+                
             }
             if(user_type!==undefined){
                 formdata.append('user_type',1)

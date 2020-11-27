@@ -2,9 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Jobs\SendEmail;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 
@@ -18,27 +21,32 @@ class sizeController extends Controller
     public function index(Request $request)
     {
         if(!p_author('view','tbl_size')){
-            die('Bạn đéo đủ quyền truy cập');
+            return view('error.403');
         }
-        if($request->has('search')){
-            if($request->create_at_from!== null) $request->create_at_from.=' 00:00:00';
-            else $request->create_at_from='';
-            if($request->create_at_to!== null) $request->create_at_to.=' 23:59:59';
-            else $request->create_at_to=Carbon::now('Asia/Ho_Chi_Minh')->toDateTimeString();
-
-            if($request->update_at_from == null && $request->update_at_to == null){
-                $list_size=DB::table('tbl_size')->where('size','like','%'.$request->size.'%')->whereBetween('create_at',[$request->create_at_from,$request->create_at_to])->paginate(20);
-            }else{
-                if($request->upddate_at_from!= null) $request->update_at_from.=' 00:00:00';
-                else $request->update_at_from='';
-                if($request->upddate_at_to!= null) $request->update_at_to.=' 23:59:59';
-                else  $request->update_at_to= Carbon::now('Asia/Ho_Chi_Minh')->toDateTimeString();
-
-                $list_size=DB::table('tbl_size')->where('size','like','%'.$request->size.'%')->whereBetween('create_at',[$request->create_at_from,$request->create_at_to])->whereBetween('update_at',[$request->update_at_from,$request->update_at_to])->paginate(20);
-            }
-        }else{
-            $list_size=DB::table('tbl_size')->paginate(20);
+        $list_size=DB::table('tbl_size');
+        if($request->color!==null && empty($request->color)){
+            $list_size=$list_size->whereIn('size_id',$request->size);
         }
+        
+        // create_at product process
+        if($request->create_at_from!==null && $request->create_at_to!==null){
+            $list_size=$list_size->whereBetween('create_at',[$request->create_at_from,$request->create_at_to]);
+        }else if($request->create_at_from==null && $request->create_at_to!==null ){
+            $list_size=$list_size->whereBetween('create_at',['',$request->create_at_to]);
+        }else if($request->create_at_from!==null && $request->create_at_to==null){
+            $list_size=$list_size->whereBetween('create_at',[$request->create_at_from,Carbon::now('Asia/Ho_Chi_Minh')->toDateTimeString()]);
+        }
+       
+        // update_at product process
+        if($request->update_at_from!==null && $request->update_at_to!==null){
+            $list_size=$list_size->whereBetween('update_at',[$request->update_at_from,$request->update_at_to]);
+        }else if($request->update_at_from==null && $request->update_at_to!==null){
+            $list_size=$list_size->whereBetween('update_at',['',$request->update_at_to]);
+        }else if($request->update_at_from!==null && $request->update_at_to==null){
+            $list_size=$list_size->whereBetween('update_at',[$request->update_at_from,Carbon::now('Asia/Ho_Chi_Minh')->toDateTimeString()]);
+        }
+        
+        $list_size=$list_size->orderByDesc('size_id')->paginate(20);
        
         return view('admin.size.index',['list_size'=>$list_size]);
     }
@@ -51,7 +59,7 @@ class sizeController extends Controller
     public function create()
     {
         if(!p_author('add','tbl_size')){
-            die('Bạn đéo đủ quyền truy cập');
+            return view('error.403');
         }
         return view('admin.size.add');
     }
@@ -108,7 +116,7 @@ class sizeController extends Controller
     public function edit($id)
     {   
         if(!p_author('edit','tbl_size')){
-            die('Bạn đéo đủ quyền truy cập');
+            return view('error.403');
         }
         $size=DB::table('tbl_size')->where('size_id',$id)->first();
         return view('admin/size/edit',['size'=>$size]);
@@ -159,11 +167,12 @@ class sizeController extends Controller
     public function destroy($id)
     {
         if(!p_author('delete','tbl_size')){
-            die('Bạn đéo đủ quyền truy cập');
+            return view('error.403');
         }
         $check_isset=DB::table('tbl_product_size')->where('size_id',$id)->first();
         if(!empty($check_isset)) return redirect()->back()->withErrors(['error'=>'Kích cỡ này đã gán cho sản phẩm']);
         DB::table('tbl_size')->where('size_id',$id)->delete();
         return redirect()->back()->with('success','success');
     }
+    
 }

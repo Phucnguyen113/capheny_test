@@ -22,8 +22,7 @@ class productController extends Controller
     public function index(Request $request)
     {
         if(!p_author('view','tbl_product')){
-            echo 'Bạn không có quyền truy cập';
-            die();
+            return view('error.403');
         }
         //data filter
         $list_color_search=DB::table('tbl_color')->orderByDesc('color_id')->get();
@@ -107,7 +106,9 @@ class productController extends Controller
             }
 
             //get color and size product
-            $list_color=DB::table('tbl_color')->select(['tbl_color.color'])->join('tbL_product_color','tbl_color.color_id','=','tbL_product_color.color_id')->where('tbl_product_color.product_id',$value->product_id)->get()->toArray();
+            $list_color=DB::table('tbl_color')->select(['tbl_color.color'])
+            ->join('tbL_product_color','tbl_color.color_id','=','tbl_product_color.color_id')
+            ->where('tbl_product_color.product_id',$value->product_id)->get()->toArray();
             if(!empty($list_color)){
                 foreach ($list_color as $colors => $color) {
                     $list_product[$key]->colors[]=$color->color;
@@ -147,7 +148,7 @@ class productController extends Controller
     public function create()
     {
         if(!p_author('add','tbl_product')){
-            die('Bạn đéo đủ quyền truy cập');
+            return view('error.403');
         }
         $list_cate=DB::table('tbl_category')->get();
         $list_cate=$this->get_category_tree($list_cate);
@@ -242,7 +243,7 @@ class productController extends Controller
         //create_at
         $create_at=Carbon::now('Asia/Ho_Chi_minh')->toDateTimeString();
         // insert data to tbl_product
-        $idProduct=DB::table('tbl_product')->insertGetId(array_merge($request->except(['image','_token','category','discount_type','discount_amount','discount_end_date','discount_from_date','color','size']),['product_image'=>json_encode($image_json)],['create_at'=>$create_at]));
+        $idProduct=DB::table('tbl_product')->insertGetId(array_merge($request->except(['image','_token','category','discount_type','discount_amount','discount_end_date','discount_from_date','color','size']),['product_image'=>json_encode($image_json)],['create_at'=>$create_at],['user_create'=>p_user()['user_id']]));
         if($request->discount_type!=='0'){  
             //insert discount product 
             DB::table('tbl_product_discount')->insert(['product_id'=>$idProduct,'discount_type'=>$request->discount_type,'discount_amount'=>$request->discount_amount,'discount_end_date'=>$end_date,'discount_from_date'=>$from_date]);
@@ -286,7 +287,7 @@ class productController extends Controller
     public function edit($id)
     {
         if(!p_author('add','tbl_product')){
-            die('Bạn đéo đủ quyền truy cập');
+            return view('error.403');
         }
         try{
             $list_cate=DB::table('tbl_category')->get();
@@ -412,9 +413,9 @@ class productController extends Controller
         $update_at=Carbon::now('Asia/Ho_Chi_Minh')->toDateTimeString();
         //update product table
         if($request->hasFile('image')){
-            DB::table('tbl_product')->where('product_id',$id)->update(array_merge($request->except(['category','color','size','_token','image','_method','discount_type','discount_amount','discount_from_date','discount_end_date']),['update_at'=>$update_at],['product_image'=>json_encode($image_json)]));
+            DB::table('tbl_product')->where('product_id',$id)->update(array_merge($request->except(['category','color','size','_token','image','_method','discount_type','discount_amount','discount_from_date','discount_end_date']),['update_at'=>$update_at],['product_image'=>json_encode($image_json)],['user_edit'=>p_user()['user_id']]));
         }else{
-            DB::table('tbl_product')->where('product_id',$id)->update(array_merge($request->except(['category','color','size','_token','_method','discount_type','discount_amount','discount_from_date','discount_end_date']),['update_at'=>$update_at]));
+            DB::table('tbl_product')->where('product_id',$id)->update(array_merge($request->except(['category','color','size','_token','_method','discount_type','discount_amount','discount_from_date','discount_end_date']),['update_at'=>$update_at],['user_edit'=>p_user()['user_id']]));
         }
         // insert new discount if user add new discount
         if($request->discount_type!=='0'){
@@ -453,7 +454,7 @@ class productController extends Controller
     public function destroy($id)
     {
         if(!p_author('delete','tbl_product')){
-            die('Bạn đéo đủ quyền truy cập');
+            return view('error.403');
         }
         // xóa sản phẩm thì cũng xóa size và color của sản phẩm trong các bản quan hệ
         $check_isset_store=DB::table('tbl_store_product')->where('product_id',$id)->first();
@@ -526,7 +527,7 @@ class productController extends Controller
     }
     public function detail($id,Request $request){
         if(!p_author('view','tbl_product')){
-            die('Bạn đéo đủ quyền truy cập');
+            return view('error.403');
         }
         $check_isset=DB::table('tbl_product')->where('product_id',$id)->first();
         if(empty($check_isset)) return redirect()->back();
@@ -554,7 +555,7 @@ class productController extends Controller
                 ['product_id','=',$id],
                 ['discount_from_date','<',$now],
                 ['discount_end_date','>',$now]
-            ])->first();
+            ])->orderByDesc('discount_id')->first();
             // detail amount
                 // $detail_amount=DB::table('tbl_product')
                 // ->join('tbl_product_size','tbl_product_size.product_id','=','tbl_product.product_id')
@@ -606,11 +607,18 @@ class productController extends Controller
             ->distinct(['product_color','product_size'])->paginate(20);
            
             foreach ($list_size_color_amount_product as $products => $product_amount) {
-                $data_detail_amount=DB::select('select SUM(product_amount) as total from tbl_store_product where product_size=? AND product_color=? AND product_id=?',[$product_amount->size_id,$product_amount->color_id,$product->product_id]);
+                $sql='select SUM(product_amount) as total from tbl_store_product where product_size=? AND product_color=? AND product_id=?';
+                $param=[$product_amount->size_id,$product_amount->color_id,$product->product_id];
+                if($request->store!==null && $request->store!=='0'){
+                    $sql.=' AND store_id=?';
+                    array_push($param,$request->store);
+                }
+                $data_detail_amount=DB::select($sql,$param);
                 // $data_detailamount=[ [total=>59]];
                 $list_size_color_amount_product[$products]->product_amount=$data_detail_amount[0]->total;
               
             }
+            
             // list categroy for product
             $list_category=DB::table('tbl_category')->join('tbl_category_product','tbl_category_product.category_id','=','tbl_category.category_id')
             ->where('tbl_category_product.product_id',$product->product_id)->get();
@@ -712,7 +720,7 @@ class productController extends Controller
 
     public function add_new_size_product_form($product_id){
         if(!p_author('edit','tbl_product')){
-            die('Bạn đéo đủ quyền truy cập');
+            return view('error.403');
         }
         $product_isset=DB::table('tbl_product')->where('product_id',$product_id)->get(['product_id'])->toArray();
         if(count($product_isset)!==1) return redirect()->back();

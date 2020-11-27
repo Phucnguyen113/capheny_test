@@ -17,7 +17,7 @@ class userController extends Controller
     }
     public function index(Request $request){
         if(!p_author('view','tbl_user')){
-            die('Bạn đéo đủ quyền truy cập');
+            return view('error.403');
         }
         $list_province=DB::table('tbl_province')->get();
         $list_role=DB::table('tbl_role')->get();
@@ -134,8 +134,8 @@ class userController extends Controller
         return view('admin.user.index',compact('list_user','list_province','list_ward','list_district','list_role','list_permission'));
     }
     public function add_form(){
-        if(!is_admin()){
-            die('Bạn đéo đủ quyền truy cập');
+        if(!p_author('add','tbl_user')){
+            return view('error.403');
         }
         $list_province=DB::table('tbl_province')->get();
         return view('admin.user.add',compact('list_province'));
@@ -204,8 +204,25 @@ class userController extends Controller
         return response()->json(['success'=>'success']);
     }
     public function edit_form($id){
-        if(!is_admin()){
-            die('Bạn đéo đủ quyền truy cập');
+        if(!p_author('edit','tbl_user')){
+           return view('error.403');
+        }
+        // user action is admin
+        $is_admin=false;
+        $user_action_role_collection=DB::table('tbl_user_role')->where('user_id',p_user()['user_id'])->get();
+        foreach ($user_action_role_collection as $roles => $role) {
+            if($role->role_id==1){
+                $is_admin=true;
+            }
+        }
+        // check user admin
+        if(!$is_admin){
+            $user_role_collection=DB::table('tbl_user_role')->where('user_id',$id)->get();
+            foreach ($user_role_collection as $roles => $role) {
+                if($role->role_id==1){
+                    return redirect()->back();
+                }
+            }
         }
         $user=DB::table('tbl_user')->where('user_id',$id)->first();
         $list_province=DB::table('tbl_province')->get();
@@ -262,16 +279,24 @@ class userController extends Controller
         );
         if($validated->fails()) return response()->json(['error'=> $validated->getMessageBag()]);
         $update_at=Carbon::now('Asia/Ho_Chi_Minh')->toDateTimeString();
-        if($request->has('active')) $active=1;
-        else $active=0;
+        if($request->has('active') && $request->active!==2){
+            if($request->active==1)$active=1;
+            else $active=0;
+        }else{
+            $active='';
+        }
+        
         if($request->has('user_type')) $user_type=1;
         else $user_type=0;
        
         if($request->user_password!==null){
             $user_password=bcrypt($request->user_password);
-            $data_update=array_merge($request->except(['_token','user_password_confirm','user_password','avatar']),['update_at'=>$update_at],['active'=>$active],['user_type'=>$user_type],['user_password'=>$user_password] );
+            $data_update=array_merge($request->except(['_token','user_password_confirm','user_password','avatar']),['update_at'=>$update_at],['user_type'=>$user_type],['user_password'=>$user_password] );
         }else{
-            $data_update=array_merge($request->except(['_token','user_password_confirm','user_password','avatar']),['update_at'=>$update_at],['active'=>$active],['user_type'=>$user_type]);
+            $data_update=array_merge($request->except(['_token','user_password_confirm','user_password','avatar']),['update_at'=>$update_at],['user_type'=>$user_type]);
+        }
+        if($active!==''){
+            $data_update=array_merge($data_update,['active'=>$active]);
         }
         if($request->hasFile('avatar')){
             $newNameImg=$request->avatar->getClientOriginalName().date('Y_m_d').'.'.$request->avatar->getClientOriginalExtension();
@@ -287,10 +312,20 @@ class userController extends Controller
         return response()->json(['success'=>'success']);
     }
     public function delete($id){
-        if(!is_admin()){
-            die('Bạn đéo đủ quyền truy cập');
+        if(!p_author('delete','tbl_user')){
+            return view('error.403');
         }
         try{
+            //check user need delete is admin
+            $role_user_collection=DB::table('tbl_user_role')->where('user_id',$id)->get();
+            foreach ($role_user_collection as $roles => $role) {
+                if($role->role_id==1){
+                    return redirect()->back()->withErrors(['admin'=>'error admin']);
+                }
+            }
+            if($id==p_user()['user_id']){
+                return redirect()->back()->withErrors(['user_index'=>'error admin']);
+            }
             $user=DB::table('tbl_order')->where('user_id',$id)->first();
             if(!empty($user)) return redirect()->back()->withErrors(['error'=>'User đã mua hàng']);
             DB::table('tbl_user')->where('user_id',$id)->delete();
@@ -318,6 +353,13 @@ class userController extends Controller
     // active user api in page list user
     public function active_api(Request $request){
         $user=DB::table('tbl_user')->where('user_id',$request->id)->first();
+        //check user is admin
+        $list_role=DB::table('tbl_user_role')->where('user_id',$request->id)->get(['role_id']);
+        foreach ($list_role as $roles => $role) {
+            if($role->role_id==1){
+                return response()->json(['error'=>['admin'=>'failed']]);
+            }
+        }
         if(empty($user)) return response()->json(['error'=>'error']);
         if($user->active==1){
             $active=0;

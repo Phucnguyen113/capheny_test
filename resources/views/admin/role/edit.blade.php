@@ -16,6 +16,7 @@
                         <div class="col-md-12">
                             <label for="permission">Quyền của vai trò <span style="color:red"> *</span></label>
                             <select name="permission[]" id="permission" multiple class="form-control">
+                                <option value="0">Không cấp quyền</option>
                                 @foreach($list_permission as $permissions => $permission)
                                     <option @if(in_array($permission->permission_id,$permission_id_old)) selected @endif value="{{$permission->permission_id}}">{{$permission->permission}}</option>
                                 @endforeach
@@ -50,6 +51,14 @@
                    $('.p_error').html('')
                     $.each(response.error,function(index,item){
                         $(`#${index}_error`).html(item)
+                        if(index=='admin'){
+                            Swal.fire({
+                                icon:'error',
+                                title:'Sửa thất bại!',
+                                text:'Super Admin đã có toàn quyền'
+                            })
+                        }
+
                     })
                 }else{
                     Swal.fire({
