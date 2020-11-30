@@ -326,10 +326,7 @@
                                 <input type="checkbox" @if(p_ui_setting('user','address')) checked @endif onclick="view_setting({{p_user()['user_id']}},'user')" name="admin" id="admin" class="form-control-checkbox view-setting" value="admin">
                                 <label for=admin>Admin</label>
                             </div>
-                            <div class="m-2">
-                                <input type="checkbox" @if(p_ui_setting('user','detail')) checked @endif onclick="view_setting({{p_user()['user_id']}},'user')" name="detail" id="detail" class="form-control-checkbox view-setting" value="detail">
-                                <label for=detail>Chi tiết</label>
-                            </div>
+                            
                             <div class="m-2">
                                 <input type="checkbox" @if(p_ui_setting('user','role')) checked @endif onclick="view_setting({{p_user()['user_id']}},'user')"  name="rolee" id="rolee" class="form-control-checkbox view-setting" value="role">
                                 <label for=rolee>Vai trò</label>
@@ -371,7 +368,6 @@
                         <th class="ward p_setting" @if(!p_ui_setting('user','ward'))  style="display:none" @endif>Khu vực</th>
                         <th class="address p_setting" @if(!p_ui_setting('user','address'))  style="display:none" @endif>Địa chỉ</th>
                         <th class="admin p_setting" @if(!p_ui_setting('user','admin'))  style="display:none" @endif>Admin</th>
-                        <th class="detail p_setting" @if(!p_ui_setting('user','detail'))  style="display:none" @endif>Chi tiết</th>
                         <th class="role p_setting" @if(!p_ui_setting('user','role'))  style="display:none" @endif>Vai trò</th>
                         <th class="permission p_setting" @if(!p_ui_setting('user','permission'))  style="display:none" @endif>Quyền</th>
                         <th class="active p_setting" @if(!p_ui_setting('user','active'))  style="display:none" @endif>Kích hoạt</th>
@@ -397,14 +393,11 @@
                                         <i class="fas fa-times" style="color:#b81f44"></i>
                                     @endif
                                 </td>
-                                <td class="detail p_setting" @if(!p_ui_setting('user','detail')) style="display:none" @endif >
-                                    <a href="{{url('admin/user')}}/{{$user->user_id}}/detail" class="btn btn-info">Chi tiết</a>
-                                </td>
+                               
                                 <td class="role p_setting" @if(!p_ui_setting('user','role')) style="display:none" @endif >
                                     @if(p_author('edit_role','tbl_user'))
                                         @if($user->user_type==1)
                                             @if(!empty($user->role))
-                                                <a href="{{url('admin/user')}}/{{$user->user_id}}/editrole" >
                                                     @php
                                                         $roleText='';  
                                                     @endphp  
@@ -413,6 +406,8 @@
                                                             $roleText.=$role->role.',';  
                                                         @endphp 
                                                     @endforeach
+                                                <a href="{{url('admin/user')}}/{{$user->user_id}}/editrole" title="{{rtrim($roleText,',')}}">
+                                                    
                                                     {{Str::limit(rtrim($roleText,','),30)}}
                                                 </a>
                                             @else
@@ -548,7 +543,6 @@
                         <th class="ward p_setting" @if(!p_ui_setting('user','ward'))  style="display:none" @endif>Khu vực</th>
                         <th class="address p_setting" @if(!p_ui_setting('user','address'))  style="display:none" @endif>Địa chỉ</th>
                         <th class="admin p_setting" @if(!p_ui_setting('user','admin'))  style="display:none" @endif>Admin</th>
-                        <th class="detail p_setting" @if(!p_ui_setting('user','detail'))  style="display:none" @endif>Chi tiết</th>
                         <th class="role p_setting" @if(!p_ui_setting('user','role'))  style="display:none" @endif>Vai trò</th>
                         <th class="permission p_setting" @if(!p_ui_setting('user','permission'))  style="display:none" @endif>Quyền</th>
                         <th class="active p_setting" @if(!p_ui_setting('user','active'))  style="display:none" @endif>Kích hoạt</th>

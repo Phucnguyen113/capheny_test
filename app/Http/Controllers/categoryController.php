@@ -65,7 +65,8 @@ class categoryController extends Controller
         }
         $cate=DB::table('tbl_category')->get();
         $cate=$this->get_category_tree($cate);
-        return view('admin.category.index',['list_cate'=>$list_cate,'cate_tree'=>$cate]);
+        $title='Capheny - Danh sách danh mục';
+        return view('admin.category.index',['list_cate'=>$list_cate,'cate_tree'=>$cate,'title'=>$title]);
     }
 
     /**
@@ -80,7 +81,8 @@ class categoryController extends Controller
         }
         $list_cate=DB::table('tbl_category')->get();
         $list_cate=$this->get_category_tree($list_cate);
-        return view('admin.category.add',['list_cate'=>$list_cate]);
+        $title='Capheny - Thêm danh mục';
+        return view('admin.category.add',['list_cate'=>$list_cate,'title'=>$title]);
     }
 
     /**
@@ -146,7 +148,8 @@ class categoryController extends Controller
         $list_cate=DB::table('tbl_category')->get();
         $list_cate=$this->get_category_tree($list_cate);
         $cate=DB::table('tbl_category')->where('category_id',$id)->first();
-        return view('admin.category.edit',['cate'=>$cate,'list_cate'=>$list_cate,'update_at'=>Carbon::now('Asia/Ho_Chi_Minh')->toDateTimeString()]);
+        $title='Capheny - Cập nhật danh mục';
+        return view('admin.category.edit',['title'=>$title,'cate'=>$cate,'list_cate'=>$list_cate,'update_at'=>Carbon::now('Asia/Ho_Chi_Minh')->toDateTimeString()]);
     }
 
     /**
@@ -180,7 +183,7 @@ class categoryController extends Controller
         );
         if($validated->fails()) return response()->json(['error'=>$validated->getMessageBag()]);
         DB::table('tbl_category')->where('category_id',$id)->update(
-           array_merge($request->except(['_token'],['update_at'=>Carbon::now('Asia/Ho_Chi_Minh')->toDateTimeString()]) )
+           array_merge($request->except(['_token']),['update_at'=>Carbon::now('Asia/Ho_Chi_Minh')->toDateTimeString()]) 
         );
         return response()->json(['success'=>'Edit success']);
     }

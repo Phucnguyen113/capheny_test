@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Jobs\SendEmail;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -81,18 +82,17 @@ class orderController extends Controller
                 
             ],
         )->paginate(20,['*'],'orderPage');
-        
-        return view('admin.order.index',compact('list_province','list_district','list_ward','list_order'));
+        $title='Capheny - Danh sách đơn hàng';
+        return view('admin.order.index',compact('list_province','list_district','list_ward','list_order','title'));
 
     }
     public function add_form(){
         if(!p_author('add','tbl_order')){
-            die('Bạn đéo đủ quyền truy cập');
+            return view('error.403');
         }
         $list_province=DB::table('tbl_province')->get(['id','_name']);
-        $list_product=DB::table('tbl_product')->orderByDesc('product_id')->get(['product_id','product_name']);
-        $list_user=DB::table('tbl_user')->get();
-        return view('admin.order.add',compact('list_province','list_user','list_product'));
+        $title='Capheny - Thêm đơn hàng';
+        return view('admin.order.add',compact('list_province','title'));
     }
     public function add(Request $request){
        
@@ -274,6 +274,35 @@ class orderController extends Controller
                 'create_at'       =>$create_at
             ]);
        }
+       // send mail
+       $info_order=DB::table('tbl_order')->where('order_id',$order_id)
+            ->join('tbl_province','tbl_province.id','=','tbl_order.province')
+            ->join('tbl_district','tbl_district.id','=','tbl_order.district')
+            ->join('tbl_ward','tbl_ward.id','=','tbl_order.ward')
+            ->first(['tbl_order.*','tbl_province._name as province_name','tbl_district._name as district_name','tbl_ward._name as ward_name']);
+            
+            $list_product=DB::table('tbl_order_detail')->where('order_id',$order_id)
+            ->join('tbl_product','tbl_product.product_id','=','tbl_order_detail.product_id')
+            ->join('tbl_size','tbl_size.size_id','=','tbl_order_detail.product_size_id')
+            ->join('tbl_color','tbl_color.color_id','=','tbl_order_detail.product_color_id')
+            ->get(
+                ['tbl_order_detail.*','tbl_size.size','tbl_color.color','tbl_product.product_name','tbl_product.product_image']
+            );
+            foreach ($list_product as $images => $image) {
+                $image=json_decode($image->product_image,true);
+                $list_product[$images]->image=$image[0];
+            }
+            dispatch(new SendEmail([ 
+                'id'=>$info_order->order_id,
+                'name'=>$info_order->order_name,
+                'email'=>$info_order->order_email,
+                'phone'=>$info_order->order_phone,
+                'province'=>$info_order->province_name,
+                'district'=>$info_order->district_name,
+                'ward'=>$info_order->ward_name,
+                'address'=>$info_order->order_address,
+                'create_at'=>$info_order->create_at,
+                'list_product'=>$list_product]))->delay(now()->addSeconds(1));
        return response()->json(['success'=>'insert success']);
     }
     public function edit_form($id){
@@ -287,12 +316,13 @@ class orderController extends Controller
         ->join('tbl_color','tbl_color.color_id','=','tbl_order_detail.product_color_id')->where('order_id',$id)
         ->get(['tbl_product.product_name','tbl_order_detail.*','tbl_size.size','tbl_color.color']);
         $list_province=DB::table('tbl_province')->get(['id','_name']);
-        $list_product=DB::table('tbl_product')->orderByDesc('product_id')->get(['product_id','product_name']);
-        $list_user=DB::table('tbl_user')->get();
+        
+        $list_user=DB::table('tbl_user')->where('user_id',$order->user_id)->first();
+        
         $list_district=DB::table('tbl_district')->where('_province_id',$order->province)->get(['id','_name']);
         $list_ward=DB::table('tbl_ward')->where('_district_id',$order->district)->get(['id','_name']);
-        
-        return view('admin.order.edit',compact('list_province','list_user','list_product','list_district','list_ward','order_detail','order'));
+        $title='Capheny - Cập nhật đơn hàng';
+        return view('admin.order.edit',compact('title','list_province','list_user','list_district','list_ward','order_detail','order'));
     }
 
     public function edit($id,Request $request){

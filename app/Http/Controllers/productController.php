@@ -107,7 +107,7 @@ class productController extends Controller
 
             //get color and size product
             $list_color=DB::table('tbl_color')->select(['tbl_color.color'])
-            ->join('tbL_product_color','tbl_color.color_id','=','tbl_product_color.color_id')
+            ->join('tbl_product_color','tbl_color.color_id','=','tbl_product_color.color_id')
             ->where('tbl_product_color.product_id',$value->product_id)->get()->toArray();
             if(!empty($list_color)){
                 foreach ($list_color as $colors => $color) {
@@ -136,8 +136,8 @@ class productController extends Controller
                 $list_product[$key]->category=[];
             }
         }
-        
-        return view('admin.product.index',['list_product'=>$list_product,'color_search'=>$list_color_search,'size_search'=>$list_size_search]);
+        $title='Capheny - Danh sách sản phẩm';
+        return view('admin.product.index',['title'=>$title,'list_product'=>$list_product,'color_search'=>$list_color_search,'size_search'=>$list_size_search]);
     }
 
     /**
@@ -154,7 +154,8 @@ class productController extends Controller
         $list_cate=$this->get_category_tree($list_cate);
         $color=DB::table('tbl_color')->orderByDesc('color_id')->get();
         $size=DB::table('tbl_size')->orderByDesc('size_id')->get();
-        return view('admin.product.add',['list_cate'=>$list_cate,'color'=>$color,'size'=>$size]);
+        $title='Capheny - Thêm sản phẩm';
+        return view('admin.product.add',['title'=>$title,'list_cate'=>$list_cate,'color'=>$color,'size'=>$size]);
     }
 
     /**
@@ -297,7 +298,7 @@ class productController extends Controller
             //get product detail
             $product=DB::table('tbl_product')->where('product_id',$id)->first();
             // get color product
-            $color=DB::table('tbl_color')->select(['tbl_color.color','tbl_color.color_id'])->join('tbL_product_color','tbl_product_color.color_id','=','tbl_color.color_id')->where('product_id',$product->product_id)->get()->toArray();
+            $color=DB::table('tbl_color')->select(['tbl_color.color','tbl_color.color_id'])->join('tbl_product_color','tbl_product_color.color_id','=','tbl_color.color_id')->where('product_id',$product->product_id)->get()->toArray();
             $product->color=$color;
             //get size product
             $size=DB::table('tbl_size')->select(['tbl_size.size','tbl_size.size_id'])->join('tbl_product_size','tbl_product_size.size_id','=','tbl_size.size_id')->where('product_id',$product->product_id)->get()->toArray();
@@ -323,7 +324,8 @@ class productController extends Controller
                 $product->discount_from_date='';
                 $product->discount_end_date='';
             }
-            return view('admin.product.edit',['list_cate'=>$list_cate,'color'=>$list_color,'size'=>$list_size,'product'=>$product]);
+            $title='Capheny - Cập nhật sản phẩm';
+            return view('admin.product.edit',['title'=>$title,'list_cate'=>$list_cate,'color'=>$list_color,'size'=>$list_size,'product'=>$product]);
         }catch(\Exception $e){
             return redirect('admin/product');
         }
@@ -622,8 +624,8 @@ class productController extends Controller
             // list categroy for product
             $list_category=DB::table('tbl_category')->join('tbl_category_product','tbl_category_product.category_id','=','tbl_category.category_id')
             ->where('tbl_category_product.product_id',$product->product_id)->get();
-        
-            return view('admin.product.detail',compact('product','list_discount','discount_using','list_size_color_amount_product','list_store','list_category'));
+            $title='Capheny - Chi tiết sản phẩm';
+            return view('admin.product.detail',compact('title','product','list_discount','discount_using','list_size_color_amount_product','list_store','list_category'));
 
         } catch (\Throwable $th) {
            return redirect()->back();
@@ -677,7 +679,7 @@ class productController extends Controller
     }
     public function add_new_color_product_form($product_id){
         if(!p_author('edit','tbl_product')){
-            die('Bạn đéo đủ quyền truy cập');
+            return view('error.403');
         }
         $product_isset=DB::table('tbl_product')->where('product_id',$product_id)->get(['product_id'])->toArray();
         if(count($product_isset)!==1) return redirect()->back();
@@ -693,7 +695,8 @@ class productController extends Controller
         if(count($list_color)<1){
            return redirect()->back()->withErrors(['redirect'=>'Sản phẩm đã có đủ hết tất cả màu']);
         }
-        return view('admin.product.addcolor',compact('list_color'));
+        $title='Capheny - Thêm màu mới cho sản phẩm';
+        return view('admin.product.addcolor',compact('list_color','title'));
     }
     public function add_new_color_product($product_id,Request $request){
       
@@ -736,7 +739,8 @@ class productController extends Controller
         if(count($list_size)<1){
            return redirect()->back()->withErrors(['redirect'=>'Sản phẩm đã có đủ hết tất cả kích cỡ']);
         }
-        return view('admin.product.addsize',compact('list_size'));
+        $title='Capheny - Thêm kích thước mới cho san phẩm';
+        return view('admin.product.addsize',compact('list_size','title'));
     }
     public function add_new_size_product($product_id,Request $request){
       

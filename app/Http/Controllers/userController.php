@@ -131,14 +131,16 @@ class userController extends Controller
             $permission=DB::table('tbl_user_permission')->join('tbl_permission','tbl_permission.permission_id','=','tbl_user_permission.permission_id')->where('user_id',$Euser->user_id)->get(['tbl_permission.permission','tbl_permission.permission_id'])->toArray();
             $list_user[$users]->permission=$permission;
         }
-        return view('admin.user.index',compact('list_user','list_province','list_ward','list_district','list_role','list_permission'));
+        $title='Capheny - Danh sách người dùng';
+        return view('admin.user.index',compact('title','list_user','list_province','list_ward','list_district','list_role','list_permission'));
     }
     public function add_form(){
         if(!p_author('add','tbl_user')){
             return view('error.403');
         }
         $list_province=DB::table('tbl_province')->get();
-        return view('admin.user.add',compact('list_province'));
+        $title='Capheny - Thêm người dùng';
+        return view('admin.user.add',compact('list_province','title'));
     }
     public function add(Request $request){
         $validated=Validator::make($request->all(),
@@ -195,9 +197,9 @@ class userController extends Controller
         if($request->hasFile('avatar')){
             $newNameImg=$request->avatar->getClientOriginalName().date('Y_m_d').'.'.$request->avatar->getClientOriginalExtension();
             $request->avatar->move('images/user',$newNameImg);
-            DB::table('tbl_user')->insert(array_merge($request->except(['_token','user_password_confirm','user_password','avatar']),['avatar'=>$newNameImg],['create_at'=>$create_at],['active'=>$active],['user_type'=>$user_type],['user_password'=>$user_password] ) );
+            DB::table('tbl_user')->insert(array_merge($request->except(['_token','user_password_confirm','user_password','avatar']),['avatar'=>$newNameImg],['create_at'=>$create_at],['active'=>$active],['user_type'=>$user_type],['password'=>$user_password] ) );
         }else{
-            DB::table('tbl_user')->insert(array_merge($request->except(['_token','user_password_confirm','user_password','avatar']),['create_at'=>$create_at],['active'=>$active],['user_type'=>$user_type],['user_password'=>$user_password] ) );
+            DB::table('tbl_user')->insert(array_merge($request->except(['_token','user_password_confirm','user_password','avatar']),['create_at'=>$create_at],['active'=>$active],['user_type'=>$user_type],['password'=>$user_password] ) );
         }
        
        
@@ -228,7 +230,8 @@ class userController extends Controller
         $list_province=DB::table('tbl_province')->get();
         $list_district=DB::table('tbl_district')->where('_province_id',$user->province)->get();
         $list_ward=DB::table('tbl_ward')->where('_district_id',$user->district)->get();
-        return view('admin.user.edit',compact('user','list_province','list_district','list_ward'));
+        $title='Capheny - Cập nhật người dùng';
+        return view('admin.user.edit',compact('user','list_province','list_district','list_ward','title'));
     }
     public function edit(Request $request,$id){
         $data= $request->all();
@@ -291,7 +294,7 @@ class userController extends Controller
        
         if($request->user_password!==null){
             $user_password=bcrypt($request->user_password);
-            $data_update=array_merge($request->except(['_token','user_password_confirm','user_password','avatar']),['update_at'=>$update_at],['user_type'=>$user_type],['user_password'=>$user_password] );
+            $data_update=array_merge($request->except(['_token','user_password_confirm','user_password','avatar']),['update_at'=>$update_at],['user_type'=>$user_type],['password'=>$user_password] );
         }else{
             $data_update=array_merge($request->except(['_token','user_password_confirm','user_password','avatar']),['update_at'=>$update_at],['user_type'=>$user_type]);
         }

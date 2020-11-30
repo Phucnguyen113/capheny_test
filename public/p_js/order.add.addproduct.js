@@ -75,7 +75,7 @@ function add_product(){
        html+=`<td>${product_name} <input type="hidden" name="product_id" value="${product_id}"> </td>`
        html+=`<td><div style="width:15px;height:15px;background-color:#${color_name}"></div> <input type="hidden" name="color" value="${color}"></td>`
        html+=`<td>${size_name} <input type="hidden" name="size" value="${size}"></td>`
-       html+=`<td class="product_amount_td"><span id="amount_text_${product_id}_${color}_${size}">${product_amount}</span> <button type="button" onclick="up_amount('${product_id}_${color}_${size}')" class="btn btn-success">+</button> <button type="button" onclick="down_amount('${product_id}_${color}_${size}')" class="btn btn-dark">+</button><input type="hidden" id="product_${product_id}_${color}_${size}" name="product_amount" value="${product_amount}"></td>`
+       html+=`<td class="product_amount_td"><span id="amount_text_${product_id}_${color}_${size}">${product_amount}</span> <button type="button" onclick="up_amount('${product_id}_${color}_${size}')" class="btn btn-success">+</button> <button type="button" onclick="down_amount('${product_id}_${color}_${size}')" class="btn btn-dark">-</button><input type="hidden" id="product_${product_id}_${color}_${size}" name="product_amount" value="${product_amount}"></td>`
        html+=`<td>${price} VND <input type="hidden" name="price" value="${price}" ></td>`
        html+=`<td><button  id="remove_product_${product_id}_${color}_${size}" onclick="remove_product('${product_id}_${color}_${size}')" type="button" class="btn btn-danger remove_product"><i class="fa fa-trash-alt"></i></button></td>`
        $('#table_tbody_product').append(html)

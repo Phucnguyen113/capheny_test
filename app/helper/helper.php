@@ -13,29 +13,7 @@ if(!function_exists('p_auth')){
         ])->first();
         if(!empty($user)){
             if(Hash::check($data['user_password'],$user->user_password)){
-                // $role_collection=DB::table('tbl_user_role')->where('user_id',$user->user_id)->get(['role_id'])->toArray();
-                // $role=[];
-                // foreach ($role_collection as $roles => $rolef) {
-                //   $role[]=$rolef->role_id;
-                // }
-                // $permission_collection=DB::table('tbl_user_permission')->where('user_id',$user->user_id)->get(['permission_id'])->toArray();
-                // $permission=[];
-                // foreach ($permission_collection as $permissions => $permissionf) {
-                //     $permission[]=$permissionf->permission_id;
-                // }
-                // $admin=false;
-                // if(in_array(1,$role)){
-                //     $admin=true;
-                // }
-                // $ui_setting=DB::table('tbl_system_ui')->where(
-                //     [
-                //         ['user_id','=',session()->get('user')['user_id']],
-                //     ]
-                // )->get(['name','value']);
-                // $ui_setting_parse=[];
-                // foreach ($ui_setting as $settings => $setting) {
-                //     $ui_setting_parse[$setting->name]=json_decode($setting->value);
-                // }
+                
                 session(
                     [
                         'user'=>[
@@ -43,11 +21,13 @@ if(!function_exists('p_auth')){
                                     'user_email'=>$user->user_email,
                                     'user_name'=>$user->user_name,
                                     'user_phone'=>$user->user_phone,
+                                    'user_image'=>$user->avatar
                                     // 'ui_setting'=>$ui_setting_parse
                                 ]
                     ]
             );
-                return true;
+            return true;
+                 
             }else{
                 return false;
             }
@@ -189,6 +169,28 @@ if(!function_exists('p_ui_setting')){
 if(!function_exists('p_user')){
     function p_user(){
         return session()->get('user');
+    }
+}
+if(!function_exists('p_redirect_login_admin')){
+    function p_redirect_login_admin(){
+        $id=p_user()['user_id'];
+        $role_path=DB::table('tbl_user_role')
+        ->join('tbl_role','tbl_role.role_id','=','tbl_user_role.role_id')
+        ->where('tbl_user_role.user_id',$id)->first();
+        if(!empty($role_path)){
+            return redirect($role_path->url_path);
+        }
+        $permission_path=DB::table('tbl_user_permission')
+        ->join('tbl_permission','tbl_permission.permission_id','=','tbl_user_permission.permission_id')
+        ->where('tbl_user_permission.user_id',$id)->get()->toArray();
+        if(!empty($permission_path)){
+            foreach ($permission_path as $permissions => $permission) {
+               if($permission->url_path!==null){
+                   return redirect($permission->url_path);
+               }
+            }
+            return view('error.role-er');
+        }
     }
 }
 ?>

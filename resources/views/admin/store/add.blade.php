@@ -106,7 +106,7 @@
             <div class="form-row form-group">
                 <div class="col-md-12">
                     <label for="store_address" >Địa chỉ <span style="color:red"> *</span></label>
-                    <input type="text" name="store_address" id="store_address" class="form-control" placeholder="Tên cửa hàng">
+                    <input type="text" name="store_address" id="store_address" class="form-control" placeholder="Địa chỉ cửa hàng">
                     <div id="store_address_error" class="error_p" style="color:Red"></div>
                 </div>
             </div>

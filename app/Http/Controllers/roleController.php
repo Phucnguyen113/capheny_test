@@ -38,7 +38,8 @@ class roleController extends Controller
             $list_role=$list_role->whereBetween('update_at',[$request->update_at_from,Carbon::now('Asia/Ho_Chi_Minh')->toDateTimeString()]);
         }
         $list_role=$list_role->orderByDesc('role_id')->paginate(20);
-        return view('admin.role.index',compact('list_role'));
+        $title='Capheny - Danh sách vai trò';
+        return view('admin.role.index',compact('list_role','title'));
     }
     public function add_role_for_user_form(){
         if(!is_admin()){
@@ -46,7 +47,8 @@ class roleController extends Controller
         }
         $list_user=DB::table('tbl_user')->where('user_type',1)->orderByDesc('user_id')->get();
         $list_role=DB::table('tbl_role')->orderByDesc('role_id')->get();
-        return view('admin.user.addrole',compact('list_user','list_role'));
+        $title='Capheny - Thêm vai trò cho người dùng';
+        return view('admin.user.addrole',compact('list_user','list_role','title'));
     }
     public function add_role(Request $request){
         $validated=Validator::make($request->all(),
@@ -103,7 +105,8 @@ class roleController extends Controller
         foreach ($list_role_of_user as $roles => $role) {
             $list_role_id_of_user[]=$role->role_id;
         }
-        return view('admin.user.editrole', compact('user','list_role','list_role_id_of_user') );
+        $title='Capheny - Cập nhật vai trò người dùng';
+        return view('admin.user.editrole', compact('user','list_role','list_role_id_of_user','title') );
     }
     public function edit_role(Request $request,$id){
         $validated=Validator::make($request->all(),
@@ -166,7 +169,8 @@ class roleController extends Controller
             $permission_id_old[]=$permission->permission_id;
         }
         $list_permission=DB::table('tbl_permission')->get();
-        return view('admin.role.edit',compact('role','permission_id_old','list_permission'));
+        $title='Capheny - Cập nhật vai trò';
+        return view('admin.role.edit',compact('role','permission_id_old','list_permission','title'));
     }
     public function edit_name_role(Request $request,$id){
         $validated=Validator::make($request->all(),
@@ -197,7 +201,8 @@ class roleController extends Controller
         if(!is_admin()){
             return view('error.403');
         }
-        return view('admin.role.add');
+        $title='Capheny - Thêm vai trò';
+        return view('admin.role.add',compact('title'));
     }
     public function add(Request $request){
         $validated=Validator::make($request->all(),

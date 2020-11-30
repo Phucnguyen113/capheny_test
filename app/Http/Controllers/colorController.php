@@ -51,7 +51,8 @@ class colorController extends Controller
         $list_color=$list_color->orderByDesc('color_id')->paginate(20);
         
         $list_color_for_search=DB::table('tbl_color')->orderByDesc('color_id')->get();
-        return view('admin/color/index',['list_color'=>$list_color,'color_search'=>$list_color_for_search]);
+        $title='Capheny - Danh sách màu';
+        return view('admin/color/index',['list_color'=>$list_color,'color_search'=>$list_color_for_search,'title'=>$title]);
     }
 
     /**
@@ -64,7 +65,8 @@ class colorController extends Controller
         if(!p_author('add','tbl_color')){
             return view('error.403');
         }
-        return view('admin/color/add');
+        $title='Capheny - Thêm màu';
+        return view('admin/color/add',compact('title'));
     }
 
     /**
@@ -118,8 +120,8 @@ class colorController extends Controller
             return view('error.403');
         }
         $color=DB::table('tbl_color')->where('color_id',$id)->first();
-
-        return view('admin/color/edit',['color'=>$color]);
+        $title='Capheny - Cập nhật màu';
+        return view('admin/color/edit',['color'=>$color,'title'=>$title]);
     }
 
     /**

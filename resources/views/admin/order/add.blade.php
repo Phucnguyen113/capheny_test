@@ -30,12 +30,44 @@
                         <label for="user_id">Người dùng <span style="color:Red"> *</span></label>
                         <select name="user_id" id="user_id" class="form-control" style="width:100%">
                             <option value="0">Chọn người dùng</option>
-                            @foreach($list_user as $users => $user)
-                                <option value="{{$user->user_id}}">{{$user->user_first_name}} {{$user->user_last_name}}</option>
-                            @endforeach 
+                           
                         </select>
                         <script>
-                                $('#user_id').select2()
+                                 $('#user_id').select2({
+                                minimumInputLength:3,
+                                placeholder:'Tìm người dùng',
+                                ajax:{
+                                    type:'post',
+                                    dataType:'json',
+                                    url:"{{url('api/get_list_user')}}",
+                                    data:function (params){
+                                        return {keyword:params.term}
+                                    },
+                                    processResults:function(data){
+                                        return {
+                                            results:data
+                                        }
+                                    },
+                                    
+                                    cache:true
+                                },
+                                language:{
+                                        searching:function(){
+                                            return 'Đang tìm người dùng phù hợp';
+                                        },
+                                        inputTooShort: function (e) {
+                                            var t = e.minimum - e.input.length
+                                            var n = "Hãy nhập thêm ít nhất " + t + " ký tự  để tìm kiếm";
+                                            return n
+                                        },
+                                        noResults: function () {
+                                            return "Không tìm thấy người dùng phù hợp"
+                                        },
+                                        errorLoading: function () {
+                                            return "Đã xảy ra lỗi, chưa thể tải người dùng."
+                                        }
+                                    },
+                                })
                                 $('#user_id').change(function(){
                                     if($(this).val()!=='0'){
                                             $.ajax({
@@ -196,16 +228,44 @@
                             <label for="product_id">Sản phẩm <span style="color:Red"> *</span></label>
                             <select name="product_id" id="product_id" class="form-control" style="width:100%">
                                 <option value="0">Chọn sản phẩm</option>
-                                @foreach($list_product as $products => $product)
-                                    <option value="{{$product->product_id}}">{{$product->product_name}}</option>
-                                @endforeach
+                               
                             </select>
                             <div id="product_id_form_error" style="color:red" class="p_error"></div>
                             <!-- script process form product -->
                             <script>
                                 var p_price=0; // giá product
                                 var p_amount=0;
-                                $('#product_id').select2()
+                                $('#product_id').select2({
+                                    placeholder:'Chọn sản phẩm',
+                                    minimumInputLength:3,
+                                    ajax:{
+                                        type:'post',
+                                        url:'{{url("api/get_list_product")}}',
+                                        dataType:'json',
+                                        data:function(data){
+                                            return { keyword:data.term}
+                                        },
+                                        processResults:function(data){
+                                            return {results:data}
+                                        },
+                                        cache:true
+                                    },
+                                    language:{
+                                        searching:function(){
+                                            return 'Đang tìm sản phẩm phù hợp'
+                                        },
+                                        inputTooShort:function(e){
+                                            var t=e.minimum-e.input.length;
+                                            return 'Nhập thêm ít nhất '+t+' để tìm kiếm';
+                                        },
+                                        noResults:function(){
+                                            return 'Không tìm thấy sản phẩm phù hợp'
+                                        },
+                                        errorLoading:function(){
+                                            return "Đã xảy ra lỗi, chưa thể tải người dùng."
+                                        }
+                                    }
+                                })
                                 $('#product_id').change(function(index,item){
                                     if($(this).val()!=='0'){
                                         $.ajax({
@@ -282,6 +342,18 @@
                         <!-- script add order -->
                         <script>
                                 function add_order(){
+                                    Swal.fire ({
+                                        title: 'Xin chờ...',
+                                        onBeforeOpen: () => {
+                                            Swal.showLoading ()
+                                        }
+                                        ,allowEscapeKey: false,
+                                        allowOutsideClick: false,
+                                        showCloseButton:false,
+                                        showCancelButton:false,
+                                        showConfirmButton:false,
+                                    })
+                               
                                 var formdata= new FormData();
                                 var _token=$("input[name='_token']").val();
                                 formdata.append('_token',_token)

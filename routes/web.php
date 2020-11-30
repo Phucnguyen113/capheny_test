@@ -5,6 +5,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\categoryController;
 use App\Http\Controllers\colorController;
 use App\Http\Controllers\commentController;
+use App\Http\Controllers\dashboardController;
 use App\Http\Controllers\mailController;
 use App\Http\Controllers\orderController;
 use App\Http\Controllers\permissionController;
@@ -13,6 +14,7 @@ use App\Http\Controllers\roleController;
 use App\Http\Controllers\sizeController;
 use App\Http\Controllers\storeController;
 use App\Http\Controllers\userController;
+use App\Http\Controllers\jwtAuthController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -29,6 +31,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::group(['prefix'=>'admin'],function(){
     Route::group(['middleware'=>'p_auth'],function(){
+        Route::get('dashboard',[dashboardController::class,'index']);
         Route::resource('category',categoryController::class);
         Route::resource('product',productController::class);
         Route::resource('size',sizeController::class);
@@ -80,6 +83,8 @@ Route::group(['prefix'=>'admin'],function(){
         Route::get('comment',[commentController::class,'index']);
         Route::get('comment/create',[commentController::class,'add_form']);
         Route::post('comment/create',[commentController::class,'add']);
+        Route::get('comment/{id}/edit',[commentController::class,'edit_form']);
+        Route::post('comment/{id}/edit',[commentController::class,'edit']);
         //role
         Route::get('role', [roleController::class,'index']);
         Route::post('role/{id}/delete', [roleController::class,'delete_role']);
@@ -106,3 +111,4 @@ Route::post('category/tree_category/select/{id}',[categoryController::class,'get
 Route::post('product/get_category/{id}',[productController::class,'get_category_product_detail']);
 
 Route::get('send/{id}',[mailController::class,'sendmail']);
+

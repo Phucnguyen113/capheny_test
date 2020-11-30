@@ -7,11 +7,15 @@ use Illuminate\Http\Request;
 class AuthController extends Controller
 {
     public function login_form(){
-        return view('admin.auth.login');
+        if(p_check()){
+            return p_redirect_login_admin();
+        }
+        $title='Capheny - Đăng nhập admin';
+        return view('admin.auth.login',compact('title'));
     }
     public function login(Request $request){
         if( p_auth($request->only(['user_email','user_password']))){
-                
+            return p_redirect_login_admin();
         }else{
             return redirect()->back();
         }

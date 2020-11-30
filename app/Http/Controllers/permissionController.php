@@ -17,8 +17,9 @@ class permissionController extends Controller
         if(!is_admin()){
             return view('error.403');
         }
-        $list_permission=DB::table('tbl_permission')->orderByDesc('permission_id')->paginate(15);
-        return view('admin.permission.index',compact('list_permission'));
+        $list_permission=DB::table('tbl_permission')->orderByDesc('permission_id')->paginate(20);
+        $title='Capheny - Danh sách quyền';
+        return view('admin.permission.index',compact('list_permission','title'));
     }
 
     public function add_permission_for_user_form(){
@@ -27,7 +28,8 @@ class permissionController extends Controller
         }
         $list_user=DB::table('tbl_user')->where('user_type','=',1)->orderByDesc('user_id')->get();
         $list_permission=DB::table('tbl_permission')->orderByDesc('permission_id')->get();
-        return view('admin.user.addpermission',compact('list_permission','list_user'));
+        $title='Capheny - Thêm quyền cho người dùng';
+        return view('admin.user.addpermission',compact('list_permission','list_user','title'));
     }
 
     public function add_permission(Request $request){
@@ -81,7 +83,8 @@ class permissionController extends Controller
             $id_permission_of_user[]=$permission->permission_id;
         }
         $list_permission=DB::table('tbl_permission')->orderByDesc('permission_id')->get();
-        return view('admin.user.editpermission',compact('user','list_permission','id_permission_of_user'));
+        $title='Capheny - Cập nhật quyền cho người dùng';
+        return view('admin.user.editpermission',compact('user','list_permission','id_permission_of_user','title'));
     }
 
     public function edit_permission(Request $request,$id){
@@ -128,7 +131,8 @@ class permissionController extends Controller
         if(!is_admin()){
             return view('error.403');
         }
-        return view('admin.permission.add');
+        $title='Capheny - Thêm quyền';
+        return view('admin.permission.add',compact('title'));
     }
     public function add(Request $request){
         $validated=Validator::make($request->all(),

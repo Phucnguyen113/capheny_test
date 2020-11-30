@@ -24,8 +24,8 @@ class sizeController extends Controller
             return view('error.403');
         }
         $list_size=DB::table('tbl_size');
-        if($request->color!==null && empty($request->color)){
-            $list_size=$list_size->whereIn('size_id',$request->size);
+        if($request->size!==null ){
+            $list_size=$list_size->where('size','LIKE','%'.$request->size.'%');
         }
         
         // create_at product process
@@ -47,8 +47,8 @@ class sizeController extends Controller
         }
         
         $list_size=$list_size->orderByDesc('size_id')->paginate(20);
-       
-        return view('admin.size.index',['list_size'=>$list_size]);
+        $title='Capheny - Danh sách kích thước';
+        return view('admin.size.index',['list_size'=>$list_size,'title'=>$title]);
     }
 
     /**
@@ -61,7 +61,8 @@ class sizeController extends Controller
         if(!p_author('add','tbl_size')){
             return view('error.403');
         }
-        return view('admin.size.add');
+        $title='Capheny - Thêm kích thước';
+        return view('admin.size.add',compact('title'));
     }
 
     /**
@@ -118,8 +119,9 @@ class sizeController extends Controller
         if(!p_author('edit','tbl_size')){
             return view('error.403');
         }
+        $title='Capheny - Cập nhật kích thước';
         $size=DB::table('tbl_size')->where('size_id',$id)->first();
-        return view('admin/size/edit',['size'=>$size]);
+        return view('admin/size/edit',['size'=>$size,'title'=>$title]);
     }
 
     /**

@@ -10,20 +10,14 @@
                     <thead>
                         <tr>
                             <th>Quyền</th>
-                            <th>Thao tác</th>
+                           
                         </tr>
                     </thead>
                     <tbody>
                         @foreach($list_permission as $permissions => $permission)
                             <tr>
                                 <td>{{$permission->permission}}</td>
-                                <td>
-                                    <a href="{{url('admin/permission')}}/{{$permission->permission_id}}/edit" class="btn btn-primary"> <div class="fa fa-edit"></div></a>
-                                    <form action="{{url('admin/permission')}}/{{$permission->permission_id}}/delete" method="post" style="display: inline-block;">
-                                        @csrf
-                                        <button type="submit" class="btn btn-danger"> <div class="fa fa-trash-alt"></div></button>
-                                    </form>
-                                </td>
+                                
                             </tr>
                         @endforeach
                     </tbody>

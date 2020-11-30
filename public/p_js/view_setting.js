@@ -21,7 +21,7 @@ function view_setting(user_id,table){
     formdata.append('table',table);
      $.ajax({
          type: "POST",
-         url: "/api/ui_setting",
+         url: "public/api/ui_setting",
          data: formdata,
          processData:false,
          contentType:false,

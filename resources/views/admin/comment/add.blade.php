@@ -100,6 +100,94 @@
         return false;
     }
 </script>
+<script>
+    $(document).ready(function () {
+        $('#user_id').select2({
+        minimumInputLength:3,
+        placeholder:'Tìm người dùng',
+        ajax:{
+            type:'post',
+            dataType:'json',
+            url:"{{url('api/get_list_user')}}",
+            data:function (params){
+                return {keyword:params.term}
+            },
+            processResults:function(data){
+                return {
+                    results:data
+                }
+            },
+            
+            cache:true
+        },
+        language:{
+                searching:function(){
+                    return 'Đang tìm người dùng phù hợp';
+                },
+                inputTooShort: function (e) {
+                    var t = e.minimum - e.input.length
+                    var n = "Hãy nhập thêm ít nhất " + t + " ký tự  để tìm kiếm";
+                    return n
+                },
+                noResults: function () {
+                    return "Không tìm thấy người dùng phù hợp"
+                },
+                errorLoading: function () {
+                    return "Đã xảy ra lỗi, chưa thể tải người dùng."
+                }
+            },
+        })
+
+        $('#product_id').select2({
+        minimumInputLength:3,
+        placeholder:'Tìm sản phẩm',
+        ajax:{
+            type:'post',
+            dataType:'json',
+            url:"{{url('api/get_list_product')}}",
+            data:function (params){
+                return {keyword:params.term}
+            },
+            processResults:function(data){
+                return {
+                    results:data
+                }
+            },
+            
+            cache:true
+        },
+        language:{
+                searching:function(){
+                    return 'Đang tìm sản phẩm phù hợp';
+                },
+                inputTooShort: function (e) {
+                    var t = e.minimum - e.input.length
+                    var n = "Hãy nhập thêm ít nhất " + t + " ký tự  để tìm kiếm";
+                    return n
+                },
+                noResults: function () {
+                    return "Không tìm thấy sản phẩm phù hợp"
+                },
+                errorLoading: function () {
+                    return "Đã xảy ra lỗi, chưa thể tải sản phẩm."
+                }
+            },
+        })
+    });
+    
+
+</script>
 @endsection
 @section('css')
+<style>
+    .select2-selection__rendered {
+        line-height: 35px !important;
+    }
+    .select2-container .select2-selection--single {
+        height: 38px !important;
+    }
+    .select2-selection__arrow {
+        height: 38px !important;
+    }
+</style>
 @endsection

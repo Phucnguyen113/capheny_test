@@ -51,15 +51,17 @@ class storeController extends Controller
 
         $list_store=$list_store->where($param_search)->paginate(2);
         $list_province=DB::table('tbl_province')->get();
-        return view('admin.store.index',compact('list_store','list_province','list_district','list_ward'));
+        $title='Capheny - Danh sách cửa hàng';
+        return view('admin.store.index',compact('list_store','list_province','list_district','list_ward','title'));
     }
 
     function create(){
         if(!p_author('add','tbl_store')){
-            die('Bạn đéo đủ quyền truy cập');
+            return view('error.403');
         }
         $list_province=DB::table('tbl_province')->get();
-        return view('admin.store.add',compact('list_province'));
+        $title='Capheny - Thêm cửa hàng';
+        return view('admin.store.add',compact('list_province','title'));
     }
     function store(Request $request){
         $validated=Validator::make($request->all(),
@@ -88,11 +90,12 @@ class storeController extends Controller
     }
     public function form_add_product(){
         if(!p_author('add_product','tbl_store')){
-            die('Bạn đéo đủ quyền truy cập');
+            return view('error.403');
         }
         $list_store=DB::table('tbl_store')->orderByDesc('store_id')->get();
         $list_product=DB::table('tbl_product')->orderByDesc('product_id')->get();
-        return view('admin.store.addproduct',compact('list_store','list_product'));
+        $title='Capheny - Nhập sản phẩm về cửa hàng ';
+        return view('admin.store.addproduct',compact('list_store','list_product','title'));
     }
     public function add_product(Request $request){
         
@@ -184,21 +187,20 @@ class storeController extends Controller
                 }
             }
         }
-       
-        return view('admin.store.detail',compact('data','list_product_distinct'));
+        $title='Capheny - Chi tiết cửa hàng';
+        return view('admin.store.detail',compact('data','list_product_distinct','title'));
     }
     public function delete_product_from_store($id){
         DB::table('tbl_store_product')->where('id',$id)->delete();
-       return redirect()->back();
+        return redirect()->back();
     }
     public function edit_product_from_store_form($id){
-
         $data=DB::table('tbl_store_product')
         ->join('tbl_size','tbl_size.size_id','=','tbl_store_product.product_size')
         ->join('tbl_color','tbl_color.color_id','=','tbl_store_product.product_color')
         ->where('id',$id)->first(['tbl_store_product.id as id','tbl_store_product.product_amount','tbl_color.color as color','tbl_size.size as size']);
-
-        return view('admin.store.editproduct',compact('data'));
+        $title='Capheny - Chỉnh sửa sản phẩm ở cửa hàng';
+        return view('admin.store.editproduct',compact('data','title'));
     }
     public function edit_product_from_store(Request $request,$id){
         $validated= Validator::make($request->all(),
@@ -227,14 +229,14 @@ class storeController extends Controller
 
     public function edit_store_form($id){
         if(!p_author('edit','tbl_store')){
-            die('Bạn đéo đủ quyền truy cập');
+           return view('error.403');
         }
         $data=DB::table('tbl_store')->where('store_id',$id)->first();
         $list_province=DB::table('tbl_province')->get();
         $list_district=DB::table('tbl_district')->where('_province_id',$data->province)->get();
         $list_ward=DB::table('tbl_ward')->where('_district_id',$data->district)->get();
-        
-        return view('admin.store.edit',compact('list_province','data','list_province','list_district','list_ward'));
+        $title='Capheny - Cập nhật cửa hàng';
+        return view('admin.store.edit',compact('list_province','data','list_province','list_district','list_ward','title'));
     }
     public function edit_store(Request $request,$id){
         $validated=Validator::make($request->all(),

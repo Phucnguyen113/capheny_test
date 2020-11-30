@@ -17,15 +17,6 @@
 @endsection
 @section('body')
     <a href="{{url()->previous()}}" class="btn btn-warning  mb-2" style="color:white">Quay lại</a>
-    <div class="card mb-2">
-        <div class="card-body">
-            <div class="card-title" style="text-align:center;font-size:36px;">Gửi lại email</div>
-            <form action="{{url('api/send/mail/')}}/{{$order->order_id}}"  onsubmit="return sendmail()" method="post">
-                <button type="submit" class="btn btn-success">Gửi mail</button>
-            </form>
-            
-        </div>
-    </div>
     <div class="card">
         <div class="card-body">
             <div class="card-title" style="text-align:center;font-size:36px">Chỉnh sửa đơn hàng</div>
@@ -38,13 +29,47 @@
                    <div class="col-md-12 form-group">
                         <label for="user_id">Người dùng <span style="color:Red"> *</span></label>
                         <select name="user_id" id="user_id" class="form-control" style="width:100%">
-                            <option value="0">Chọn người dùng</option>
-                            @foreach($list_user as $users => $user)
-                                <option @if($user->user_id==$order->user_id) selected @endif value="{{$user->user_id}}">{{$user->user_first_name}} {{$user->user_last_name}}</option>
-                            @endforeach
+                           @if(!empty($list_user))
+                            <option value="{{$list_user->user_id}}">{{$list_user->user_email}}</option>
+                           @endif
+                           
                         </select>
                         <script>
-                                $('#user_id').select2()
+                               $('#user_id').select2({
+                                    minimumInputLength:3,
+                                    placeholder:'Tìm người dùng',
+                                    ajax:{
+                                        type:'post',
+                                        dataType:'json',
+                                        url:"{{url('api/get_list_user')}}",
+                                        data:function (params){
+                                            return {keyword:params.term}
+                                        },
+                                        processResults:function(data){
+                                            return {
+                                                results:data
+                                            }
+                                        },
+                                        
+                                        cache:true
+                                    },
+                                    language:{
+                                            searching:function(){
+                                                return 'Đang tìm người dùng phù hợp';
+                                            },
+                                            inputTooShort: function (e) {
+                                                var t = e.minimum - e.input.length
+                                                var n = "Hãy nhập thêm ít nhất " + t + " ký tự  để tìm kiếm";
+                                                return n
+                                            },
+                                            noResults: function () {
+                                                return "Không tìm thấy người dùng phù hợp"
+                                            },
+                                            errorLoading: function () {
+                                                return "Đã xảy ra lỗi, chưa thể tải người dùng."
+                                            }
+                                        },
+                                    })
                                 $('#user_id').change(function(){
                                     if($(this).val()!=='0'){
                                             $.ajax({
@@ -211,15 +236,47 @@
                             <label for="product_id">Sản phẩm <span style="color:Red"> *</span></label>
                             <select name="product_id" id="product_id" class="form-control" style="width:100%">
                                 <option value="0">Chọn sản phẩm</option>
-                                @foreach($list_product as $products => $product)
-                                    <option value="{{$product->product_id}}">{{$product->product_name}}</option>
-                                @endforeach
+                               
                             </select>
                             <div id="product_id_form_error" style="color:red" class="p_error"></div>
                             <!-- script process form product -->
                             <script>
                                 var p_price=0; // giá product
-                                $('#product_id').select2()
+                                $('#product_id').select2({
+                                    minimumInputLength:3,
+                                    placeholder:'Tìm sản phẩm',
+                                    ajax:{
+                                        type:'post',
+                                        dataType:'json',
+                                        url:"{{url('api/get_list_product')}}",
+                                        data:function (params){
+                                            return {keyword:params.term}
+                                        },
+                                        processResults:function(data){
+                                            return {
+                                                results:data
+                                            }
+                                        },
+                                        
+                                        cache:true
+                                    },
+                                    language:{
+                                            searching:function(){
+                                                return 'Đang tìm sản phẩm phù hợp';
+                                            },
+                                            inputTooShort: function (e) {
+                                                var t = e.minimum - e.input.length
+                                                var n = "Hãy nhập thêm ít nhất " + t + " ký tự  để tìm kiếm";
+                                                return n
+                                            },
+                                            noResults: function () {
+                                                return "Không tìm thấy sản phẩm phù hợp"
+                                            },
+                                            errorLoading: function () {
+                                                return "Đã xảy ra lỗi, chưa thể tải sản phẩm."
+                                            }
+                                        },
+                                    })
                                 $('#product_id').change(function(index,item){
                                     if($(this).val()!=='0'){
                                         $.ajax({

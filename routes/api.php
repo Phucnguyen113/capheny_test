@@ -3,7 +3,9 @@
 use App\Http\Controllers\ApiCategoryController;
 use App\Http\Controllers\ApiProductController;
 use App\Http\Controllers\categoryController;
+use App\Http\Controllers\dashboardController;
 use App\Http\Controllers\districtController;
+use App\Http\Controllers\jwtAuthController;
 use App\Http\Controllers\mailController;
 use App\Http\Controllers\orderController;
 use App\Http\Controllers\productController;
@@ -11,6 +13,7 @@ use App\Http\Controllers\uiSettingController;
 use App\Http\Controllers\userController;
 use App\Http\Controllers\wardController;
 use App\Http\Controllers\permissionController;
+use App\Http\Controllers\select2Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -71,4 +74,19 @@ Route::group(['middleware'=>'p_cors'],function(){
     Route::get('detail/product',[ApiProductController::class,'detail']);
     //get product_new
     Route::get('product_new',[ApiProductController::class,'list_product_new_api']);
+});
+
+// select2 remote data
+Route::post('get_list_user',[select2Controller::class,'get_list_user']);
+Route::post('get_list_product',[select2Controller::class,'get_list_product']);
+Route::post('get_list_color',[select2Controller::class,'get_list_color']);
+
+// dashboard
+Route::post('dashboard/order',[dashboardController::class,'order']);
+Route::post('dashboard/store_product',[dashboardController::class,'store_product']);
+
+Route::post('auth/register', [jwtAuthController::class,'register']);
+Route::post('auth/login', [jwtAuthController::class,'login']);
+Route::group(['middleware' => 'jwt.auth'], function () {
+    Route::get('user-info', [jwtAuthController::class,'getUserInfo']);
 });
