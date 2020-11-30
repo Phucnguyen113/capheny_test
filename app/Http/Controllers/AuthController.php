@@ -14,7 +14,7 @@ class AuthController extends Controller
         return view('admin.auth.login',compact('title'));
     }
     public function login(Request $request){
-        if( p_auth($request->only(['user_email','user_password']))){
+        if( p_auth($request->only(['user_email','password']))){
             return p_redirect_login_admin();
         }else{
             return redirect()->back();

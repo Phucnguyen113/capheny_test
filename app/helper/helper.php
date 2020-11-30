@@ -12,7 +12,7 @@ if(!function_exists('p_auth')){
                                         ['active','=',1]
         ])->first();
         if(!empty($user)){
-            if(Hash::check($data['user_password'],$user->user_password)){
+            if(Hash::check($data['password'],$user->password)){
                 
                 session(
                     [

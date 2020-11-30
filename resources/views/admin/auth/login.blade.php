@@ -3431,7 +3431,7 @@ iframe {
                 <input
                   class="input100"
                   type="password"
-                  name="user_password"
+                  name="password"
                   placeholder="Mật khẩu"
                 />
                 <span class="focus-input100"></span>
