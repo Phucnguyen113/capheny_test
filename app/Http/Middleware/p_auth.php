@@ -16,6 +16,7 @@ class p_auth
      */
     public function handle(Request $request, Closure $next)
     {
+       
         if(session()->has('user')){
             return $next($request);
         }else{

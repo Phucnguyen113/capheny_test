@@ -19,6 +19,7 @@ class checkInput
         foreach ($request->all() as $requests => $value) {
             if($value==null) continue;
             if(is_array($value)){
+              
                 foreach ($value as $key1 => $value1) {
                     $value1=preg_replace("/\'/","",$value1);
                     $value1=preg_replace('/\"/',"",$value1);

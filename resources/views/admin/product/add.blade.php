@@ -6,7 +6,7 @@
 <a href="{{url()->previous()}}" class="btn btn-warning mb-2" style="color:white">Quay lại</a>
 <div class="main-card mb-3 card">
     <div class="card-body"><h5 class="card-title" style="font-size:36px;text-align:center">Thêm mới sản phẩm</h5>
-        <form class="" enctype="multipart/form-data" onsubmit="return add_product()">
+        <form class="" method="post" action="{{url('admin/product')}}" enctype="multipart/form-data" onsubmit="return add_product()">
         @csrf
         <div class="form-row">
             <!-- name product -->
@@ -247,7 +247,7 @@
         }
         var value_category=category.getSelectedIds();
         if(value_category!==null) formdata.append('category[]',value_category);
-
+        
         $.ajax({
             type: "post",
             url: "{{url('admin/product')}}",
@@ -263,7 +263,6 @@
                     $('#'+index+'_error').html(item);
                 })
                 }else{
-                    
                     Swal.fire({
                             icon: 'success',
                             title: 'Thêm sản phẩm',

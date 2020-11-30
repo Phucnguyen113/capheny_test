@@ -166,7 +166,7 @@ class productController extends Controller
      */
     public function store(Request $request)
     {
-       
+      
         $validated= Validator::make($request->all(),
             [
                 'product_name'       => 'required|bail',
@@ -217,14 +217,18 @@ class productController extends Controller
             if(strtotime($request->discount_end_date)==strtotime($request->discount_from_date)) return response()->json(['error'=>['discount_end_date'=>'Giờ ngày kết thúc khuyến mãi phải lớn hơn giờ ngày bắt đầu']]);
         }
         // validate image one more time
+       
         for ($i=0; $i <count($request->image) ; $i++) { 
             $image=['image'=>$request->image[$i]];
             $validatedImage=Validator::make($image,
                 [
-                    'image'=>'image'
+                    'image'=>'mimes:jpg,png,jpeg,svg,gif'
                 ],
                 [
-                    'image'=>' File '.$request->image[$i]->getClientOriginalName().' phải có dạng jpg,jpeg,png,svg,gif'
+                    'image'=>' File '.$image['image']->getClientOriginalName().' phải có dạng jpg,jpeg,png,svg,gif'
+                ],
+                [
+
                 ]
             );
             if($validatedImage->fails()) return response()->json(['error'=>$validatedImage->getMessageBag()]);
@@ -391,7 +395,7 @@ class productController extends Controller
                 $image=['image'=>$request->image[$i]];
                 $validatedImage= Validator::make($image,
                     [
-                        'image'=>'bail|sometimes|nullable|image'
+                        'image'=>'bail|sometimes|nullable|mimes:jpg,png,jpeg,svg,gif'
                     ],
                     [
                         'image.image'=>'File '.$request->image[$i]->getClientOriginalName().' phải có dạng jpg,jpeg,png,svg,gif'

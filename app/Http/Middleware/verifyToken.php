@@ -7,7 +7,7 @@ use JWTAuth;
 use Tymon\JWTAuth\Exceptions\JWTException;
 use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
 
-class VerifyJWTToken
+class VerifyToken
 {
     /**
      * Handle an incoming request.

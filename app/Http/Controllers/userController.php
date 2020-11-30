@@ -143,6 +143,7 @@ class userController extends Controller
         return view('admin.user.add',compact('list_province','title'));
     }
     public function add(Request $request){
+        
         $validated=Validator::make($request->all(),
             [
                 'user_name'     => 'bail|required|min:5|regex:/^[A-z0-9]*$/',
@@ -161,7 +162,7 @@ class userController extends Controller
                 'district'=> 'bail|required|not_in:0',
                 'ward'=> 'bail|required|not_in:0',
                 'user_address'=> 'bail|required',
-                'avatar' =>'sometimes|nullable|image'
+                'avatar' =>'sometimes|nullable|mimes:jpg,png,jpeg,svg,gif'
             ],
             [
                 'required' => ':attribute không được trống',
@@ -254,7 +255,7 @@ class userController extends Controller
                 'district'=> 'bail|required|not_in:0',
                 'ward'=> 'bail|required|not_in:0',
                 'user_address'=> 'bail|required',
-                'avatar'=>'sometimes|nullable|image'
+                'avatar'=>'sometimes|nullable|mimes:jpg,png,jpeg,svg,gif'
             ],
             [
                 'required' => ':attribute không được trống',
