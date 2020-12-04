@@ -247,7 +247,17 @@
         }
         var value_category=category.getSelectedIds();
         if(value_category!==null) formdata.append('category[]',value_category);
-        
+        Swal.fire ({
+            title: 'Xin chờ...',
+            onBeforeOpen: () => {
+                Swal.showLoading ()
+            }
+            ,allowEscapeKey: false,
+            allowOutsideClick: false,
+            showCloseButton:false,
+            showCancelButton:false,
+            showConfirmButton:false,
+        })
         $.ajax({
             type: "post",
             url: "{{url('admin/product')}}",
@@ -262,6 +272,7 @@
                 $.each(response.error,function(index,item){
                     $('#'+index+'_error').html(item);
                 })
+                Swal.close();
                 }else{
                     Swal.fire({
                             icon: 'success',

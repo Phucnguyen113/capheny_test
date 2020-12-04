@@ -6,12 +6,13 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
+use PDO;
 
 class storeController extends Controller
 {
     function index(Request $request){
         if(!p_author('view','tbl_store')){
-            die('Bạn đéo đủ quyền truy cập');
+            return view('error.403');
         }
         $param_search=[];
         $list_store=DB::table('tbl_store')->orderByDesc('store_id')
@@ -49,9 +50,10 @@ class storeController extends Controller
         }
         if($request->ward!==null && $request->ward!=='0') $param_search[]=['tbl_store.ward','=',$request->ward];
 
-        $list_store=$list_store->where($param_search)->paginate(2);
+        $list_store=$list_store->where($param_search)->distinct(['tbl_store.store_id'])->paginate(20);
         $list_province=DB::table('tbl_province')->get();
         $title='Capheny - Danh sách cửa hàng';
+       
         return view('admin.store.index',compact('list_store','list_province','list_district','list_ward','title'));
     }
 
@@ -85,7 +87,7 @@ class storeController extends Controller
         ]);
         if($validated->fails()) return response()->json(['error'=>$validated->getMessageBag()]);
         $create_at=Carbon::now('Asia/Ho_Chi_Minh')->toDateTimeString(); 
-        DB::table('tbl_store')->insert(array_merge($request->except(['_token']),['create_at'=>$create_at],['user_create'=>p_user()['user_id']]));
+        DB::table('tbl_store')->insert(array_merge($request->except(['_token']),['create_at'=>$create_at],['create_by'=>p_user()['user_id']]));
         return response()->json(['success'=>'sucess']);
     }
     public function form_add_product(){
@@ -138,7 +140,8 @@ class storeController extends Controller
                                 'product_color'  => $value->color_id,
                                 'product_amount' => ($request->product_amount[$product_amount])?$request->product_amount[$product_amount]:0,
                                 'amount_'        => ($request->product_amount[$product_amount])?$request->product_amount[$product_amount]:0,
-                                'create_at'      => $create_at
+                                'create_at'      => $create_at,
+                               
                             ]
                         );
                     }
@@ -170,10 +173,17 @@ class storeController extends Controller
         $data->list_product=$list_product;
 
         // mappingg amount
-        $list_product_distinct=DB::table('tbl_store_product')->join('tbl_product','tbl_product.product_id','=','tbl_store_product.product_id')
-        ->where('store_id',$id)->distinct()->select(['tbl_product.product_id','tbl_product.product_name'])->paginate(5)->setPageName('detail_product');
-       
+        $list_product_distinct=DB::table('tbl_store_product')
+        ->join('tbl_product','tbl_product.product_id','=','tbl_store_product.product_id')
+        ->where('store_id',$id)->distinct(['tbl_store_product.product_id'])->paginate(20,['tbl_store_product.product_id'],'por');
+        
         foreach ($list_product_distinct as $products => $product) {
+            $product_collection=DB::table('tbl_product')->where('product_id',$product->product_id)->first();
+            if(!empty($product_collection)){
+                $list_product_distinct[$products]->product_name=$product_collection->product_name;
+            }else{
+                $list_product_distinct[$products]->product_name='N/A';
+            }
             $list_size_product=DB::table('tbl_product_size')->join('tbl_size','tbl_size.size_id','=','tbl_product_size.size_id')
             ->select(['tbl_size.size','tbl_size.size_id as size_id'])->where('tbl_product_size.product_id',$product->product_id)->get();
 
@@ -187,10 +197,13 @@ class storeController extends Controller
                 }
             }
         }
+      
         $title='Capheny - Chi tiết cửa hàng';
         return view('admin.store.detail',compact('data','list_product_distinct','title'));
     }
     public function delete_product_from_store($id){
+        $check=DB::table('tbl_store_product')->where('id',$id)->first();
+        if($check->product_amount !== $check->amount_) return redirect()->back()->withErrors(['amount'=>'Đã có sản phẩm được bán']);
         DB::table('tbl_store_product')->where('id',$id)->delete();
         return redirect()->back();
     }
@@ -260,7 +273,7 @@ class storeController extends Controller
         ]);
         if($validated->fails()) return response()->json(['error'=>$validated->getMessageBag()]);
         $update_at=Carbon::now('Asia/Ho_Chi_Minh')->toDateTimeString(); 
-        DB::table('tbl_store')->where('store_id',$id)->update(array_merge($request->except(['_token']),['update_at'=>$update_at],['user_update'=>p_user()['user_id']]));
+        DB::table('tbl_store')->where('store_id',$id)->update(array_merge($request->except(['_token']),['update_at'=>$update_at],['update_by'=>p_user()['user_id']]));
         return response()->json(['success'=>'sucess']);
     }
     public function delete_store($id){

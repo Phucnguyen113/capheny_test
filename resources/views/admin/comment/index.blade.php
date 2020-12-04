@@ -21,7 +21,7 @@
                     </thead>
                     <tbody>
                         @foreach($list_comment as $comments => $comment)
-                            <tr>
+                            <tr data-comment="{{$comment->comment_id}}">
                                 <td>{{$comment->user_email}}</td>
                                 <td>{{$comment->product_name}}</td>
                                 <td>{!!Str::limit($comment->content,50)!!}</td>
@@ -39,10 +39,11 @@
                                         <a href="{{url('admin/comment')}}/{{$comment->comment_id}}/edit" class="btn btn-info"><div class="fa fa-edit"></div></a>
                                     @endif
                                     @if(p_author('delete','tbl_comment'))
-                                    <form style="display:inline-block;" action="{{url('admin/comment')}}/{{$comment->comment_id}}/delete" method="post">
+                                    <form style="display:inline-block;"  onsubmit="return delete_comment({{$comment->comment_id}})" action="{{url('admin/comment')}}/{{$comment->comment_id}}/delete" method="post">
                                         @csrf 
                                         <button type="submit" class="btn btn-danger"><div class="fa fa-trash-alt"></div></button>
                                     </form>
+                                    
                                     @endif
                                 </td>
                             </tr>
@@ -54,6 +55,31 @@
     </div>
 @endsection
 @section('js')
+<script>
+    function delete_comment(id){
+        var _token=$('input[name="_token"]').val();
+        $.ajax({
+            type: "POST",
+            url: "{{url('admin/comment')}}/"+id+"/delete",
+            data:{_token:_token},
+            dataType: "json",
+            success: function (response) {
+                if(!$.isEmptyObject(response.error)){
+
+                }else{
+                    Swal.fire({
+                        icon:'success',
+                        title:'Xóa thành công',
+                        text:'Bạn vừa xóa 1 bình luận'
+                    }).then(()=>{
+                        $('tr[data-comment='+id+']').remove();
+                    })
+                }
+            }
+        });
+        return false;
+    }
+</script>
 @endsection
 @section('css')
 @endsection

@@ -29,6 +29,7 @@
                    <div class="col-md-12 form-group">
                         <label for="user_id">Người dùng <span style="color:Red"> *</span></label>
                         <select name="user_id" id="user_id" class="form-control" style="width:100%">
+                            <option value="0">Chọn người dùng...</option>
                            @if(!empty($list_user))
                             <option value="{{$list_user->user_id}}">{{$list_user->user_email}}</option>
                            @endif

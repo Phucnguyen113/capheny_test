@@ -3,6 +3,17 @@
 <script>
     function edit_permission(){
         var data=$('#form').serialize();
+        Swal.fire ({
+            title: 'Xin chờ...',
+            onBeforeOpen: () => {
+                Swal.showLoading ()
+            }
+            ,allowEscapeKey: false,
+            allowOutsideClick: false,
+            showCloseButton:false,
+            showCancelButton:false,
+            showConfirmButton:false,
+        })
         $.ajax({
             type: "POST",
             url: "{{url('admin/user/')}}/{{$user->user_id}}/editpermission",
@@ -12,6 +23,7 @@
                 console.log(response );
                 if(!$.isEmptyObject(response.error)){
                     $('.p_error').html('')
+                    Swal.close();
                     $.each(response.error,function(index,item){
                         $(`#${index}_error`).html(item);
                         if(index=='admin'){

@@ -95,6 +95,17 @@
     <script>
             function submit_(){
                 var data=$('#addproduct').serialize();
+                Swal.fire ({
+                    title: 'Xin chờ...',
+                    onBeforeOpen: () => {
+                        Swal.showLoading ()
+                    }
+                    ,allowEscapeKey: false,
+                    allowOutsideClick: false,
+                    showCloseButton:false,
+                    showCancelButton:false,
+                    showConfirmButton:false,
+                })
                 $.ajax({
                     type: "post",
                     url: "{{url('admin/store/addproduct')}}",
@@ -107,9 +118,17 @@
                                 var str=index.replace('\.','');
                                 $('#'+str+'_error').html(item)
                             })
-                            console.log(response.error);
+                            Swal.close();
+                            
                         }else{
-                            window.location.href="{{url('admin/store')}}";
+                            Swal.fire({
+                                icon:'success',
+                                title:'Thêm thành công!',
+                                text:'Bạn vừa nhập sản phẩm về 1 cửa hàng'
+                            }).then(()=>{
+                                window.location.href="{{url('admin/store')}}";
+                            })
+                           
                         }
                     }
                 });

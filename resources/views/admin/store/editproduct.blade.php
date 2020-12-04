@@ -22,6 +22,17 @@
     <script>
         function edit_product_from_store(){
             var data=$('#form').serialize();
+            Swal.fire ({
+                    title: 'Xin chờ...',
+                    onBeforeOpen: () => {
+                        Swal.showLoading ()
+                    }
+                    ,allowEscapeKey: false,
+                    allowOutsideClick: false,
+                    showCloseButton:false,
+                    showCancelButton:false,
+                    showConfirmButton:false,
+                })
             $.ajax({
                 type: "post",
                 url: "{{url('admin/store/editproduct')}}/{{$data->id}}",
@@ -33,8 +44,16 @@
                         $.each(response.error,function(index,item){
                             $('#'+index+'_error').html(item)
                         });
+                        Swal.close();
                     }else{
-                        window.location.href='{{url()->previous()}}'
+                        Swal.fire({
+                            icon:'success',
+                            title:'Cập nhật thành công',
+                            text:'Bạn vừa cập nhật 1 sản phẩm'
+                        }).then(()=>{
+                            window.location.href='{{url()->previous()}}'
+                        })
+                        
                     }
                 }
             });

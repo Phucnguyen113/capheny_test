@@ -6,6 +6,16 @@
 <link rel="stylesheet" href="{{asset('treeview/mgaccordion.css')}}">
 @endsection
 @section('body')
+@if($errors->has('amount'))
+    <script>
+        Swal.fire({
+            icon:'error',
+            title:'Xóa thất bại!',
+            text:'{{$errors->first("amount")}}'
+        })
+        
+    </script>
+@endif
 <a href="{{url()->previous()}}" class="btn btn-warning mb-2" style="color:white">Quay lại</a>
 
     <div class="card">
@@ -43,9 +53,11 @@
                                             @endforeach
                                         </ul>
                                     </li>
-
+                                       
                                 @endforeach
+                                
                             </ul>
+                            {{$list_product_distinct->appends(request()->all())->links()}}
                         </nav>
                             <script>
                                 $(document).ready(function () {

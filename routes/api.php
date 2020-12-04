@@ -1,7 +1,10 @@
 <?php
 
 use App\Http\Controllers\ApiCategoryController;
+use App\Http\Controllers\ApiColorController;
+use App\Http\Controllers\ApiOrderController;
 use App\Http\Controllers\ApiProductController;
+use App\Http\Controllers\ApiSizeController;
 use App\Http\Controllers\categoryController;
 use App\Http\Controllers\dashboardController;
 use App\Http\Controllers\districtController;
@@ -74,6 +77,12 @@ Route::group(['middleware'=>'p_cors'],function(){
     Route::get('detail/product',[ApiProductController::class,'detail']);
     //get product_new
     Route::get('product_new',[ApiProductController::class,'list_product_new_api']);
+    // insert order API
+    Route::post('order/create',[ApiOrderController::class,'add']);
+    // list color
+    Route::get('color/list',[ApiColorController::class,'list_color_api']);
+    // list size
+    Route::get('size/list',[ApiSizeController::class,'list_size_api']);
 });
 
 // select2 remote data
@@ -90,3 +99,4 @@ Route::post('auth/login', [jwtAuthController::class,'login']);
 Route::group(['middleware' => 'jwt.auth'], function () {
     Route::get('user-info', [jwtAuthController::class,'getUserInfo']);
 });
+

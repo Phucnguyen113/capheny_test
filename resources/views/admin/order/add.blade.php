@@ -390,6 +390,7 @@
                                         console.log(response);
                                         if(!$.isEmptyObject(response.error)){
                                             $('.p_error').html('');
+                                            Swal.close();
                                             $.each(response.error,function(index,item){
                                                 if(index=='product_id'){
                                                     Swal.fire({
@@ -414,6 +415,7 @@
                                                 }
                                                
                                             })
+                                            
                                         }else{
                                             Swal.fire({
                                                 icon: 'success',

@@ -128,6 +128,17 @@
 </div>
 <script>
     function add_store(){
+        Swal.fire ({
+                    title: 'Xin chờ...',
+                    onBeforeOpen: () => {
+                        Swal.showLoading ()
+                    }
+                    ,allowEscapeKey: false,
+                    allowOutsideClick: false,
+                    showCloseButton:false,
+                    showCancelButton:false,
+                    showConfirmButton:false,
+                })
         $.ajax({
             type: "post",
             url: "{{url('admin/store')}}/{{$data->store_id}}/edit",
@@ -139,6 +150,7 @@
                     $.each(response.error,function(index,item){
                         $('#'+index+"_error").html(item);
                     });
+                    Swal.close();
                 }else{
                     Swal.fire({
                         icon:'success',

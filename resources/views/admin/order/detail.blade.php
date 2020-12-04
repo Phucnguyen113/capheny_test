@@ -1,5 +1,6 @@
 @extends('layouts.admin')
 @section('body')
+
     <div class="col md-2 mb-2" style="padding:unset">
         <a href="{{url()->previous()}}" class="btn btn-warning" style="color:white;display:inline-block!important"> Quay lại</a>
         <div class="card-title" style="text-align:center;font-size:36px">Chi tiết đơn hàng</div>
@@ -183,4 +184,5 @@
         });
     }
 </script>
+
 @endsection

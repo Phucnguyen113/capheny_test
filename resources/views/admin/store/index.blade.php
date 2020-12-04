@@ -288,14 +288,14 @@
                 @foreach($list_store as $key =>$value)
                     <tr>
                    
-                    <th >{{$value->store_name}}</th>
-                    <th class="p_setting province" @if(!p_ui_setting('store','province'))  style=" display:none" @endif>{{$value->province}}</th>
-                    <th class="p_setting district" @if(!p_ui_setting('store','district'))  style=" display:none" @endif>{{$value->district}}</th>
-                    <th class="p_setting ward" @if(!p_ui_setting('store','ward'))  style=" display:none" @endif>{{$value->ward}}</th>
-                    <th class="p_setting address" @if(!p_ui_setting('store','address'))  style=" display:none" @endif>{{$value->store_address}}</th>
+                    <td >{{$value->store_name}}</td>
+                    <td class="p_setting province" @if(!p_ui_setting('store','province'))  style=" display:none" @endif>{{$value->province}}</td>
+                    <td class="p_setting district" @if(!p_ui_setting('store','district'))  style=" display:none" @endif>{{$value->district}}</td>
+                    <td class="p_setting ward" @if(!p_ui_setting('store','ward'))  style=" display:none" @endif>{{$value->ward}}</td>
+                    <td class="p_setting address" @if(!p_ui_setting('store','address'))  style=" display:none" @endif>{{$value->store_address}}</td>
                     <td class="p_setting create_at" @if(!p_ui_setting('store','create_at'))  style=" display:none" @endif> {{$value->create_at}}</td>
                     <td  class="p_setting update_at" @if(!p_ui_setting('store','update_at'))  style=" display:none" @endif>{{$value->update_at}}</td>
-                    <th class="p_setting detail" @if(!p_ui_setting('store','detail'))  style=" display:none" @endif><a href="{{url('admin/store')}}/{{$value->store_id}}/detail" class="btn btn-info">Chi tiết</a></th>
+                    <th class="p_setting detail" @if(!p_ui_setting('store','detail'))  style=" display:none" @endif><a href="{{url('admin/store')}}/{{$value->store_id}}/detail" class="btn btn-info">Chi tiết</a></td>
                     <td class="p_setting action" @if(!p_ui_setting('store','action'))  style=" display:none" @endif>
                         @if(p_author('edit','tbl_store'))
                             <a href="{{url('admin/store')}}/{{$value->store_id}}/edit" class="btn btn-primary"><i class="fa fa-edit"></i> </a>

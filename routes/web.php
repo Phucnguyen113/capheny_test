@@ -85,6 +85,7 @@ Route::group(['prefix'=>'admin'],function(){
         Route::post('comment/create',[commentController::class,'add']);
         Route::get('comment/{id}/edit',[commentController::class,'edit_form']);
         Route::post('comment/{id}/edit',[commentController::class,'edit']);
+        Route::post('comment/{id}/delete',[commentController::class,'delete_comment']);
         //role
         Route::get('role', [roleController::class,'index']);
         Route::post('role/{id}/delete', [roleController::class,'delete_role']);

@@ -122,7 +122,7 @@ class userController extends Controller
             }
         }
         
-        $list_user=$list_user->where($param_search)->paginate(15);
+        $list_user=$list_user->where($param_search)->orderByDesc('tbl_user.user_id')->paginate(20);
         foreach ($list_user as $users => $Euser) {
             $role=DB::table('tbl_user_role')->join('tbl_role','tbl_role.role_id','=','tbl_user_role.role_id')->where('user_id',$Euser->user_id)->get(['tbl_role.role','tbl_role.role_id'])->toArray();
             $list_user[$users]->role=$role;
@@ -172,7 +172,8 @@ class userController extends Controller
                 'email' => ':attribute không khớp định dạng Email',
                 'unique' => ':attribute đã tồn tại',
                 'user_name.regex' => ':attribute phải viết liền và không dấu',
-                'user_phone.regex' => ':attribute không đúng định dạng số điện thoại'
+                'user_phone.regex' => ':attribute không đúng định dạng số điện thoại',
+                'mimes'=>':attribute phải có dạng jpg,png,jpeg,svg,gif'
             ],
             [
                 'user_name'  => 'Tên tài khoản',
@@ -185,7 +186,8 @@ class userController extends Controller
                 'province'=> 'Thành phố/Tỉnh',
                 'district'=> 'Quận/Huyện',
                 'ward'=> 'Khu vực',
-                'user_address'=> 'Địa chỉ'
+                'user_address'=> 'Địa chỉ',
+                'avatar'=> 'Ảnh đại diện'
             ]
         );
         if($validated->fails()) return response()->json(['error'=>$validated->getMessageBag()]);
@@ -265,7 +267,8 @@ class userController extends Controller
                 'email' => ':attribute không khớp định dạng Email',
                 'unique' => ':attribute đã tồn tại',
                 'user_name.regex' => ':attribute phải viết liền và không dấu',
-                'user_phone.regex' => ':attribute không đúng định dạng số điện thoại'
+                'user_phone.regex' => ':attribute không đúng định dạng số điện thoại',
+                'mimes'=>':attribute phải có dạng jpg,png,jpeg,svg,gif'
             ],
             [
                 'user_name'  => 'Tên tài khoản',
@@ -278,7 +281,8 @@ class userController extends Controller
                 'province'=> 'Thành phố/Tỉnh',
                 'district'=> 'Quận/Huyện',
                 'ward'=> 'Khu vực',
-                'user_address'=> 'Địa chỉ'
+                'user_address'=> 'Địa chỉ',
+                'avatar'=>'Ảnh đại diện'
             ]
         );
         if($validated->fails()) return response()->json(['error'=> $validated->getMessageBag()]);

@@ -281,6 +281,17 @@
 <!-- edit product script -->
 <script>
     function edit_product(){
+        Swal.fire ({
+            title: 'Xin chờ...',
+            onBeforeOpen: () => {
+                Swal.showLoading ()
+            }
+            ,allowEscapeKey: false,
+            allowOutsideClick: false,
+            showCloseButton:false,
+            showCancelButton:false,
+            showConfirmButton:false,
+        })
         var _token=$('input[name="_token"]').val();
         var product_name=$('#product_name').val();
         var product_slug=$('#product_slug').val();
@@ -336,6 +347,7 @@
                 $.each(response.error,function(index,item){
                     $('#'+index+'_error').html(item);
                 })
+                Swal.close();
                 }else{
                     Swal.fire(
                         'Sửa sản phẩm!',
@@ -345,6 +357,9 @@
                             window.location.href="{{url('admin/product')}}";
                         })
                 }
+            },
+            error: function(){
+                Swal.close();
             }
         });
         return false;

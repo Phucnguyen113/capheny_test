@@ -13,7 +13,22 @@ if(!function_exists('p_auth')){
         ])->first();
         if(!empty($user)){
             if(Hash::check($data['password'],$user->password)){
-                
+                $role_collection=DB::table('tbl_user_role')->where('user_id',$user->user_id)->get(['role_id'])->toArray();
+                $role=[];
+                foreach ($role_collection as $roles => $rolef) {
+                    $role[]=$rolef->role_id;
+                }
+                $permission_collection=DB::table('tbl_user_permission')->where('user_id',$user->user_id)->get(['permission_id'])->toArray();
+                $permission=[];
+                foreach ($permission_collection as $permissions => $permissionf) {
+                    $permission[]=$permissionf->permission_id;
+                }
+                // list permission of role user
+                $list_role_of_permission=DB::table('tbl_role_permission')->whereIn('role_id',$role)->distinct(['permission_id'])->get(['permission_id']);
+                $list_role_id_of_perimssion=[];
+                foreach($list_role_of_permission as $permissions => $permissionf){
+                    $list_role_id_of_perimssion[]=$permissionf->permission_id;
+                }
                 session(
                     [
                         'user'=>[
@@ -21,7 +36,10 @@ if(!function_exists('p_auth')){
                                     'user_email'=>$user->user_email,
                                     'user_name'=>$user->user_name,
                                     'user_phone'=>$user->user_phone,
-                                    'user_image'=>$user->avatar
+                                    'user_image'=>$user->avatar,
+                                    'role'      =>$role,
+                                    'permission'=>$permission,
+                                    'list_permission_of_role'=>$list_role_id_of_perimssion
                                     // 'ui_setting'=>$ui_setting_parse
                                 ]
                     ]
@@ -34,6 +52,44 @@ if(!function_exists('p_auth')){
         }else{
             return false;
         }
+    }
+}
+if(!function_exists('p_fresh')){
+    function p_fresh(){
+        
+        $user=DB::table('tbl_user')->where('user_id',p_user()['user_id'])->first();
+        
+        $role_collection=DB::table('tbl_user_role')->where('user_id',$user->user_id)->get(['role_id'])->toArray();
+        $role=[];
+        foreach ($role_collection as $roles => $rolef) {
+            $role[]=$rolef->role_id;
+        }
+        $permission_collection=DB::table('tbl_user_permission')->where('user_id',$user->user_id)->get(['permission_id'])->toArray();
+        $permission=[];
+        foreach ($permission_collection as $permissions => $permissionf) {
+            $permission[]=$permissionf->permission_id;
+        }
+        // list permission of role user
+        $list_role_of_permission=DB::table('tbl_role_permission')->whereIn('role_id',$role)->distinct(['permission_id'])->get(['permission_id']);
+        $list_role_id_of_perimssion=[];
+        foreach($list_role_of_permission as $permissions => $permissionf){
+            $list_role_id_of_perimssion[]=$permissionf->permission_id;
+        }
+        session(
+            [
+                'user'=>[
+                            'user_id'=>$user->user_id,
+                            'user_email'=>$user->user_email,
+                            'user_name'=>$user->user_name,
+                            'user_phone'=>$user->user_phone,
+                            'user_image'=>$user->avatar,
+                            'role'      =>$role,
+                            'permission'=>$permission,
+                            'list_permission_of_role'=>$list_role_id_of_perimssion
+                            // 'ui_setting'=>$ui_setting_parse
+                        ]
+            ]
+    );
     }
 }
 if(!function_exists('p_logout')){
@@ -73,16 +129,12 @@ if(!function_exists('p_author')){
             die();
         }
         $user=session()->get('user');
-        $role_collection=DB::table('tbl_user_role')->where('user_id',$user['user_id'])->get(['role_id'])->toArray();
-        $role=[];
-        foreach ($role_collection as $roles => $rolef) {
-            $role[]=$rolef->role_id;
-        }
-        $permission_collection=DB::table('tbl_user_permission')->where('user_id',$user['user_id'])->get(['permission_id'])->toArray();
-        $permission=[];
-        foreach ($permission_collection as $permissions => $permissionf) {
-            $permission[]=$permissionf->permission_id;
-        }
+        
+        $role=p_user()['role'];
+        
+       
+        $permission=p_user()['permission'];
+       
 
         if(in_array(1,$role)){
             return true;
@@ -93,12 +145,9 @@ if(!function_exists('p_author')){
             }
         }
 
-        // list permission of role user
-        $list_role_of_permission=DB::table('tbl_role_permission')->whereIn('role_id',$role)->distinct(['permission_id'])->get(['permission_id']);
-        $list_role_id_of_perimssion=[];
-        foreach($list_role_of_permission as $permissions => $permissionf){
-            $list_role_id_of_perimssion[]=$permissionf->permission_id;
-        }
+       
+        $list_role_id_of_perimssion=p_user()['list_permission_of_role'];
+      
        
         if(!$view){
             //check in controller
@@ -155,11 +204,18 @@ if(!function_exists('p_get_ui_setting')){
 }
 if(!function_exists('p_ui_setting')){
     function p_ui_setting($table,$column){
-        $ui_setting=DB::table('tbl_system_ui')->where([
+        if(session()->has('ui_setting')){
+            $ui_setting=session()->get('ui_setting');
+        }else{
+            $ui_setting=DB::table('tbl_system_ui')->where([
             ['name','=',$table],
             ['user_id','=',p_user()['user_id']]
-        ])->first(['value']);
-        if(empty($ui_setting)) return true;
+            ])->first(['value']);
+            if(empty($ui_setting)) return true;
+            session()->flash('ui_setting',$ui_setting);
+        }
+       
+        
         $ui_setting=json_decode($ui_setting->value);
         if(!isset($ui_setting->$column)) return false;
         if($ui_setting->$column==1) return true;

@@ -18,6 +18,7 @@ class p_auth
     {
        
         if(session()->has('user')){
+            p_fresh();
             return $next($request);
         }else{
             return redirect('admin/auth');

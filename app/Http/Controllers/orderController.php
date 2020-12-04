@@ -81,7 +81,7 @@ class orderController extends Controller
                 'tbl_order.*',
                 
             ],
-        )->paginate(20,['*'],'orderPage');
+        )->distinct(['tbl_order.order_id'])->paginate(20,['*'],'orderPage');
         $title='Capheny - Danh sách đơn hàng';
         return view('admin.order.index',compact('list_province','list_district','list_ward','list_order','title'));
 

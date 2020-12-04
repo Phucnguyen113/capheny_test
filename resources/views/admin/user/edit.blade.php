@@ -216,6 +216,17 @@
             if(user_type!==undefined){
                 formdata.append('user_type',1)
             }
+            Swal.fire ({
+            title: 'Xin chờ...',
+            onBeforeOpen: () => {
+                Swal.showLoading ()
+            }
+            ,allowEscapeKey: false,
+            allowOutsideClick: false,
+            showCloseButton:false,
+            showCancelButton:false,
+            showConfirmButton:false,
+        })
             $.ajax({
                 type: "post",
                 url: "{{url('admin/user')}}/{{$user->user_id}}/edit",
@@ -230,6 +241,7 @@
                         $.each(response.error,function(index,item){
                             $('#'+index+"_error").html(item)
                         })
+                        Swal.close();
                     }else{
                         Swal.fire({
                             icon:'success',

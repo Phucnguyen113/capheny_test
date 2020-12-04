@@ -104,7 +104,10 @@ class ApiProductController extends Controller
     }
 
     public function detail(Request $request){
-        $detail=DB::table('tbl_product')->where('product_id',$request->product_id)->first();
+        $detail=DB::table('tbl_product')->where([
+            ['product_id','=',$request->product_id],
+            ['active','=',1]
+        ])->first();
         if(empty($detail))return response()->json(['error'=>['Không tìm thấy sản phẩm']]);
         // get discount 
         $discount_collection=DB::table('tbl_product_discount')->where('product_id',$request->product_id)->orderByDesc('discount_id')->first();
@@ -133,6 +136,9 @@ class ApiProductController extends Controller
         ->where('tbl_product_color.product_id',$request->product_id)->get(['tbl_color.color_id','tbl_color.color'])->toArray();
         $detail->color=$list_color;
         return response()->json(['data'=>$detail]);
+    }
+    public function check_amount($product_id,$attr){
+        
     }
     public function list_product_new_api(Request $request){
         $list_product_new_collection=DB::table('tbl_product')->orderByDesc('product_id')->limit(6)->get();

@@ -34,16 +34,19 @@ class ApiCategoryController extends Controller
         $list_category=DB::table('tbl_category')->where('category_id',$id)->first();
 
         $category_dequy_up=$this->dequy_up($list_category->category_id);
+        
         $result=$this->tree_category_column($category_dequy_up->category_id);
-        dd($result);
+       
+        return response()->json(['data'=>['child'=>$result,'parent'=>$category_dequy_up]]);
     }
-    public function tree_category_column( $category_id){
+    public function tree_category_column( $category_id,$level=1){
         $check=DB::table('tbl_category')->where('category_parent_id',$category_id)->get()->toArray();
         $result=[];
         if(!empty($check)){
             foreach ($check as $categories => $category) {
+                $category->level=$level;
                 $result[]=$category;
-                $result=array_merge($result,$this->tree_category_column($category->category_id));
+                $result=array_merge($result,$this->tree_category_column($category->category_id,$level+1));
                
             }
         }
@@ -51,9 +54,11 @@ class ApiCategoryController extends Controller
     }
     public function dequy_up($category_parent){
         $check=DB::table('tbl_category')->where('category_id',$category_parent)->first();
-        if(!empty($check) && $check->category_parent_id!==0){
+        
+        if(!empty($check) && $check->category_parent_id!=='0'){
             $check=$this->dequy_up($check->category_parent_id);
         }
+        $check->level=0;
         return $check;
     }
 }

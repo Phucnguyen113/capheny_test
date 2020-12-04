@@ -3,6 +3,17 @@
     <script>
         function add_permission(){
             var data=$('#form').serialize()
+            Swal.fire ({
+            title: 'Xin chờ...',
+            onBeforeOpen: () => {
+                Swal.showLoading ()
+            }
+            ,allowEscapeKey: false,
+            allowOutsideClick: false,
+            showCloseButton:false,
+            showCancelButton:false,
+            showConfirmButton:false,
+            })
             $.ajax({
                 type: "POST",
                 url: "{{url('admin/user/addpermission')}}",
@@ -21,6 +32,7 @@
                                 })
                             }
                         })
+                        Swal.close();
                     }else{
                         Swal.fire({
                             icon:'success',

@@ -109,6 +109,17 @@
                     else   var category_parent_id=null;
                     var category_slug=$('#category_slug').val().trim();
                     var _token= $('input[name="_token"]').val();
+                    Swal.fire ({
+                    title: 'Xin chờ...',
+                    onBeforeOpen: () => {
+                        Swal.showLoading ()
+                    }
+                    ,allowEscapeKey: false,
+                    allowOutsideClick: false,
+                    showCloseButton:false,
+                    showCancelButton:false,
+                    showConfirmButton:false,
+                })
                     $.ajax({
                         type: "PUT",
                         url: "{{url('admin/category/')}}/{{$cate->category_id}}",
@@ -122,6 +133,7 @@
                                     $.each(response.error,function(index,item){
                                         $('#'+index+'_error').html(item)
                                     })
+                                    Swal.close();
                                 }else{
                                     Swal.fire({
                                         icon:'success',

@@ -102,4 +102,8 @@ class commentController extends Controller
         ]);
         return response()->json(['success'=>'success']);
     }
+    public function delete_comment($id){
+        DB::table("tbl_comment")->where('comment_id',$id)->delete();
+        return response()->json(['success'=>['success']]);
+    }
 }
