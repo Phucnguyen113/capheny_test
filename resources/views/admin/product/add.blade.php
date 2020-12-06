@@ -282,6 +282,9 @@
                         window.location.href="{{url('admin/product')}}";
                     })
                 }
+            },
+            always:function(){
+                Swal.close();
             }
         });
         return false;

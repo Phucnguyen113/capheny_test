@@ -46,7 +46,7 @@
     <script src="{{asset('/datetimePicker/js/jquery.datetimepicker.js')}}"></script>
     <!-- js sweet alert2 -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
-
+    <script src="//js.pusher.com/3.1/pusher.min.js"></script>
     <!-- fontAwesome -->
     <script src="{{asset('fontAwesome/fontAwesome.js')}}"></script>
     @section('js')

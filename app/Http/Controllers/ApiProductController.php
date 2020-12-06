@@ -137,8 +137,19 @@ class ApiProductController extends Controller
         $detail->color=$list_color;
         return response()->json(['data'=>$detail]);
     }
-    public function check_amount($product_id,$attr){
-        
+    public function check_amount_attr_color(Request $request){
+        $product_amount=DB::table('tbl_store_product')->where([
+            ['product_id','=',$request->product_id],
+            ['product_size','=',$request->size],
+            ['product_color','=',$request->color],
+        ])->get();
+        $total=0;
+        foreach ($product_amount as $key => $value) {
+            $total+=$value->product_amount;
+        }
+        if($total==0) return response()->json(['error'=>['total'=>0]]);
+        if($total<$request->amount) return response()->json(['error'=>['total'=>$total]]);
+        return response()->json(['success'=>['success']]);
     }
     public function list_product_new_api(Request $request){
         $list_product_new_collection=DB::table('tbl_product')->orderByDesc('product_id')->limit(6)->get();

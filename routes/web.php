@@ -113,3 +113,4 @@ Route::post('product/get_category/{id}',[productController::class,'get_category_
 
 Route::get('send/{id}',[mailController::class,'sendmail']);
 
+

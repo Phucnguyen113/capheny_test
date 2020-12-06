@@ -137,6 +137,7 @@ class productController extends Controller
             }
         }
         $title='Capheny - Danh sách sản phẩm';
+       
         return view('admin.product.index',['title'=>$title,'list_product'=>$list_product,'color_search'=>$list_color_search,'size_search'=>$list_size_search]);
     }
 
@@ -268,6 +269,7 @@ class productController extends Controller
         for ($i=0; $i < count($request->size); $i++) { 
             DB::table('tbl_product_size')->insert(['product_id'=>$idProduct,'size_id'=>$request->size[$i]]);
         }
+        event(new \App\Events\pusherProduct($idProduct));
         return response()->json(['success'=>'Insert product success']);    
 
     }

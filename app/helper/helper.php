@@ -249,4 +249,9 @@ if(!function_exists('p_redirect_login_admin')){
         }
     }
 }
+if(!function_exists('p_method')){
+    function p_method($method){
+        return '<input type="hidden" name="_method" value="'.$method.'">';
+    }
+}
 ?>

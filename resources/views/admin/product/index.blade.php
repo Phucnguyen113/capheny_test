@@ -354,7 +354,7 @@
                     <th class="p_setting action" @if(!p_ui_setting('product','action')) style="display: none;" @endif>Thao tác</th>
                 </tr>
             </thead>
-            <tbody>
+            <tbody id="p_list_product">
                 @foreach($list_product as $key =>$value)
                     <tr>
                         
@@ -395,31 +395,7 @@
                                 @else 
                                     <a href="#" class="p_product_active" data-id="{{$value->product_id}}"><i class="fas fa-times" style="color:#b81f44"></i></a>
                                 @endif
-                                <script>
-                                    $('.p_product_active').unbind().click(function(){
-                                        var id=$(this).attr('data-id');
-                                        var element=$(this);
-                                       $.ajax({
-                                           type: "POST",
-                                           url: "{{url('api/product/active')}}",
-                                           data: {id:id},
-                                           dataType: "json",
-                                           success: function (response) {
-                                               console.log(response);
-                                               if(!$.isEmptyObject(response.error)){
-
-                                               }else{
-                                                    if(response.success==1){
-                                                        var html='<i class="fa fa-check" style="color:green" aria-hidden="true"></i>'        
-                                                    }else{
-                                                        var html='<i class="fas fa-times" style="color:#b81f44"></i>'
-                                                    }
-                                                    element.html(html)
-                                               }
-                                           }
-                                       });
-                                    })
-                                </script>
+                              
                             @else
                                 @if($value->active==1) 
                                     <i class="fa fa-check" style="color:green" aria-hidden="true"></i>
@@ -466,11 +442,51 @@
                 {{$list_product->appends(request()->all())->links()}}
             </div>
 </div>
+@if(p_author('active','tbl_product'))
+    <script>
+        $('.p_product_active').unbind().click(function(){
+            var id=$(this).attr('data-id');
+            var element=$(this);
+            $.ajax({
+                type: "POST",
+                url: "{{url('api/product/active')}}",
+                data: {id:id},
+                dataType: "json",
+                success: function (response) {
+                    console.log(response);
+                    if(!$.isEmptyObject(response.error)){
 
+                    }else{
+                        if(response.success==1){
+                            var html='<i class="fa fa-check" style="color:green" aria-hidden="true"></i>'        
+                        }else{
+                            var html='<i class="fas fa-times" style="color:#b81f44"></i>'
+                        }
+                        element.html(html)
+                    }
+                }
+            });
+        })
+    </script>
+@endif
 <script>
     function validate_filter(){
         var value_category=category.getSelectedIds();
         $('#category').val(value_category);
     }
+</script>
+<script>
+     var pusher = new Pusher('c76eed35cec6f6ddf74a', {
+        encrypted: true,
+        cluster:'ap1'
+      });
+
+      // Subscribe to the channel we specified in our Laravel Event
+    var channel = pusher.subscribe('product-add');
+    channel.bind('App\\Events\\pusherProduct', function(data) {
+        
+        $('#p_list_product').prepend(data.message);
+        $('#p_list_product tr:last-child').remove();
+    })
 </script>
 @endsection
