@@ -221,4 +221,16 @@ class ApiOrderController extends Controller
                 'list_product'=>$list_product]))->delay(now()->addSeconds(1));
        return response()->json(['success'=>'insert success']);
     }
+    public function get_province(){
+        $province=DB::table('tbl_province')->get();
+        return response()->json(['data'=>$province]);
+    }
+    public function get_district(Request $request){
+        $district=DB::table('tbl_district')->where('_province_id',$request->province_id)->get();
+        return response(['data'=>$district]);
+    }
+    public function get_ward(Request $request){
+        $ward=DB::table('tbl_ward')->where('_district_id',$request->district_id)->get();
+        return response()->json(['data'=>$ward]);
+    }
 }

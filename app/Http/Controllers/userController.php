@@ -200,12 +200,12 @@ class userController extends Controller
         if($request->hasFile('avatar')){
             $newNameImg=$request->avatar->getClientOriginalName().date('Y_m_d').'.'.$request->avatar->getClientOriginalExtension();
             $request->avatar->move('images/user',$newNameImg);
-            DB::table('tbl_user')->insert(array_merge($request->except(['_token','user_password_confirm','user_password','avatar']),['avatar'=>$newNameImg],['create_at'=>$create_at],['active'=>$active],['user_type'=>$user_type],['password'=>$user_password] ) );
+            $idUser=DB::table('tbl_user')->insertGetId(array_merge($request->except(['_token','user_password_confirm','user_password','avatar']),['avatar'=>$newNameImg],['create_at'=>$create_at],['active'=>$active],['user_type'=>$user_type],['password'=>$user_password] ) );
         }else{
-            DB::table('tbl_user')->insert(array_merge($request->except(['_token','user_password_confirm','user_password','avatar']),['create_at'=>$create_at],['active'=>$active],['user_type'=>$user_type],['password'=>$user_password] ) );
+            $idUser=DB::table('tbl_user')->insertGetId(array_merge($request->except(['_token','user_password_confirm','user_password','avatar']),['create_at'=>$create_at],['active'=>$active],['user_type'=>$user_type],['password'=>$user_password] ) );
         }
        
-       
+        event(new \App\Events\pusherUser($idUser));
         return response()->json(['success'=>'success']);
     }
     public function edit_form($id){

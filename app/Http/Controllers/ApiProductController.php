@@ -35,13 +35,24 @@ class ApiProductController extends Controller
             $list_product=$list_product->whereIn('tbl_category_product.category_id',$request->category);
         }
        
-        
+        // process price filter
+        if($request->has('price') && $request->price!==null ){
+            if($request->price==0){
+                $binding[]=['product_price','<',200000];
+            }else if($request->price==1){
+                $binding[]=['product_price','>=',200000];
+                $binding[]=['product_price','<',400000];
+            }else if($request->price==2){
+                $binding[]=['product_price','>=',400000];
+                $binding[]=['product_price','<',600000];
+            }
+        }
         $list_product=$list_product->where($binding);
         
         // end process filter
 
         $list_product=$list_product->distinct('tbl_product.product_id')->paginate(20);
-       
+        
         foreach ($list_product as $key => $value) {
             $currentDate=Carbon::now('Asia/Ho_Chi_Minh')->toDateTimeString();
             $discount=DB::table('tbl_product_discount')->where([
@@ -83,23 +94,9 @@ class ApiProductController extends Controller
                 $list_product[$key]->sizes=[];
             }
             
-             // process price filter
-            if($request->has('price') && $request->price!==null ){
-                if($request->price==0){
-                    if($value->price_discount>200000){
-                        unset($list_product[$key]);
-                    }
-                }else if($request->price==1){
-                    if($value->price_discount<200000 || $value->price_discount>400000){
-                        unset($list_product[$key]);
-                    }
-                }else if($request->price==2){
-                    if($value->price_discount<400000 || $value->price_discount>600000){
-                        unset($list_product[$key]);
-                    }
-                }
-            }
+           
         }
+        
         return response()->json(['data'=>$list_product]);
     }
 

@@ -65,6 +65,7 @@ class Kernel extends HttpKernel
         'checkInput' =>\App\Http\Middleware\checkInput::class,
         'p_auth' =>\App\Http\Middleware\p_auth::class,
         'p_cors' =>\App\Http\Middleware\cors::class,
-        'jwt.auth' => \App\Http\Middleware\VerifyToken::class,
+        'jwt_auth' => \App\Http\Middleware\VerifyToken::class,
+        'p_jwt_auth'=>\App\Http\Middleware\verifyJWT::class,
     ];
 }

@@ -1,7 +1,5 @@
 @extends('layouts.admin')
-@section('js')
-<script src="{{asset('p_js/view_setting.js')}}"></script>
-@endsection
+
 @section('body')
     <div class="card main-card">
         <div class="card-body">
@@ -279,7 +277,7 @@
                             <th class="p_setting action" @if(!p_ui_setting('order','action'))  style="display: none;" @endif >Thao tác</th>
                         </tr>
                     </thead>
-                    <tbody>
+                    <tbody id="p_list_order">
                         @foreach($list_order as $orders => $order)
                             <tr>
                                 <td>{{$order->order_name}}</td>
@@ -378,4 +376,19 @@
 @section('css')
 @endsection
 @section('js')
+<script src="{{asset('p_js/view_setting.js')}}"></script>
+<script>
+    var pusher = new Pusher('c76eed35cec6f6ddf74a', {
+        encrypted: true,
+        cluster:'ap1'
+      });
+
+      // Subscribe to the channel we specified in our Laravel Event
+    var channel = pusher.subscribe('order-add');
+    channel.bind('App\\Events\\pusherOrder', function(data) {
+        console.log(data.message)
+        $('#p_list_order').prepend(data.message);
+        $('#p_list_order tr:last-child').remove();
+    })
+</script>
 @endsection

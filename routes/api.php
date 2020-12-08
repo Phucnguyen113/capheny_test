@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ApiCategoryController;
 use App\Http\Controllers\ApiColorController;
+use App\Http\Controllers\ApiCommentController;
 use App\Http\Controllers\ApiOrderController;
 use App\Http\Controllers\ApiProductController;
 use App\Http\Controllers\ApiSizeController;
@@ -98,7 +99,13 @@ Route::post('dashboard/store_product',[dashboardController::class,'store_product
 
 Route::post('auth/register', [jwtAuthController::class,'register']);
 Route::post('auth/login', [jwtAuthController::class,'login']);
-Route::group(['middleware' => 'jwt.auth'], function () {
+Route::group(['middleware' => 'jwt_auth'], function () {
     Route::get('user-info', [jwtAuthController::class,'getUserInfo']);
+    Route::post('comment',[ApiCommentController::class,'add']);
 });
 
+Route::get('list_color_api',[ApiColorController::class,'list_color_api']);
+Route::get('list_size_api',[ApiSizeController::class,'list_size_api']);
+Route::get('get_province',[ApiOrderController::class,'get_province']);
+Route::get('get_district',[ApiOrderController::class,'get_district']);
+Route::get('get_ward',[ApiOrderController::class,'get_ward']);

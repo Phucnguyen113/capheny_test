@@ -302,8 +302,10 @@ class orderController extends Controller
                 'ward'=>$info_order->ward_name,
                 'address'=>$info_order->order_address,
                 'create_at'=>$info_order->create_at,
-                'list_product'=>$list_product]))->delay(now()->addSeconds(1));
-       return response()->json(['success'=>'insert success']);
+                'list_product'=>$list_product]))
+            ->delay(now()->addSeconds(1));
+        event(new \App\Events\pusherOrder($order_id));
+        return response()->json(['success'=>'insert success']);
     }
     public function edit_form($id){
         if(!p_author('edit','tbl_order')){

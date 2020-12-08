@@ -26,8 +26,9 @@ class colorController extends Controller
             return view('error.403');
         }
         $list_color=DB::table('tbl_color');
-        if($request->color!==null && empty($request->color)){
+        if($request->color!==null && !empty($request->color)){
             $list_color=$list_color->whereIn('color_id',$request->color);
+           
         }
         
         // create_at product process
