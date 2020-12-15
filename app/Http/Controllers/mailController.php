@@ -38,6 +38,7 @@ class mailController extends Controller
                 'ward'=>$info_order->ward_name,
                 'address'=>$info_order->order_address,
                 'create_at'=>$info_order->create_at,
+                'token' =>$info_order->token,
                 'list_product'=>$list_product]))->delay(now()->addSeconds(1));
                  
             return response()->json(['success'=>'success']);

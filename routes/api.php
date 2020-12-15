@@ -109,3 +109,7 @@ Route::get('list_size_api',[ApiSizeController::class,'list_size_api']);
 Route::get('get_province',[ApiOrderController::class,'get_province']);
 Route::get('get_district',[ApiOrderController::class,'get_district']);
 Route::get('get_ward',[ApiOrderController::class,'get_ward']);
+
+//forgot password
+Route::post('forgot_password',[jwtAuthController::class,'verify']);
+Route::post('change_password',[jwtAuthController::class,'change_password']);

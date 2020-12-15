@@ -16,12 +16,12 @@ class p_auth
      */
     public function handle(Request $request, Closure $next)
     {
-       
+        
         if(session()->has('user')){
             p_fresh();
             return $next($request);
         }else{
-            return redirect('admin/auth');
+            return redirect('admin/auth')->with('redirect',$request->path());
         }
         
     }

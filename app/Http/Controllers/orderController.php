@@ -7,7 +7,7 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
-
+use Illuminate\Support\Str;
 class orderController extends Controller
 {
     public function __construct()
@@ -242,6 +242,8 @@ class orderController extends Controller
         $data_user['create_at']=$create_at;
         $data_user['user_not_login_id']=$id_user_not_login;
         $data_user['order_status']=1; // status= đã tiếp nhận
+        $token=Str::random(50);
+        $data_user['token']=$token;
         $order_id=DB::table('tbl_order')->insertGetId($data_user);
         //get price for product
         $today=Carbon::now('Asia/Ho_CHi_Minh')->toDateTimeString();
@@ -328,6 +330,7 @@ class orderController extends Controller
     }
 
     public function edit($id,Request $request){
+       
         $validated=Validator::make($request->all(),
             [
                 'user_id'           => 'bail|required|numeric',
@@ -745,4 +748,26 @@ class orderController extends Controller
         return response()->json(['success'=>'success']);
     }
    
+    public function view_order($token){
+        $order=DB::table('tbl_order')
+        ->join('tbl_province','tbl_province.id','=','tbl_order.province')
+        ->join('tbl_district','tbl_district.id','=','tbl_order.district')
+        ->join('tbl_ward','tbl_ward.id','=','tbl_order.ward')
+        ->where('token',$token)->first(['tbl_order.*','tbl_province._name as province_','tbl_district._name as district_','tbl_district._prefix','tbl_ward._name as ward_','tbl_ward._prefix as _prefix_ward']);
+        $order_detail=DB::table('tbl_order_detail')
+        ->join('tbl_product','tbl_product.product_id','=','tbl_order_detail.product_id')
+        ->where('order_id',$order->order_id)->get(['tbl_order_detail.*','tbl_product.product_name','tbl_product.product_image']);
+        $total_price=0;
+        foreach ($order_detail as $key => $value) {
+            $value->product_image=json_decode($value->product_image,true)[0];
+            $total_price+=$value->product_amount*$value->product_price;
+            $size=DB::table('tbl_size')->where('size_id',$value->product_size_id)->first();
+            $value->size=$size->size;
+            $color=DB::table('tbl_color')->where('color_id',$value->product_color_id)->first();
+            $value->color=$color->color;
+
+        }
+        
+        return view('admin.order.view_order',compact('order','order_detail','total_price'));
+    }
 }

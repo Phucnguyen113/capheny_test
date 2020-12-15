@@ -105,6 +105,15 @@ Route::group(['prefix'=>'admin'],function(){
     Route::post('auth',[AuthController::class,'login']);
     Route::get('auth/logout',[AuthController::class,'logout']);
     Route::get('auth/check',[AuthController::class,'check']);
+    // verify
+    Route::get('auth/forget_password',[userController::class,'verify_form']);
+    Route::post('auth/forget_password',[userController::class,'verify']);
+    // confirm pin
+    Route::get('auth/confirm_pin/{token}',[userController::class,'confirm_pin_form']);
+    Route::post('auth/confirm_pin/{token}',[userController::class,'confirm_pin']);
+    //change password
+    Route::get('auth/change_password/{token}',[userController::class,'change_password_form']);
+    Route::post('auth/change_password/{token}',[userController::class,'change_password']);
 });
 //api get category_tree select
 Route::post('category/tree_category/select/{id}',[categoryController::class,'get_tree_category']);
@@ -112,5 +121,8 @@ Route::post('category/tree_category/select/{id}',[categoryController::class,'get
 Route::post('product/get_category/{id}',[productController::class,'get_category_product_detail']);
 
 Route::get('send/{id}',[mailController::class,'sendmail']);
+
+// order  view
+Route::get('order/{token}',[orderController::class,'view_order']);
 
 

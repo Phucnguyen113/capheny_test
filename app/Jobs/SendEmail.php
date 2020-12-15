@@ -43,6 +43,7 @@ class SendEmail implements ShouldQueue
             'district'=>$this->data['district'],
             'ward'=>$this->data['ward'],
             'address'=>$this->data['address'],
+            'order_token'=>$this->data['token']
             
         ], function ($msg) {
             $msg->to($this->data['email'], 'Xác nhận đơn hàng')->subject('Xác nhận đơn hàng');

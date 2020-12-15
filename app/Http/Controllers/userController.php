@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Jobs\sendEmailVerify;
 use Carbon\Carbon;
 use Exception;
 use Illuminate\Http\Request;
@@ -376,5 +377,122 @@ class userController extends Controller
         }
         DB::table('tbl_user')->where('user_id',$request->id)->update(['active'=>$active]);
         return response()->json(['success'=>$active]);
+    }
+    public function verify_form(){
+        return view('admin.auth.forgot_password');
+    }
+    public function confirm_pin_form($token){
+        $user=DB::table('tbl_user')->where('verify_token',$token)->first();
+        if(empty($user)) return view('error.404');
+        return view('admin.auth.confirm_pin',compact('token'));
+    }
+    public function change_password_form($token){
+        $user=DB::table('tbl_user')->where('verify_token',$token)->first();
+        if(empty($user)) return view('error.404');
+        if($user->verify_check==0 || $user->verify_check==null) return view('error.404');
+        return view('admin.auth.change_password',compact('token'));
+    }
+    public function confirm_pin(Request $request,$token){
+        $validated=Validator::make($request->all(),
+            [
+                'verify_token'=>'bail|required|min:50',
+                'verify_pin'=>'bail|required|min:6',
+
+            ],
+            [
+                'required'=> ':attribute không được trống',
+                'min' => ':attribute phải có :min ký tự'
+            ],
+            [
+                'verify_pin'=>'Mã xác nhận'
+            ]
+        );
+        if($validated->fails()) return response()->json(['error'=>$validated->getMessageBag()]);
+        $user=DB::table('tbl_user')->where('verify_token','=',$request->verify_token)->first();
+        if(empty($user)) return response()->json(['error'=>['verify_token'=>'Không tìm thấy token']]);
+
+        $user=DB::table('tbl_user')->where([
+            ['verify_token','=',$request->verify_token],
+            ['verify_pin','=',$request->verify_pin]
+        ])->first();
+        if(empty($user)) return response()->json(['error'=>['verify_pin'=>'Mã xác nhận không đúng']]);
+        DB::table('tbl_user')->where([
+            ['verify_token','=',$request->verify_token],
+            ['verify_pin','=',$request->verify_pin]
+        ])->update(['verify_check'=>1]);
+        return response()->json(['success'=>true,'token'=>$request->verify_token]);
+    }
+
+    public function verify(Request $request){
+        $validated=Validator::make($request->all(),
+            ['user_email'=>'bail|required|email'],
+            [
+                'required' => ':attribute không được trống',
+                'email' => ':attribute không đúng định dạng'
+            ],
+            [
+                'user_email' => 'Email'
+            ]
+        );
+        if($validated->fails()) return response()->json(['error'=>$validated->getMessageBag()]);
+        $user=DB::table('tbl_user')->where('user_email',$request->user_email)->first();
+        if(empty($user)) return response()->json(['error'=>['user_email'=>'Không tồn tại email này']]);
+        $pin='0123456789';
+        $random='';
+        for ($i=0; $i <6 ; $i++) { 
+            $random.=$pin[rand(0,strlen($pin)-1)];
+        }
+        $character='qwertyuiopasdfghjklzxcvbnm0123456789QWERTYUIOPASDFGHJKLZXCVBNM';
+        $token='';
+        for ($i=0; $i <50 ; $i++) { 
+            $token.=$character[rand(0,strlen($character)-1)];
+        }
+       DB::table('tbl_user')->where('user_email',$request->user_email)->update([
+           'verify_pin'=>$random,
+           'verify_token'=>$token
+       ]);
+       $user=DB::table('tbl_user')->where('user_email',$request->user_email)->first();
+       
+       dispatch(new sendEmailVerify([
+            'user_name'=>$user->user_first_name.' '.$user->user_last_name,
+            'verify_pin' => $user->verify_pin,
+            'user_email'=>$user->user_email
+        ]))->delay(now()->addSeconds(1));
+        return response()->json(['success'=>true,'token'=>$token]);
+    }
+    public function change_password(Request $request){
+        $validated=Validator::make($request->all(),
+            [
+                'verify_token' => 'bail|required',
+                'password' => 'bail|required|min:6',
+                'password_confirm'=>'bail|required|same:password'
+            ],
+            [
+                'required' => ':attribute không được rỗng',
+                'min' => ':attribute phải có 6 ký tự',
+                'same' => ':attribute không trùng với mật khẩu'
+            ],
+            [
+               
+                'password' => 'Mật khẩu',
+                'password_confirm'=>'Mật khẩu xác nhận'
+            ]
+        );
+        if($validated->fails()) return response()->json(['error'=>$validated->getMessageBag()]);
+        $user=DB::table('tbl_user')->where([
+            ['verify_token','=',$request->verify_token],
+            ['verify_pin','<>',null]
+        ])->first();
+        if(empty($user)) return response()->json(['error'=>['user'=>'Người dùng không tồn tại, hoặc không yêu cầu đặt lại mật khẩu']]);
+        if($user->verify_check==0 || $user->verify_check==null) return response()->json(['error'=>['authen'=>'lỗi xác thực người dùng']]);
+        
+        
+        DB::table('tbl_user')->where('verify_token',$request->verify_token)->update([
+            'verify_pin'=>null,
+            'password'=>bcrypt($request->password),
+            'verify_token'=>null,
+            'verify_check'=>0
+        ]);
+        return response()->json(['success'=>true]);
     }
 }

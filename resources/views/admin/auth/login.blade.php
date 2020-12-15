@@ -3409,6 +3409,9 @@ iframe {
           <div class="wrap-login100">
             <form class="login100-form validate-form p-l-55 p-r-55 p-t-178" method="post">
                 @csrf
+				@if(\Session::has('redirect'))
+				<input type="hidden" name="redirect" value="{{\Session::get('redirect')}}">
+				@endif
               <span class="login100-form-title"> Đăng nhập  </span>
   
               <div
@@ -3440,7 +3443,7 @@ iframe {
               <div class="text-right p-t-13 p-b-23">
                 <span class="txt1"> Quên  </span>
   
-                <a href="#" class="txt2"> Email / Mật khẩu? </a>
+                <a href="{{url('admin/auth/forget_password')}}" class="txt2"> Email / Mật khẩu? </a>
               </div>
   
               <div class="container-login100-form-btn">

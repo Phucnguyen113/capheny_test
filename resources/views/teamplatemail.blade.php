@@ -57,7 +57,7 @@
         </tfoot>
     </table>
     <div style="text-align: center;">
-            <a href="{{url('product')}}/{{$order_id}}" style="display:block;background-color:#4b8c6c;font-weight:700;font-size:13px;color:#fff;text-align:center;padding-top:10px;padding-bottom:10px;text-decoration:none"> Xem chi tiết đơn hàng</a>
+            <a href="{{url('order')}}/{{$order_token}}" style="display:block;background-color:#4b8c6c;font-weight:700;font-size:13px;color:#fff;text-align:center;padding-top:10px;padding-bottom:10px;text-decoration:none"> Xem chi tiết đơn hàng</a>
     </div>
 </body>
 </html>

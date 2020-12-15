@@ -2,6 +2,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Jobs\sendEmailVerify;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -83,15 +84,35 @@ class jwtAuthController extends Controller
             DB::table('tbl_user')->insert(array_merge($request->except(['_token','user_password_confirm','user_password','avatar']),['create_at'=>$create_at],['active'=>$active],['user_type'=>$user_type],['password'=>$user_password] ) );
         }
         $credentials = ['user_email'=>$request->user_email,'password'=>$request->user_password];
+        $user_info=DB::table('tbl_user')->where([
+            ['user_email','=',$request->user_email],
+            ['active','=',1]
+        ])
+        ->join('tbl_province','tbl_province.id','=','tbl_user.province')
+        ->join('tbl_district','tbl_district.id','=','tbl_user.district')
+        ->join('tbl_ward','tbl_ward.id','=','tbl_user.ward')
+        ->first([
+            'tbl_user.user_name',
+            'tbl_user.user_email',
+            'tbl_user.avatar',
+            'tbl_user.user_first_name',
+            'tbl_user.user_last_name',
+            'tbl_province._name as province',
+            'tbl_district._name as district',
+            'tbl_ward._name as ward',
+            'tbl_user.user_address'
+        ]);
         $user=JWTAuth::attempt(array_merge($credentials,['active'=>1]));
         return response()->json([
             'status'=> 200,
             'message'=> 'User created successfully',
-            'token'=>$user
+            'token'=>$user,
+            'user_info'=>$user_info
         ]);
     }
     
     public function login(Request $request){
+        
         $credentials = $request->only('user_email', 'password');
         $token = null;
         try {
@@ -101,13 +122,93 @@ class jwtAuthController extends Controller
         } catch (JWTAuthException $e) {
             return response()->json(['failed_to_create_token'], 500);
         }
-        return response()->json(compact('token'));
+        $user_info=DB::table('tbl_user')->where([
+            ['user_email','=',$request->user_email],
+            ['active','=',1]
+        ])
+        ->join('tbl_province','tbl_province.id','=','tbl_user.province')
+        ->join('tbl_district','tbl_district.id','=','tbl_user.district')
+        ->join('tbl_ward','tbl_ward.id','=','tbl_user.ward')
+        ->first([
+            'tbl_user.user_name',
+            'tbl_user.user_email',
+            'tbl_user.avatar',
+            'tbl_user.user_first_name',
+            'tbl_user.user_last_name',
+            'tbl_province._name as province',
+            'tbl_district._name as district',
+            'tbl_ward._name as ward',
+            'tbl_user.user_address'
+        ]);
+        return response()->json(compact('token','user_info'));
     }
 
     public function getUserInfo(Request $request){
         $user = JWTAuth::parseToken()->authenticate();
-        
         return response()->json(['result' => $user]);
-        
+    }
+
+    public function verify(Request $request){
+        // $validated=Validator::make($request->all(),
+        //     ['user_email'=>'bail|required|email'],
+        //     [
+        //         'required' => ':attribute không được trống',
+        //         'email' => ':attribute không đúng định dạng'
+        //     ],
+        //     [
+        //         'user_email' => 'Email'
+        //     ]
+        // );
+        // if($validated->fails()) return response()->json(['error'=>$validated->getMessageBag()]);
+        $user=DB::table('tbl_user')->where('user_email',$request->user_email)->first();
+        if(empty($user)) return response()->json(['error'=>['Không tồn tại email này']]);
+        $pin='0123456789';
+        $random='';
+        for ($i=0; $i <6 ; $i++) { 
+            $random.=$pin[rand(0,strlen($pin)-1)];
+        }
+       DB::table('tbl_user')->where('user_email',$request->user_email)->update([
+           'verify_pin'=>$random
+       ]);
+       $user=DB::table('tbl_user')->where('user_email',$request->user_email)->first();
+       
+       dispatch(new sendEmailVerify([
+            'user_name'=>$user->user_first_name.' '.$user->user_last_name,
+            'verify_pin' => $user->verify_pin,
+            'user_email'=>$user->user_email
+        ]))->delay(now()->addSeconds(1));
+        return response()->json(['success'=>true]);
+    }
+
+    public function change_password(Request $request){
+        $validated=Validator::make($request->all(),
+            [
+                'user_email'=>'bail|required|email',
+                'verify_pin' => 'bail|required|min:6',
+                'password' => 'bail|required|min:6'
+            ],
+            [
+                'required' => ':attribute không được rỗng',
+                'email' => ':attribute sai định dạng',
+                'min' => ':attribute phải có 6 ký tự'
+            ],
+            [
+                'email' =>'Email',
+                'verify_pin'=> 'Mã xác nhận',
+                'password' => 'Mật khẩu'
+            ]
+        );
+        if($validated->fails()) return response()->json(['error'=>$validated->getMessageBag()]);
+        $user=DB::table('tbl_user')->where([
+            ['user_email','=',$request->user_email],
+            ['verify_pin','<>',null]
+        ])->first();
+        if(empty($user)) return response()->json(['error'=>['user'=>'Người dùng không tồn tại, hoặc không yêu cầu đặt lại mật khẩu']]);
+        if($user->verify_pin!==$request->verify_pin) return response()->json(['error'=>['verify_pin'=>'Mã xác nhận không chính xác']]);
+        DB::table('tbl_user')->where('user_email',$request->user_email)->update([
+            'verify_pin'=>null,
+            'password'=>bcrypt($request->password)
+        ]);
+        return response()->json(['success'=>true]);
     }
 }  

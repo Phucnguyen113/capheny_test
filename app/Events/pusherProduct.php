@@ -115,8 +115,9 @@ class pusherProduct implements ShouldBroadcast
             if(!p_ui_setting('product','price')) $html.='style="display: none;"'; 
             $html.=' style="text-align:right">'.number_format($product->product_price).' VND</td>';
             $html.='<td class="p_setting discount"';
-            if(!p_ui_setting('product','discount')) $html.='style="display: none;">'.$product->discount.'</td>';
-                
+            if(!p_ui_setting('product','discount')) $html.='style="display: none;"';
+            $html.='>';
+            $html.=$product->discount.'</td>';
             $html.='<td class="p_setting active"';
             if(!p_ui_setting('product','active')) $html.='style="display: none;"';
             $html.='>';
