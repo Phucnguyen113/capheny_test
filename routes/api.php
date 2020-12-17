@@ -86,6 +86,8 @@ Route::group(['middleware'=>'p_cors'],function(){
     Route::get('size/list',[ApiSizeController::class,'list_size_api']);
     //Check amount product detail
     Route::post('check_amount_attr_color',[ApiProductController::class,'check_amount_attr_color']);
+    //get list comment
+    Route::get('get_comment',[ApiCommentController::class,'list_comment']);
 });
 
 // select2 remote data

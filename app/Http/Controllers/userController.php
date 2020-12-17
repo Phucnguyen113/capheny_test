@@ -207,6 +207,7 @@ class userController extends Controller
         }
        
         event(new \App\Events\pusherUser($idUser));
+        p_history(0,'đã thêm người dùng mới #'.$idUser,p_user()['user_id']);
         return response()->json(['success'=>'success']);
     }
     public function edit_form($id){
@@ -318,6 +319,7 @@ class userController extends Controller
         }
         
         DB::table('tbl_user')->where('user_id',$id)->update($data_update);
+        p_history(1,'đã cập nhật người dùng #'.$id,p_user()['user_id']);
         return response()->json(['success'=>'success']);
     }
     public function delete($id){
@@ -341,6 +343,7 @@ class userController extends Controller
             DB::table('tbl_user_role')->where('user_id',$id)->delete();
             DB::table('tbl_user_permission')->where('user_id',$id)->delete();
             DB::table('tbl_system_ui')->where('user_id',$id)->delete();
+            p_history(2,'đã xóa người dùng #'.$id,p_user()['user_id']);
             return redirect()->back()->withErrors(['success'=>'success']);
         }catch(\Exception $e){
             return redirect()->back()->withErrors(['error_sv'=>'Lỗi không xác định']);

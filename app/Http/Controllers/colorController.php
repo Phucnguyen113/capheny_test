@@ -93,7 +93,9 @@ class colorController extends Controller
             ]
         );
         if($validated->fails()) return response()->json(['error'=>$validated->getMessageBag()]);
-        DB::table('tbl_color')->insert(['color'=>$request->color,'create_at'=>Carbon::now('Asia/Ho_Chi_Minh')->toDateTimeString()]);
+        $color_id=DB::table('tbl_color')->insertGetId(['color'=>$request->color,'create_at'=>Carbon::now('Asia/Ho_Chi_Minh')->toDateTimeString()]);
+        
+        p_history(0,'đã thêm 1 màu mới #'.$color_id,p_user()['user_id']);
         return response()->json(['success'=>'insert color success']);
             
     }
@@ -122,6 +124,7 @@ class colorController extends Controller
         }
         $color=DB::table('tbl_color')->where('color_id',$id)->first();
         $title='Capheny - Cập nhật màu';
+        
         return view('admin/color/edit',['color'=>$color,'title'=>$title]);
     }
 
@@ -159,7 +162,8 @@ class colorController extends Controller
                 'update_at'=>Carbon::now('Asia/Ho_Chi_Minh')->toDateTimeString()
             ]
             );
-            return response()->json(['success'=>'update color success']);
+        p_history(1,'đã cập nhật màu #'.$id,p_user()['user_id']);
+        return response()->json(['success'=>'update color success']);
     }
 
     /**
@@ -176,6 +180,7 @@ class colorController extends Controller
         $check_isset=DB::table('tbl_product_color')->where('color_id',$id)->first();
         if(!empty($check_isset)) return redirect()->back()->withErrors(['error'=>'Màu này đã có sản phẩm']);
         DB::table('tbl_color')->where('color_id',$id)->delete();
+        p_history(2,'đã xóa 1 màu #'.$id,p_user()['user_id']);
         return redirect()->back()->with('success','success');
     }
 }

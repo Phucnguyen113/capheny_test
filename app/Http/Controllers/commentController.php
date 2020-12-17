@@ -54,7 +54,8 @@ class commentController extends Controller
         );
         if($validated->fails()) return response()->json(['error'=>$validated->getMessageBag()]);
         $create_at=Carbon::now('Asia/Ho_Chi_Minh')->toDateTimeString();
-        DB::table('tbl_comment')->insert( array_merge($request->except(['_token']),['create_at'=>$create_at]) );
+        $comment_id=DB::table('tbl_comment')->insertGetId( array_merge($request->except(['_token']),['create_at'=>$create_at]) );
+        p_history(0,'đã thêm 1 comment mới #'.$comment_id,p_user()['user_id']);
         return response()->json(['success'=>'success']);
     }
     public function edit_form($id){
@@ -93,6 +94,7 @@ class commentController extends Controller
             $active=1;
         }
         $now=Carbon::now('Asia/Ho_Chi_Minh')->toDateTimeString();
+        $comment_old=DB::table('tbl_comment')->where('comment_id',$id)->first(['content']);
         DB::table('tbl_comment')->where('comment_id',$id)->update([
             'active'=>$active,
             'product_id'=>$request->product_id,
@@ -100,10 +102,13 @@ class commentController extends Controller
             'content'=>$request->content,
             'update_at'=>$now
         ]);
+
+        p_history(1,'đã cập nhật bình luận #'.$id,p_user()['user_id']);
         return response()->json(['success'=>'success']);
     }
     public function delete_comment($id){
         DB::table("tbl_comment")->where('comment_id',$id)->delete();
+        p_history(2,'đã xóa bình luận #'.$id,p_user()['user_id']);
         return response()->json(['success'=>['success']]);
     }
 }

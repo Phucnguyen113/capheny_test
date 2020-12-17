@@ -304,9 +304,12 @@ class orderController extends Controller
                 'ward'=>$info_order->ward_name,
                 'address'=>$info_order->order_address,
                 'create_at'=>$info_order->create_at,
-                'list_product'=>$list_product]))
+                'list_product'=>$list_product,
+                'token'=>$token
+                ]))
             ->delay(now()->addSeconds(1));
         event(new \App\Events\pusherOrder($order_id));
+        p_history(0,'đã thêm đơn hàng mới #'.$order_id,p_user()['user_id']);
         return response()->json(['success'=>'insert success']);
     }
     public function edit_form($id){
@@ -468,7 +471,7 @@ class orderController extends Controller
                 
             if(empty($check_user_notlogin_already)){
                 // case user_not_login is already
-               
+                
                 $id_user_not_login=DB::table('tbl_user_not_login')->insertGetId($data_user_not_login);
             }else{
                 DB::table('tbl_user_not_login')->where('user_id',$check_user_notlogin_already->user_id)
@@ -579,6 +582,7 @@ class orderController extends Controller
                 'create_at'       => $update_at
             ]);
        }
+       p_history(1,'đã cập nhật đơn hàng #'.$id,p_user()['user_id']);
        return response()->json(['success'=>'insert success']);
     }
     public function delete($id){
@@ -627,7 +631,8 @@ class orderController extends Controller
         //delete order_detail
         DB::table('tbl_order_detail')->where('order_id',$id)->delete();
         DB::table('tbl_order')->where('order_id',$id)->delete();
-        return redirect()->back();
+        p_history(2,'đã xóa đơn hàng  #'.$id,p_user()['user_id']);
+        return redirect()->back()->with('success',true);
     }
 
     public function detail($id){

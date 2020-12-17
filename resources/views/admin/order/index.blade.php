@@ -1,6 +1,22 @@
 @extends('layouts.admin')
 
 @section('body')
+<script>
+    @if(\Session::has('error'))
+        Swal.fire({
+            icon:'error',
+            title:'Xóa thất bại',
+            text:'{{\Session::get('error')}}'
+        })
+    @elseif(\Session::has('success'))
+        Swal.fire({
+            icon:'success',
+            title:'Xóa thành công',
+            text:'Bạn vừa xóa 1 đơn hàng',
+            timer:2000
+        })
+    @endif
+</script>
     <div class="card main-card">
         <div class="card-body">
             <div id="filter_p" style="margin-bottom:15px;">
@@ -391,4 +407,5 @@
         $('#p_list_order tr:last-child').remove();
     })
 </script>
+
 @endsection

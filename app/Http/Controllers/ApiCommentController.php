@@ -36,4 +36,13 @@ class ApiCommentController extends Controller
         DB::table('tbl_comment')->insert( $data );
         return response()->json(['success'=>'success']);
     }
+    public function list_comment(Request $request){
+        $list_comment=DB::table('tbl_comment')
+        ->join('tbl_user','tbl_user.user_id','=','tbl_comment.user_id')
+        ->where([
+            ['product_id','=',$request->product_id],
+            ['active','=',1]
+        ])->get(['tbl_comment.*','tbl_user.user_email']);
+        return response()->json(['data'=>$list_comment]);
+    }
 }

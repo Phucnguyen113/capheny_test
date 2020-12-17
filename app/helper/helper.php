@@ -1,5 +1,6 @@
 <?php
 
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
@@ -252,6 +253,17 @@ if(!function_exists('p_redirect_login_admin')){
 if(!function_exists('p_method')){
     function p_method($method){
         return '<input type="hidden" name="_method" value="'.$method.'">';
+    }
+}
+if(!function_exists('p_history')){
+    function p_history($history_type,$history,$user_id){
+        $now=Carbon::now('Asia/Ho_Chi_Minh')->toDateTimeString();
+        DB::table('tbl_history')->insert([
+            'history_type'=>$history_type,
+            'history'=>$history,
+            'user_id'=>$user_id,
+            'create_at'=>$now
+        ]);
     }
 }
 ?>

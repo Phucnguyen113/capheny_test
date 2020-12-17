@@ -92,6 +92,7 @@ class jwtAuthController extends Controller
         ->join('tbl_district','tbl_district.id','=','tbl_user.district')
         ->join('tbl_ward','tbl_ward.id','=','tbl_user.ward')
         ->first([
+            'tbl_user.user_id',
             'tbl_user.user_name',
             'tbl_user.user_email',
             'tbl_user.avatar',
@@ -130,6 +131,7 @@ class jwtAuthController extends Controller
         ->join('tbl_district','tbl_district.id','=','tbl_user.district')
         ->join('tbl_ward','tbl_ward.id','=','tbl_user.ward')
         ->first([
+            'tbl_user.user_id',
             'tbl_user.user_name',
             'tbl_user.user_email',
             'tbl_user.avatar',

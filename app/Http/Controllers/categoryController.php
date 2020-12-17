@@ -111,7 +111,7 @@ class categoryController extends Controller
         );
         if($validated->fails()) return response()->json(['error'=>$validated->getMessageBag()]);
        
-        DB::table('tbl_category')->insert(
+        $id=DB::table('tbl_category')->insertGetId(
             [
                 'category_name'=>$request->category_name,
                 'category_slug'=>$request->category_slug,
@@ -119,7 +119,8 @@ class categoryController extends Controller
                 'active'=>0,
                 'create_at'=>Carbon::now('Asia/Ho_Chi_Minh')->toDateTimeString()
             ]
-            );
+        );
+        p_history(0,'đã thêm danh mục mới #'.$id,p_user()['user_id']);
         return response()->json(['success'=>$request->all()]);
     }
 
@@ -185,6 +186,7 @@ class categoryController extends Controller
         DB::table('tbl_category')->where('category_id',$id)->update(
            array_merge($request->except(['_token']),['update_at'=>Carbon::now('Asia/Ho_Chi_Minh')->toDateTimeString()]) 
         );
+        p_history(1,'đã cập nhật danh mục #'.$id,p_user()['user_id']);
         return response()->json(['success'=>'Edit success']);
     }
 
@@ -208,6 +210,7 @@ class categoryController extends Controller
             return redirect()->back()->withErrors(['error_sp'=>'Danh mục chứa sản phẩm con']);
         }
         DB::table('tbl_category')->where('category_id',$id)->delete();
+        p_history(2,'đã xóa danh mục #'.$id,p_user()['user_id']);
         return redirect('admin/category')->with('success','success');
     }
     public function dequy_delete($id){
@@ -285,6 +288,7 @@ class categoryController extends Controller
             $active=1;
         }
         DB::table('tbl_category')->where('category_id',$request->id)->update(['active'=>$active]);
+        
         return response()->json(['success'=>$active]);
     }
 }

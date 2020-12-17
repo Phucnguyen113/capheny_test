@@ -69,6 +69,34 @@
 @endsection
 @section('body')
 <div class="card-title" style="text-align:center;font-size:36px">Thống kế</div>
+
+    <div class="card main-card mb-3">
+        <div class="card-body ">
+            <div class="table-responsive">
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>Người dùng</th>
+                            <th>Thao tác</th>
+                            <th>Lúc</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach($list_history as $histories => $history)
+                        <tr>
+                            <td>{{$history->user_email}}</td>
+                            <td>{!!$history->history!!}
+                                
+                      
+                            <td>{{$history->create_at}} </td>
+                        </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
 <div class="row">
     <div class="col-md-6 col-xl-4"> 
         <div class="card mb-3 widget-content bg-midnight-bloom">

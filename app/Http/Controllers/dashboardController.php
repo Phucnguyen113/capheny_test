@@ -29,7 +29,15 @@ class dashboardController extends Controller
         $total_cate=DB::table('tbl_category')->get()->toArray();
         $total_cate=count($total_cate);
         $title='Capheny - Dashboard';
-        return view('admin.dashboard.index',compact('title','total_cate','total_store','total_order','total_product','total_user','total_user_not_login','total_price'));
+        // history
+        $list_history=DB::table('tbl_history')
+        ->join('tbl_user','tbl_user.user_id','=','tbl_history.user_id')
+        ->select(['tbl_history.*','tbl_user.user_email'])
+        ->orderByDesc('history_id')
+        ->paginate(20);
+        
+       
+        return view('admin.dashboard.index',compact('list_history','title','total_cate','total_store','total_order','total_product','total_user','total_user_not_login','total_price'));
     }
     public function order(){
         $order_status_0=DB::table('tbl_order')->where('order_status',0)->get()->toArray();

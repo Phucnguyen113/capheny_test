@@ -270,6 +270,7 @@ class productController extends Controller
             DB::table('tbl_product_size')->insert(['product_id'=>$idProduct,'size_id'=>$request->size[$i]]);
         }
         event(new \App\Events\pusherProduct($idProduct));
+        p_history(0,'đã thêm sản phẩm mới #'.$idProduct,p_user()['user_id']);
         return response()->json(['success'=>'Insert product success']);    
 
     }
@@ -450,6 +451,7 @@ class productController extends Controller
         // for ($i=0; $i <count($request->color) ; $i++) { 
         //     DB::table('tbl_product_color')->insert(['product_id'=>$id,'color_id'=>$request->color[$i]]);
         // }
+        p_history(1,'đã cập nhật sản phẩm #'.$id,p_user()['user_id']);
         return response()->json(['success'=>'Update product success']);
     }
 
@@ -476,6 +478,7 @@ class productController extends Controller
                 unlink(public_path('images/product/'.$img_name[$i]));
            }
             DB::table('tbl_product')->where('product_id',$id)->delete();
+            p_history(2,'đã xóa sản phẩm  #'.$id,p_user()['user_id']);
             return redirect()->back()->with('success','success');
         }catch(\Exception $e){
             return redirect()->back()->withErrors(['isset'=>'Sản phẩm đã nhập hàngs']);
