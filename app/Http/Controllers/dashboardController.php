@@ -34,7 +34,7 @@ class dashboardController extends Controller
         ->join('tbl_user','tbl_user.user_id','=','tbl_history.user_id')
         ->select(['tbl_history.*','tbl_user.user_email'])
         ->orderByDesc('history_id')
-        ->paginate(20);
+        ->paginate(10);
         
        
         return view('admin.dashboard.index',compact('list_history','title','total_cate','total_store','total_order','total_product','total_user','total_user_not_login','total_price'));

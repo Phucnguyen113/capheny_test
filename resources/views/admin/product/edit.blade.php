@@ -291,6 +291,7 @@
             showCloseButton:false,
             showCancelButton:false,
             showConfirmButton:false,
+            timer:8000
         })
         var _token=$('input[name="_token"]').val();
         var product_name=$('#product_name').val();

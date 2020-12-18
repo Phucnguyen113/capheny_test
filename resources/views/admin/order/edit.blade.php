@@ -366,6 +366,7 @@
                                         showCloseButton:false,
                                         showCancelButton:false,
                                         showConfirmButton:false,
+                                        timer:8000
                                     })
                                     var formdata= new FormData();
                                     var _token=$("input[name='_token']").val();

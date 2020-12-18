@@ -121,7 +121,18 @@
 </div>
 <script>
     function add_store(){
-        
+        Swal.fire ({
+                    title: 'Xin chờ...',
+                    onBeforeOpen: () => {
+                        Swal.showLoading ()
+                    },
+                    allowEscapeKey: false,
+                    allowOutsideClick: false,
+                    showCloseButton:false,
+                    showCancelButton:false,
+                    showConfirmButton:false,
+                    timer:9000
+                })
         $.ajax({
             type: "post",
             url: "{{url('admin/store/create')}}",

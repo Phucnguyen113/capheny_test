@@ -39,7 +39,7 @@ class mailController extends Controller
                 'address'=>$info_order->order_address,
                 'create_at'=>$info_order->create_at,
                 'token' =>$info_order->token,
-                'list_product'=>$list_product]))->delay(now()->addSeconds(1));
+                'list_product'=>$list_product]))->delay(now()->addSeconds(10));
                  
             return response()->json(['success'=>'success']);
         // } catch (\Throwable $th) {

@@ -352,6 +352,7 @@
                                         showCloseButton:false,
                                         showCancelButton:false,
                                         showConfirmButton:false,
+                                        timer:8000
                                     })
                                
                                 var formdata= new FormData();

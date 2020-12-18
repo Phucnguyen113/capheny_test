@@ -1,12 +1,16 @@
 function view_setting(user_id,table){
-    // Swal.fire({
-    //     title: "Loading...",
-    //     text: "Please wait",
-    //     imageUrl: "https://icon-library.com/images/loading-icon-animated-gif/loading-icon-animated-gif-19.jpg",
-    //     button: false,
-    //     closeOnClickOutside: false,
-    //     closeOnEsc: false
-    //   });
+    Swal.fire({
+        title: "Xin chờ",
+        text: "Đang thay đổi ",
+        willOpen:()=>{
+            Swal.showLoading();
+        },
+        button: false,
+        closeOnClickOutside: false,
+        closeOnEsc: false,
+        timmer:2000,
+        showConfirmButton:false
+      });
     var formdata= new FormData();
     $('.view-setting').each(function(index,item){
         if($(this).is(':checked')==true){
@@ -21,18 +25,14 @@ function view_setting(user_id,table){
     formdata.append('table',table);
      $.ajax({
          type: "POST",
-         url: "public/api/ui_setting",
+         url: "../../public/api/ui_setting",
          data: formdata,
          processData:false,
          contentType:false,
          dataType: "json",
          success: function (response) {
              console.log(response);
-            //  Swal.fire({
-            //      icon:'success',
-            //     title: "oke",
-            //     text: "Please wait",
-            //   });
+           Swal.close();
          }
      });
 }

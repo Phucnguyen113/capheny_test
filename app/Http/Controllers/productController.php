@@ -469,14 +469,18 @@ class productController extends Controller
         // xóa sản phẩm thì cũng xóa size và color của sản phẩm trong các bản quan hệ
         $check_isset_store=DB::table('tbl_store_product')->where('product_id',$id)->first();
         if(!empty($check_isset_store)){
+           
             return redirect()->back()->withErrors(['isset'=>'Sản phẩm đã nhập hàngs']);
         }
         try{
             $img_name=DB::table('tbl_product')->where('product_id',$id)->first(['product_image']);
             $img_name= json_decode($img_name->product_image,true);
-           for ($i=0; $i <count($img_name) ; $i++) { 
-                unlink(public_path('images/product/'.$img_name[$i]));
-           }
+            for ($i=0; $i <count($img_name) ; $i++) { 
+                if(file_exists(public_path('images/product/'.$img_name[$i]) )){
+                        unlink(public_path('images/product/'.$img_name[$i]));
+                }
+                    
+            }
             DB::table('tbl_product')->where('product_id',$id)->delete();
             p_history(2,'đã xóa sản phẩm  #'.$id,p_user()['user_id']);
             return redirect()->back()->with('success','success');

@@ -313,8 +313,10 @@ class userController extends Controller
             $request->avatar->move('images/user',$newNameImg);
             $data_update=array_merge($data_update,['avatar'=>$newNameImg]);
             $img_old=DB::table('tbl_user')->where('user_id',$id)->first(['avatar']);
-            if(file_exists(public_path('images/user/'.$img_old->avatar))){
-                unlink(public_path('images/user/'.$img_old->avatar));
+            if($img_old->avatar!==null){
+                if(file_exists(public_path('images/user/'.$img_old->avatar))){
+                    unlink(public_path('images/user/'.$img_old->avatar));
+                }
             }
         }
         

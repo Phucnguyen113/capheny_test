@@ -93,11 +93,14 @@
 </script>
 <script>
     function add_comment(){
-        var data=$('#form').serialize();
+        var _token=$('input[name="_token"]').val();
+       var user_id=$('#user_id').val();
+       var content=CKEDITOR.instances['content'].getData()
+       var product_id = $('#product_id').val();
         $.ajax({
             type: "POST",
             url: "{{url('admin/comment')}}/{{$comment->comment_id}}/edit",
-            data: data,
+            data: {product_id:product_id,content:content,user_id:user_id,_token:_token},
             dataType: "json",
             success: function (response) {
                 console.log(response);

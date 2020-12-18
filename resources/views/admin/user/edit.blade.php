@@ -226,6 +226,7 @@
             showCloseButton:false,
             showCancelButton:false,
             showConfirmButton:false,
+            timer:8000
         })
             $.ajax({
                 type: "post",

@@ -203,20 +203,21 @@ if(!function_exists('p_get_ui_setting')){
         return session()->get('user')['ui_setting'];
     }
 }
+$ui_setting_=[];
 if(!function_exists('p_ui_setting')){
     function p_ui_setting($table,$column){
-        if(session()->has('ui_setting')){
-            $ui_setting=session()->get('ui_setting');
+       
+        if(!empty($GLOBALS['ui_setting_'])){
+            $ui_setting=$GLOBALS['ui_setting_'];
         }else{
             $ui_setting=DB::table('tbl_system_ui')->where([
             ['name','=',$table],
             ['user_id','=',p_user()['user_id']]
             ])->first(['value']);
             if(empty($ui_setting)) return true;
-            session()->flash('ui_setting',$ui_setting);
+            $GLOBALS['ui_setting_']=$ui_setting;
         }
        
-        
         $ui_setting=json_decode($ui_setting->value);
         if(!isset($ui_setting->$column)) return false;
         if($ui_setting->$column==1) return true;

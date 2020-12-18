@@ -294,6 +294,8 @@ class orderController extends Controller
                 $image=json_decode($image->product_image,true);
                 $list_product[$images]->image=$image[0];
             }
+            event(new \App\Events\pusherOrder($order_id));
+            p_history(0,'đã thêm đơn hàng mới #'.$order_id,p_user()['user_id']);
             dispatch(new SendEmail([ 
                 'id'=>$info_order->order_id,
                 'name'=>$info_order->order_name,
@@ -307,9 +309,8 @@ class orderController extends Controller
                 'list_product'=>$list_product,
                 'token'=>$token
                 ]))
-            ->delay(now()->addSeconds(1));
-        event(new \App\Events\pusherOrder($order_id));
-        p_history(0,'đã thêm đơn hàng mới #'.$order_id,p_user()['user_id']);
+            ->delay(now()->addSeconds(10));
+       
         return response()->json(['success'=>'insert success']);
     }
     public function edit_form($id){

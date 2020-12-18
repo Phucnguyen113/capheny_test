@@ -87,7 +87,8 @@ class storeController extends Controller
         ]);
         if($validated->fails()) return response()->json(['error'=>$validated->getMessageBag()]);
         $create_at=Carbon::now('Asia/Ho_Chi_Minh')->toDateTimeString(); 
-        DB::table('tbl_store')->insert(array_merge($request->except(['_token']),['create_at'=>$create_at],['create_by'=>p_user()['user_id']]));
+        $id=DB::table('tbl_store')->insertGetId(array_merge($request->except(['_token']),['create_at'=>$create_at],['create_by'=>p_user()['user_id']]));
+        p_history(0,'đã thêm cửa hàng mới  #'.$id,p_user()['user_id']);
         return response()->json(['success'=>'sucess']);
     }
     public function form_add_product(){
@@ -150,6 +151,7 @@ class storeController extends Controller
                 }
             }
         }// end
+       
         return response()->json(['success'=>'successs']);
     }
     //detail store
@@ -274,6 +276,7 @@ class storeController extends Controller
         if($validated->fails()) return response()->json(['error'=>$validated->getMessageBag()]);
         $update_at=Carbon::now('Asia/Ho_Chi_Minh')->toDateTimeString(); 
         DB::table('tbl_store')->where('store_id',$id)->update(array_merge($request->except(['_token']),['update_at'=>$update_at],['update_by'=>p_user()['user_id']]));
+        p_history(1,'đã cập nhật cửa hàng  #'.$id,p_user()['user_id']);
         return response()->json(['success'=>'sucess']);
     }
     public function delete_store($id){
@@ -285,6 +288,7 @@ class storeController extends Controller
             return redirect()->back()->withErrors(['error'=>'Cửa hàng đã có sản phẩm, không thể xóa']);
         }
         DB::table('tbl_store')->where('store_id',$id)->delete();
+        p_history(2,'đã xóa cửa hàng  #'.$id,p_user()['user_id']);
         return redirect()->back()->with('success','success');
     }
 }
