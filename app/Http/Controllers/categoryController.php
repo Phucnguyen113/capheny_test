@@ -121,6 +121,7 @@ class categoryController extends Controller
             ]
         );
         p_history(0,'đã thêm danh mục mới #'.$id,p_user()['user_id']);
+        event(new \App\Events\pusherCate(['cate_id'=>$id,'user_email'=>p_user()['user_email']]));
         return response()->json(['success'=>$request->all()]);
     }
 
@@ -187,6 +188,7 @@ class categoryController extends Controller
            array_merge($request->except(['_token']),['update_at'=>Carbon::now('Asia/Ho_Chi_Minh')->toDateTimeString()]) 
         );
         p_history(1,'đã cập nhật danh mục #'.$id,p_user()['user_id']);
+        event(new \App\Events\pusherCateEdit(['cate_id'=>$id,'user_email'=>p_user()['user_email']]));
         return response()->json(['success'=>'Edit success']);
     }
 
@@ -211,6 +213,7 @@ class categoryController extends Controller
         }
         DB::table('tbl_category')->where('category_id',$id)->delete();
         p_history(2,'đã xóa danh mục #'.$id,p_user()['user_id']);
+        event(new \App\Events\pusherCateDelete(['cate_id'=>$id,'user_email'=>p_user()['user_email']]));
         return redirect('admin/category')->with('success','success');
     }
     public function dequy_delete($id){

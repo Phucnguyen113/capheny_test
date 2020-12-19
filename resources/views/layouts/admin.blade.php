@@ -32,6 +32,7 @@
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/css/select2.min.css" rel="stylesheet" />
     <!-- css datetimepicker -->
     <link rel="stylesheet" href="{{asset('datetimePicker/css/jquery.datetimepicker.css')}}">
+    <link rel="stylesheet" href="{{asset('p_js/jquery.toast.css')}}">
     @section('css')
     @show
     <!-- jquery -->
@@ -49,6 +50,352 @@
     <script src="//js.pusher.com/3.1/pusher.min.js"></script>
     <!-- fontAwesome -->
     <script src="{{asset('fontAwesome/fontAwesome.js')}}"></script>
+    <script src="{{asset('p_js/jquery.toast.js')}}"></script>
+    <script>
+     var pusher = new Pusher('c76eed35cec6f6ddf74a', {
+        encrypted: true,
+        cluster:'ap1'
+      });
+
+      // Subscribe to the channel we specified in our Laravel Event
+    @if(!request()->is('admin/product/create'))
+        var channel = pusher.subscribe('product-add');
+        channel.bind('App\\Events\\pusherProduct', function(data) {
+            
+            $.toast({
+                heading: 'Thêm mới',
+                text: data.message,
+                position: 'bottom-right',
+                showHideTransition: 'slide',
+                icon: 'success'
+            })
+        })
+    @endif
+    
+    @if(!request()->is('admin/product/*/edit'))
+        var channel_edit = pusher.subscribe('product-edit');
+        channel_edit.bind('App\\Events\\pusherProductEdit', function(data) {
+        
+            $.toast({
+                heading: 'Cập nhật mới',
+                text: data.message,
+                position: 'bottom-right',
+                showHideTransition: 'slide',
+                icon: 'success'
+            })
+        })
+    @endif
+    @if(!request()->is('admin/product'))
+        var channel_delete = pusher.subscribe('product-delete');
+        channel_delete.bind('App\\Events\\pusherProductDelete', function(data) {
+        
+            $.toast({
+                heading: 'Xóa dữ liệu',
+                text: data.message,
+                position: 'bottom-right',
+                showHideTransition: 'slide',
+                icon: 'Warning'
+            })
+        })
+    @endif
+    // order
+    @if(!request()->is('admin/order/create'))
+        var channel_order_add = pusher.subscribe('order-add');
+        channel_order_add.bind('App\\Events\\pusherOrder', function(data) {
+            $.toast({
+                heading: 'Thêm mới',
+                text: data.message,
+                position: 'bottom-right',
+                showHideTransition: 'slide',
+                icon: 'success'
+            })
+        })
+    @endif
+    @if(!request()->is('admin/order/*/edit'))
+        var channel_order_edit = pusher.subscribe('order-edit');
+        channel_order_edit.bind('App\\Events\\pusherOrderEdit', function(data) {
+            $.toast({
+                heading: 'Cập nhật mới',
+                text: data.message,
+                position: 'bottom-right',
+                showHideTransition: 'slide',
+                icon: 'success'
+            })
+        })
+    @endif
+    @if(!request()->is('admin/order'))
+        var channel_order_delete = pusher.subscribe('order-delete');
+        channel_order_delete.bind('App\\Events\\pusherOrderDelete', function(data) {
+        
+            $.toast({
+                heading: 'Xóa dữ liệu',
+                text: data.message,
+                position: 'bottom-right',
+                showHideTransition: 'slide',
+                icon: 'Warning'
+            })
+        })
+    @endif
+    // user
+    @if(!request()->is('admin/user/create'))
+        var channel_user_add = pusher.subscribe('user-add');
+        channel_user_add.bind('App\\Events\\pusherUser', function(data) {
+        
+            $.toast({
+                heading: 'Thêm mới',
+                text: data.message,
+                position: 'bottom-right',
+                showHideTransition: 'slide',
+                icon: 'success'
+            })
+        })
+    @endif
+    @if(!request()->is('admin/user/*/edit'))
+        var channel_user_edit = pusher.subscribe('user-edit');
+        channel_user_edit.bind('App\\Events\\pusherUserEdit', function(data) {
+        
+            $.toast({
+                heading: 'Cập nhật mới',
+                text: data.message,
+                position: 'bottom-right',
+                showHideTransition: 'slide',
+                icon: 'success'
+            })
+        })
+    @endif
+    @if(!request()->is('admin/user'))
+        var channel_user_delete = pusher.subscribe('user-delete');
+        channel_user_delete.bind('App\\Events\\pusherUserDelete', function(data) {
+        
+            $.toast({
+                heading: 'Xóa dữ liệu',
+                text: data.message,
+                position: 'bottom-right',
+                showHideTransition: 'slide',
+                icon: 'Warning'
+            })
+        })
+    @endif
+    // store
+    @if(!request()->is('admin/store/create'))
+    var channel_store_add = pusher.subscribe('store-add');
+    channel_store_add.bind('App\\Events\\pusherStore', function(data) {
+      
+        $.toast({
+            heading: 'Thêm mới',
+            text: data.message,
+            position: 'bottom-right',
+            showHideTransition: 'slide',
+            icon: 'success'
+        })
+    })
+    @endif
+    @if(!request()->is('admin/store/*/edit'))
+        var channel_store_edit = pusher.subscribe('store-edit');
+        channel_store_edit.bind('App\\Events\\pusherStoreEdit', function(data) {
+        
+            $.toast({
+                heading: 'Cập nhật mới',
+                text: data.message,
+                position: 'bottom-right',
+                showHideTransition: 'slide',
+                icon: 'success'
+            })
+        })
+    @endif
+    @if(!request()->is('admin/store/addproduct'))
+    var channel_store_addproduct = pusher.subscribe('store-addproduct');
+    channel_store_addproduct.bind('App\\Events\\pusherStoreAddproduct', function(data) {
+      
+        $.toast({
+            heading: 'Cập nhật mới',
+            text: data.message,
+            position: 'bottom-right',
+            showHideTransition: 'slide',
+            icon: 'success'
+        })
+    })
+    @endif
+
+    @if(!request()->is('admin/store'))
+        var channel_store_delete = pusher.subscribe('store-delete');
+        channel_store_delete.bind('App\\Events\\pusherStoreDelete', function(data) {
+        
+            $.toast({
+                heading: 'Xóa dữ liệu',
+                text: data.message,
+                position: 'bottom-right',
+                showHideTransition: 'slide',
+                icon: 'Warning'
+            })
+        })
+    @endif
+     // cate
+    @if(!request()->is('admin/category/create'))
+        var channel_cate_add = pusher.subscribe('cate-add');
+        channel_cate_add.bind('App\\Events\\pusherCate', function(data) {
+        
+            $.toast({
+                heading: 'Thêm mới',
+                text: data.message,
+                position: 'bottom-right',
+                showHideTransition: 'slide',
+                icon: 'success'
+            })
+        })
+    @endif
+    @if(!request()->is('admin/category/*/edit'))
+        var channel_cate_edit = pusher.subscribe('cate-edit');
+        channel_cate_edit.bind('App\\Events\\pusherCateEdit', function(data) {
+        
+            $.toast({
+                heading: 'Cập nhật mới',
+                text: data.message,
+                position: 'bottom-right',
+                showHideTransition: 'slide',
+                icon: 'success'
+            })
+        })
+    @endif
+    @if(!request()->is('admin/category'))
+        var channel_cate_delete = pusher.subscribe('cate-delete');
+        channel_cate_delete.bind('App\\Events\\pusherCateDelete', function(data) {
+        
+            $.toast({
+                heading: 'Xóa dữ liệu',
+                text: data.message,
+                position: 'bottom-right',
+                showHideTransition: 'slide',
+                icon: 'Warning'
+            })
+        })
+    @endif
+    //color 
+    @if(!request()->is('admin/color/create'))
+        var channel_color_add = pusher.subscribe('color-add');
+        channel_color_add.bind('App\\Events\\pusherColor', function(data) {
+        
+            $.toast({
+                heading: 'Thêm mới',
+                text: data.message,
+                position: 'bottom-right',
+                showHideTransition: 'slide',
+                icon: 'success'
+            })
+        })
+    @endif
+
+    @if(!request()->is('admin/color/*/edit'))
+        var channel_color_edit = pusher.subscribe('color-edit');
+        channel_color_edit.bind('App\\Events\\pusherColorEdit', function(data) {
+        
+            $.toast({
+                heading: 'Cập nhật mới',
+                text: data.message,
+                position: 'bottom-right',
+                showHideTransition: 'slide',
+                icon: 'success'
+            })
+        })
+    @endif
+
+    @if(!request()->is('admin/color'))
+        var channel_color_delete = pusher.subscribe('color-delete');
+        channel_color_delete.bind('App\\Events\\pusherColorDelete', function(data) {
+        
+            $.toast({
+                heading: 'Xóa dữ liệu',
+                text: data.message,
+                position: 'bottom-right',
+                showHideTransition: 'slide',
+                icon: 'Warning'
+            })
+        })
+    @endif
+    //size
+    @if(!request()->is('admin/size/create'))
+      var channel_size_add = pusher.subscribe('size-add');
+        channel_size_add.bind('App\\Events\\pusherSize', function(data) {
+        
+            $.toast({
+                heading: 'Thêm mới',
+                text: data.message,
+                position: 'bottom-right',
+                showHideTransition: 'slide',
+                icon: 'success'
+            })
+        })
+    @endif
+
+    @if(!request()->is('admin/size/*/edit'))
+    var channel_size_edit = pusher.subscribe('size-edit');
+    channel_size_edit.bind('App\\Events\\pusherSizeEdit', function(data) {
+      
+        $.toast({
+            heading: 'Cập nhật mới',
+            text: data.message,
+            position: 'bottom-right',
+            showHideTransition: 'slide',
+            icon: 'success'
+        })
+    })
+    @endif
+
+    @if(!request()->is('admin/size'))
+        var channel_size_delete = pusher.subscribe('size-delete');
+        channel_size_delete.bind('App\\Events\\pusherSizeDelete', function(data) {
+        
+            $.toast({
+                heading: 'Xóa dữ liệu',
+                text: data.message,
+                position: 'bottom-right',
+                showHideTransition: 'slide',
+                icon: 'Warning'
+            })
+        })
+    @endif
+    //comment 
+    @if(!request()->is('admin/comment/create'))
+        var channel_comment_add = pusher.subscribe('comment-add');
+        channel_comment_add.bind('App\\Events\\pusherComment', function(data) {
+        
+            $.toast({
+                heading: 'Thêm mới',
+                text: data.message,
+                position: 'bottom-right',
+                showHideTransition: 'slide',
+                icon: 'success'
+            })
+        })
+    @endif
+
+    @if(!request()->is('admin/comment/*/edit'))
+        var channel_comment_edit = pusher.subscribe('comment-edit');
+        channel_comment_edit.bind('App\\Events\\pusherCommentEdit', function(data) {
+        
+            $.toast({
+                heading: 'Cập nhật mới',
+                text: data.message,
+                position: 'bottom-right',
+                showHideTransition: 'slide',
+                icon: 'success'
+            })
+        })
+    @endif
+    @if(!request()->is('admin/comment'))
+        var channel_comment_delete = pusher.subscribe('comment-delete');
+        channel_comment_delete.bind('App\\Events\\pusherCommentDelete', function(data) {
+        
+            $.toast({
+                heading: 'Xóa dữ liệu',
+                text: data.message,
+                position: 'bottom-right',
+                showHideTransition: 'slide',
+                icon: 'Warning'
+            })
+        })
+    @endif
+</script>
     @section('js')
     @show
 </head>

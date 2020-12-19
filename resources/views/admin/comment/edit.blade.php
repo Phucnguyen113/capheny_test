@@ -97,10 +97,14 @@
        var user_id=$('#user_id').val();
        var content=CKEDITOR.instances['content'].getData()
        var product_id = $('#product_id').val();
+       var active=$('input[name="active"]:checked').val();
+       if(active==undefined){
+           active=null;
+       }
         $.ajax({
             type: "POST",
             url: "{{url('admin/comment')}}/{{$comment->comment_id}}/edit",
-            data: {product_id:product_id,content:content,user_id:user_id,_token:_token},
+            data: {product_id:product_id,content:content,user_id:user_id,_token:_token,active:active},
             dataType: "json",
             success: function (response) {
                 console.log(response);

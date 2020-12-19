@@ -2,7 +2,6 @@
 
 namespace App\Events;
 
-use Carbon\Carbon;
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Broadcasting\PresenceChannel;
@@ -10,9 +9,8 @@ use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Str;
-class pusherProduct implements ShouldBroadcast
+
+class pusherOrderEdit implements ShouldBroadcast
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
@@ -22,10 +20,9 @@ class pusherProduct implements ShouldBroadcast
      * @return void
      */
     public $message;
-    public function __construct($message=[])
-    {   
-        $product=DB::table('tbl_product')->where('product_id',$message['product_id'])->first();
-        $html=$message['user_email'].' '.$message['message'].' <a href="'.url('admin/product').'/'.$message['product_id'].'/edit">'.$product->product_name.'</a>';
+    public function __construct($message)
+    {
+        $html=$message['user_email'].' vừa cập nhật 1 <a href="'.url('admin/order').'/'.$message['order_id'].'/edit">đơn hàng</a>';
         $this->message=$html;
     }
 
@@ -36,6 +33,6 @@ class pusherProduct implements ShouldBroadcast
      */
     public function broadcastOn()
     {
-        return ['product-add'];
+        return ['order-edit'];
     }
 }

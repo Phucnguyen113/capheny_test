@@ -94,6 +94,7 @@ class sizeController extends Controller
             ]
         );
         p_history(0,'đã thêm kích thước mới #'.$id,p_user()['user_id']);
+        event(new \App\Events\pusherSize(['size_id'=>$id,'user_email'=>p_user()['user_email']]));
         return response()->json(['success'=>'Insert size success']);
         
     }
@@ -158,6 +159,7 @@ class sizeController extends Controller
                 'update_at'=>Carbon::now('Asia/Ho_Chi_Minh')->toDateTimeString()
             ]
         );
+        event(new \App\Events\pusherSizeEdit(['size_id'=>$id,'user_email'=>p_user()['user_email']]));
         p_history(1,'đã cập nhật kích thước #'.$id,p_user()['user_id']);
         return response()->json(['success'=>'Update success']);
     }
@@ -177,6 +179,7 @@ class sizeController extends Controller
         if(!empty($check_isset)) return redirect()->back()->withErrors(['error'=>'Kích cỡ này đã gán cho sản phẩm']);
         DB::table('tbl_size')->where('size_id',$id)->delete();
         p_history(2,'đã xóa kích thước #'.$id,p_user()['user_id']);
+        event(new \App\Events\pusherSizeDelete(['size_id'=>$id,'user_email'=>p_user()['user_email']]));
         return redirect()->back()->with('success','success');
     }
     

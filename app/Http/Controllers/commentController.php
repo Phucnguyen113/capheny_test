@@ -56,6 +56,7 @@ class commentController extends Controller
         $create_at=Carbon::now('Asia/Ho_Chi_Minh')->toDateTimeString();
         $comment_id=DB::table('tbl_comment')->insertGetId( array_merge($request->except(['_token']),['create_at'=>$create_at]) );
         p_history(0,'đã thêm 1 comment mới #'.$comment_id,p_user()['user_id']);
+        event(new \App\Events\pusherComment(['comment_id'=>$comment_id,'user_email'=>p_user()['user_email']]));
         return response()->json(['success'=>'success']);
     }
     public function edit_form($id){
@@ -104,11 +105,13 @@ class commentController extends Controller
         ]);
 
         p_history(1,'đã cập nhật bình luận #'.$id,p_user()['user_id']);
+        event(new \App\Events\pusherCommentEdit(['comment_id'=>$id,'user_email'=>p_user()['user_email']]));
         return response()->json(['success'=>'success']);
     }
     public function delete_comment($id){
         DB::table("tbl_comment")->where('comment_id',$id)->delete();
         p_history(2,'đã xóa bình luận #'.$id,p_user()['user_id']);
+        event(new \App\Events\pusherCommentDelete(['comment_id'=>$id,'user_email'=>p_user()['user_email']]));
         return response()->json(['success'=>['success']]);
     }
 }

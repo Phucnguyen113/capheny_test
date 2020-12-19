@@ -393,19 +393,6 @@
 @endsection
 @section('js')
 <script src="{{asset('p_js/view_setting.js')}}"></script>
-<script>
-    var pusher = new Pusher('c76eed35cec6f6ddf74a', {
-        encrypted: true,
-        cluster:'ap1'
-      });
 
-      // Subscribe to the channel we specified in our Laravel Event
-    var channel = pusher.subscribe('order-add');
-    channel.bind('App\\Events\\pusherOrder', function(data) {
-        console.log(data.message)
-        $('#p_list_order').prepend(data.message);
-        $('#p_list_order tr:last-child').remove();
-    })
-</script>
 
 @endsection

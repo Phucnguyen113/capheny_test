@@ -10,7 +10,8 @@ class ApiProductController extends Controller
 {
     public function list_product(Request $request){
         
-        $list_product=DB::table('tbl_product')->select(['tbl_product.*'])->orderByDesc('product_id');
+        $list_product=DB::table('tbl_product')
+        ->select(['tbl_product.*'])->orderByDesc('product_id');
         $binding=[];
         $binding[]=['tbl_product.active','=',1];
         if($request->has('discount_type') && $request->discount_type!==null){
@@ -149,7 +150,9 @@ class ApiProductController extends Controller
         return response()->json(['success'=>['success']]);
     }
     public function list_product_new_api(Request $request){
-        $list_product_new_collection=DB::table('tbl_product')->orderByDesc('product_id')->limit(6)->get();
+        $list_product_new_collection=DB::table('tbl_product')
+        ->where('active','=',1)
+        ->orderByDesc('product_id')->limit(6)->get();
         foreach ($list_product_new_collection as $produtcs => $product) {
             //get size
             $list_size=DB::table('tbl_product_size')

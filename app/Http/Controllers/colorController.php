@@ -96,6 +96,7 @@ class colorController extends Controller
         $color_id=DB::table('tbl_color')->insertGetId(['color'=>$request->color,'create_at'=>Carbon::now('Asia/Ho_Chi_Minh')->toDateTimeString()]);
         
         p_history(0,'đã thêm 1 màu mới #'.$color_id,p_user()['user_id']);
+        event(new \App\Events\pusherColor(['color_id'=>$color_id,'user_email'=>p_user()['user_email']]));
         return response()->json(['success'=>'insert color success']);
             
     }
@@ -163,6 +164,7 @@ class colorController extends Controller
             ]
             );
         p_history(1,'đã cập nhật màu #'.$id,p_user()['user_id']);
+        event(new \App\Events\pusherColorEdit(['color_id'=>$id,'user_email'=>p_user()['user_email']]));
         return response()->json(['success'=>'update color success']);
     }
 
@@ -181,6 +183,7 @@ class colorController extends Controller
         if(!empty($check_isset)) return redirect()->back()->withErrors(['error'=>'Màu này đã có sản phẩm']);
         DB::table('tbl_color')->where('color_id',$id)->delete();
         p_history(2,'đã xóa 1 màu #'.$id,p_user()['user_id']);
+        event(new \App\Events\pusherColorDelete(['color_id'=>$id,'user_email'=>p_user()['user_email']]));
         return redirect()->back()->with('success','success');
     }
 }

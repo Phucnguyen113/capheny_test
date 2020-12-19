@@ -21,6 +21,17 @@
                     function edit_size(){
                         var size=$('#size').val();
                         var _token=$('input[name="_token"]').val();
+                        Swal.fire({
+                            title:'Xin chờ...',
+                            willOpen:()=>{
+                                Swal.showLoading();
+                            },
+                            showCancelButton:false,
+                            showConfirmButton:false,
+                            allowOutsideClick:false,
+                            allowEscapeKey:false,
+                            timer:2000,
+                        })
                         $.ajax({
                             type: "put",
                             url: "{{url('admin/size')}}/{{$size->size_id}}",
@@ -28,13 +39,20 @@
                             dataType: "json",
                             success: function (response) {
                                 if($.isEmptyObject(response.error)){
-                                    window.location.href="{{url('admin/size')}}"
+                                    Swal.fire({
+                                        icon:'success',
+                                        title:'Cập nhật thành công',
+                                        text:'Bạn vừa cập nhật 1 kích thước'
+                                    }).then(()=>{
+                                        window.location.href="{{url('admin/size')}}"
+                                    })
                                 }else{
                                     console.log(response.error);
                                     $('.error_p').html('');
                                     $.each(response.error,function(index,item){
                                         $('#'+index+'_error').html(item)
                                     })
+                                    Swal.close();
                                 }
                             }
                         });

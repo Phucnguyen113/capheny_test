@@ -441,6 +441,14 @@
             <div  style="display:flex;justify-content:center">
                 {{$list_product->appends(request()->all())->links()}}
             </div>
+            <div class="toast">
+                <div class="toast-header">
+                    Toast Header
+                </div>
+                <div class="toast-body">
+                    Some text inside the toast body
+                </div>
+            </div>
 </div>
 @if(p_author('active','tbl_product'))
     <script>
@@ -475,18 +483,6 @@
         $('#category').val(value_category);
     }
 </script>
-<script>
-     var pusher = new Pusher('c76eed35cec6f6ddf74a', {
-        encrypted: true,
-        cluster:'ap1'
-      });
+ 
 
-      // Subscribe to the channel we specified in our Laravel Event
-    var channel = pusher.subscribe('product-add');
-    channel.bind('App\\Events\\pusherProduct', function(data) {
-        
-        $('#p_list_product').prepend(data.message);
-        $('#p_list_product tr:last-child').remove();
-    })
-</script>
 @endsection

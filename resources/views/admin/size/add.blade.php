@@ -19,20 +19,40 @@
                     function add_size(){
                         var size=$('#size').val();
                         var _token=$('input[name="_token"]').val();
+                        Swal.fire({
+                            willOpen:()=>{
+                                Swal.showLoading()
+                            },
+                            allowOutsideClick:false,
+                            allowEscapeKey:false,
+                            timmer:2000,
+                            showCancelButton:false,
+                            showConfirmButton:false,
+                            title:'Xin chờ...'
+                        })
                         $.ajax({
                             type: "post",
                             url: "{{url('admin/size')}}",
                             data: {_token:_token,size:size},
                             dataType: "json",
                             success: function (response) {
+
                                 if($.isEmptyObject(response.error)){
-                                    window.location.href="{{url('admin/size')}}"
+                                    Swal.fire({
+                                        icon:'success',
+                                        title:'Thêm thành công',
+                                        text:'Bạn vừa thêm 1 màu mới'
+                                    }).then(()=>{
+                                        window.location.href="{{url('admin/size')}}"
+                                    })
+                                    
                                 }else{
                                     console.log(response.error);
                                     $('.error_p').html('');
                                     $.each(response.error,function(index,item){
                                         $('#'+index+'_error').html(item)
                                     })
+                                    Swal.close();
                                 }
                             }
                         });

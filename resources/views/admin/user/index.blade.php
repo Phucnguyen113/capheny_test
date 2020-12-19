@@ -2,20 +2,7 @@
 @section('js')
   <script src="{{asset('p_js/view_setting.js')}}"></script>
   
-    <script>
-        var pusher = new Pusher('c76eed35cec6f6ddf74a', {
-            encrypted: true,
-            cluster:'ap1'
-        });
-
-        // Subscribe to the channel we specified in our Laravel Event
-        var channel = pusher.subscribe('user-add');
-        channel.bind('App\\Events\\pusherUser', function(data) {
-            console.log(data.message);
-            $('#p_list_user').prepend(data.message);
-            $('#p_list_user tr:last-child').remove();
-        })
-    </script>
+ 
 @endsection
 @section('body')
 @if($errors->has('error'))

@@ -294,7 +294,7 @@ class orderController extends Controller
                 $image=json_decode($image->product_image,true);
                 $list_product[$images]->image=$image[0];
             }
-            event(new \App\Events\pusherOrder($order_id));
+            event(new \App\Events\pusherOrder(['order_id'=>$order_id,'user_email'=>p_user()['user_email']]));
             p_history(0,'đã thêm đơn hàng mới #'.$order_id,p_user()['user_id']);
             dispatch(new SendEmail([ 
                 'id'=>$info_order->order_id,
@@ -583,6 +583,7 @@ class orderController extends Controller
                 'create_at'       => $update_at
             ]);
        }
+       event(new \App\Events\pusherOrderEdit(['order_id'=>$id,'user_email'=>p_user()['user_email']]));
        p_history(1,'đã cập nhật đơn hàng #'.$id,p_user()['user_id']);
        return response()->json(['success'=>'insert success']);
     }
@@ -633,6 +634,7 @@ class orderController extends Controller
         DB::table('tbl_order_detail')->where('order_id',$id)->delete();
         DB::table('tbl_order')->where('order_id',$id)->delete();
         p_history(2,'đã xóa đơn hàng  #'.$id,p_user()['user_id']);
+        event(new \App\Events\pusherOrderDelete(['order_id'=>$id,'user_email'=>p_user()['user_email']]));
         return redirect()->back()->with('success',true);
     }
 
