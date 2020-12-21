@@ -9,7 +9,7 @@ class ApiCategoryController extends Controller
 {
     public function  list_category(){
         try {
-            $list_category=DB::table('tbl_category')->get();
+            $list_category=DB::table('tbl_category')->where('active',1)->get();
             $result=$this->tree_category($list_category);
             return response()->json(['data'=>$result]);
         } catch (\Throwable $th) {

@@ -9,6 +9,8 @@
 	<link rel="stylesheet" type="text/css" href="css/demo.css" />
     <link rel="stylesheet" type="text/css" href="css/set1.css" />
     <script src='https://code.jquery.com/jquery-3.5.0.min.js'></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+
     <script >
                     /*!
             * classie - class helper functions
@@ -507,7 +509,17 @@
 </html>
 <script>
     $('#input-33').on('click',function(){
-        
+        Swal.fire({
+            willOpen:()=>{
+                Swal.showLoading();
+            },
+            timer:10000,
+            showCancelButton:false,
+            showConfirmButton:false,
+            allowEscapeKey:false,
+            allowOutsideClick:false,
+            title:'Xin chờ'
+        })
         var user_email=$('#input-31').val();
         var _token=$('input[name="_token"]').val();
         if(user_email.lenght==0){
@@ -524,6 +536,7 @@
                         $.each(response.error,function(index,item){
                             $(`#${index}_error`).html(item);
                         })
+                        Swal.close()
                     }else{
                        window.location.replace('{{url("admin/auth/confirm_pin")}}/'+response.token)
                     }

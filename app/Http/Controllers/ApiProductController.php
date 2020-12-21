@@ -52,7 +52,8 @@ class ApiProductController extends Controller
         
         // end process filter
 
-        $list_product=$list_product->distinct('tbl_product.product_id')->paginate(20);
+        $list_product=$list_product->distinct('tbl_product.product_id')
+        ->paginate(20);
         
         foreach ($list_product as $key => $value) {
             $currentDate=Carbon::now('Asia/Ho_Chi_Minh')->toDateTimeString();
@@ -65,13 +66,13 @@ class ApiProductController extends Controller
             if(!empty($discount)){
                 $list_product[$key]->discount=true;
                 if($discount->discount_type==1){
-                    $list_product[$key]->price_discount=$value->product_price-$discount->discount_amount;   
+                    $list_product[$key]->final_price=$value->product_price-$discount->discount_amount;   
                 }elseif($discount->discount_type==2){
-                    $list_product[$key]->price_discount=$value->product_price-($value->product_price*$discount->discount_amount/100); 
+                    $list_product[$key]->final_price=$value->product_price-($value->product_price*$discount->discount_amount/100); 
                 }
             }else{
                 $list_product[$key]->discount=false;
-                $list_product[$key]->price_discount=$value->product_price;
+                $list_product[$key]->final_price=$value->product_price;
             }
 
             //get color and size product

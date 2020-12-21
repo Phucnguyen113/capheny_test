@@ -9,6 +9,7 @@
 	<link rel="stylesheet" type="text/css" href="css/demo.css" />
     <link rel="stylesheet" type="text/css" href="css/set1.css" />
     <script src='https://code.jquery.com/jquery-3.5.0.min.js'></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
     <script >
                     /*!
             * classie - class helper functions
@@ -447,7 +448,7 @@
         <h1 class="login">NHẬP LẠI MẬT KHẨU</h1>
         <div class="input-email">
         <span class="input input--madoka">
-            <input class="input__field input__field--madoka" type="text" id="input-31" />
+            <input class="input__field input__field--madoka" type="password" id="input-31" />
             <label class="input__label input__label--madoka" for="input-31">
                 <svg class="graphic graphic--madoka" width="100%" height="100%" viewBox="0 0 404 77" preserveAspectRatio="none">
                     <path d="m0,0l404,0l0,77l-404,0l0,-77z"/>
@@ -459,7 +460,7 @@
     <div id="password_error" class="p_error" style="color:red"></div>
     <div class="input-password">
         <span class="input input--madoka">
-            <input class="input__field input__field--madoka" type="text" id="input-32" />
+            <input class="input__field input__field--madoka" type="password" id="input-32" />
             <label class="input__label input__label--madoka" for="input-32">
                 <svg class="graphic graphic--madoka" width="100%" height="100%" viewBox="0 0 404 77" preserveAspectRatio="none">
                     <path d="m0,0l404,0l0,77l-404,0l0,-77z"/>
@@ -527,6 +528,17 @@
         if(password.lenght==0){
             $('#password_error').html('Mật khẩu không được trống');
         }else{
+            Swal.fire({
+                title:'Xin chờ',
+                willOpen:()=>{
+                    Swal.showLoading()
+                },
+                timer:8000,
+                showCancelButton:false,
+                showConfirmButton:false,
+                allowEscapeKey:false,
+                allowOutsideClick:false
+            })
             $.ajax({
                 type: "POST",
                 url: "{{url('admin/auth/change_password')}}/{{$token}}",
@@ -538,8 +550,17 @@
                         $.each(response.error,function(index,item){
                             $(`#${index}_error`).html(item);
                         })
+                        Swal.close();
                     }else{
-                       window.location.replace('{{url("admin/auth/logout")}}')
+                        Swal.fire({
+                            icon:'success',
+                            title:'Thành công',
+                            text:'Lấy lại mật khẩu thành công',
+                            timer:2000
+                        }).then(()=>{
+                            window.location.replace('{{url("admin/auth/logout")}}')
+                        })
+                       
                     }
                 }
             });

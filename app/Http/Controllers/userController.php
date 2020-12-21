@@ -206,7 +206,7 @@ class userController extends Controller
             $idUser=DB::table('tbl_user')->insertGetId(array_merge($request->except(['_token','user_password_confirm','user_password','avatar']),['create_at'=>$create_at],['active'=>$active],['user_type'=>$user_type],['password'=>$user_password] ) );
         }
        
-        event(new \App\Events\pusherUser($idUser));
+        event(new \App\Events\pusherUser(['user_id'=>$idUser,'user_email'=>p_user()['user_email']]));
         p_history(0,'đã thêm người dùng mới #'.$idUser,p_user()['user_id']);
         return response()->json(['success'=>'success']);
     }
@@ -501,5 +501,89 @@ class userController extends Controller
             'verify_check'=>0
         ]);
         return response()->json(['success'=>true]);
+    }
+
+    public function edit_private_form(){
+        $user=DB::table('tbl_user')->where('user_id',p_user()['user_id'])->first();
+        $list_province=DB::table('tbl_province')->get();
+        $list_district=DB::table('tbl_district')->where('_province_id',$user->province)->get();
+        $list_ward=DB::table('tbl_ward')->where('_district_id',$user->district)->get();
+        $title='Capheny - Cập nhật người dùng';
+       
+        return view('admin.user.edit_private',compact('user','list_province','list_district','list_ward'));
+    }
+    public function edit_private(Request $request){
+        $id=p_user()['user_id'];
+        $data= $request->all();
+        if($request->user_password==null)  $data= $request->except(['user_password']);
+        $validated=Validator::make($data,
+            [
+                'user_name'     => 'bail|required|min:5|regex:/^[A-z0-9]*$/',
+                'user_email'    => [
+                                    'bail',
+                                    'required',
+                                    'email',
+                                    Rule::unique('tbl_user')->ignore($id,'user_id')
+                                ],
+                'user_password' => 'bail|sometimes|nullable|required|min:6',
+                'user_password_confirm'=> 'bail|required_unless:user_password,null|same:user_password',
+                'user_first_name' => 'bail|required',
+                'user_last_name' => 'bail|required',
+                'user_phone' => 'bail|required|numeric|regex:/^0[0-9]{9,10}$/',
+                'province'=> 'bail|required|not_in:0',
+                'district'=> 'bail|required|not_in:0',
+                'ward'=> 'bail|required|not_in:0',
+                'user_address'=> 'bail|required',
+                'avatar'=>'sometimes|nullable|mimes:jpg,png,jpeg,svg,gif'
+            ],
+            [
+                'required' => ':attribute không được trống',
+                'min' => ':attribute phải dài hơn :min ký tự',
+                'same' => ':attribute không khớp với mật khẩu',
+                'not_in' => ':attribute không được trống',
+                'email' => ':attribute không khớp định dạng Email',
+                'unique' => ':attribute đã tồn tại',
+                'user_name.regex' => ':attribute phải viết liền và không dấu',
+                'user_phone.regex' => ':attribute không đúng định dạng số điện thoại',
+                'mimes'=>':attribute phải có dạng jpg,png,jpeg,svg,gif'
+            ],
+            [
+                'user_name'  => 'Tên tài khoản',
+                'user_email' => 'Email',
+                'user_password' => 'Mật khẩu',
+                'user_password_confirm' => 'Mật khẩu xác nhận',
+                'user_first_name' =>'Tên',
+                'user_last_name' =>'Họ',
+                'user_phone' => 'Điện thoại',
+                'province'=> 'Thành phố/Tỉnh',
+                'district'=> 'Quận/Huyện',
+                'ward'=> 'Khu vực',
+                'user_address'=> 'Địa chỉ',
+                'avatar'=>'Ảnh đại diện'
+            ]
+        );
+        if($validated->fails()) return response()->json(['error'=> $validated->getMessageBag()]);
+        if($request->user_password!==null){
+            $user_password=bcrypt($request->user_password);
+            $data_update=array_merge($request->except(['_token','user_password_confirm','user_password','avatar']),['password'=>$user_password] );
+        }else{
+            $data_update=array_merge($request->except(['_token','user_password_confirm','user_password','avatar']));
+        }
+        
+        if($request->hasFile('avatar')){
+            $newNameImg=$request->avatar->getClientOriginalName().date('Y_m_d').'.'.$request->avatar->getClientOriginalExtension();
+            $request->avatar->move('images/user',$newNameImg);
+            $data_update=array_merge($data_update,['avatar'=>$newNameImg]);
+            $img_old=DB::table('tbl_user')->where('user_id',$id)->first(['avatar']);
+            if($img_old->avatar!==null){
+                if(file_exists(public_path('images/user/'.$img_old->avatar))){
+                    unlink(public_path('images/user/'.$img_old->avatar));
+                }
+            }
+        }
+        
+        DB::table('tbl_user')->where('user_id',$id)->update($data_update);
+        
+        return response()->json(['success'=>'success']);
     }
 }

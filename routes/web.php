@@ -115,7 +115,8 @@ Route::group(['prefix'=>'admin'],function(){
     //change password
     Route::get('auth/change_password/{token}',[userController::class,'change_password_form']);
     Route::post('auth/change_password/{token}',[userController::class,'change_password']);
- 
+    Route::get('user/edit',[userController::class,'edit_private_form']);
+    Route::post('user/edit',[userController::class,'edit_private']);
 });
 //api get category_tree select
 Route::post('category/tree_category/select/{id}',[categoryController::class,'get_tree_category']);
